@@ -1,4 +1,12 @@
 -------------------------------------------------------------------
+Fri Jan 20 10:58:21 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
+
+- created %triggerpostun for nvidia-gfxG06-kmp also for Tumbleweed
+  packages to rebuild and reinstall kernel modules, which are
+  removed in %postun of nvidia-gfxG06-kmp, when this package gets
+  replaced by nvidia-driver-G06-kmp (boo#1207314)
+
+-------------------------------------------------------------------
 Wed Jan 18 12:12:02 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
 
 - Update to version 525.85.05
