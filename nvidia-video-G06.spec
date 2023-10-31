@@ -22,7 +22,7 @@
 %define eglwaylandversion 1.1.10
 
 Name:           nvidia-video-G06
-Version:        525.116.04
+Version:        535.54.03
 Release:        0
 License:        SUSE-NonFree
 Summary:        NVIDIA graphics driver for GeForce 700 series and newer
@@ -399,6 +399,8 @@ install -m 644 nvidia-settings.png \
   %{buildroot}%{_datadir}/pixmaps
 install -m 644 nvidia-application-profiles-%{version}-{rc,key-documentation} \
   %{buildroot}%{_datadir}/nvidia
+install -m 644 nvoptix.bin %{buildroot}%{_datadir}/nvidia
+
 /sbin/ldconfig -n %{buildroot}%{_libdir}
 /sbin/ldconfig -n %{buildroot}%{_libdir}/vdpau
 /sbin/ldconfig -n %{buildroot}%{_prefix}/X11R6/%{_lib}
@@ -711,7 +713,6 @@ fi
 %exclude %{_libdir}/libnvidia-ptxjitcompiler.so*
 %exclude %{_libdir}/libnvidia-vulkan-producer.so*
 %exclude %{_libdir}/libnvidia-api.so*
-%exclude %{_libdir}/libnvidia-compiler.so*
 %exclude %{_libdir}/libnvidia-ngx.so*
 %exclude %{_libdir}/libnvidia-nvvm.so*
 %exclude %{_libdir}/libnvidia-glvkspirv.so*
@@ -730,9 +731,6 @@ fi
 %{_libdir}/libcudadebugger.so*
 %{_libdir}/libcuda.so*
 %{_libdir}/libnvidia-api.so*
-%ifnarch aarch64
-%{_libdir}/libnvidia-compiler.so*
-%endif
 %{_libdir}/libnvidia-ml.so*
 %{_libdir}/libnvidia-ngx.so*
 %{_libdir}/libnvidia-nvvm.so*
@@ -860,6 +858,7 @@ fi
 %{_libdir}/libnvidia-wayland-client.so*
 %endif
 %{_libdir}/libnvoptix.so*
+%{_datadir}/nvidia/nvoptix.bin
 %if 0%{?suse_version} < 1330
 %{_prefix}/X11R6/%{_lib}/libOpenGL.so*
 %endif
@@ -920,7 +919,6 @@ fi
 %exclude %{_prefix}/lib/libnvidia-ml.so*
 %exclude %{_prefix}/lib/libnvidia-opencl.so*
 %exclude %{_prefix}/lib/libnvidia-ptxjitcompiler.so*
-%exclude %{_prefix}/lib/libnvidia-compiler.so*
 %exclude %{_prefix}/lib/libnvidia-nvvm.so*
 %exclude %{_prefix}/lib/libnvidia-fbc.so*
 %exclude %{_prefix}/lib/libnvidia-glvkspirv.so*
@@ -929,9 +927,6 @@ fi
 %files -n nvidia-compute-G06-32bit
 %defattr(-,root,root)
 %{_prefix}/lib/libcuda.so*
-%ifnarch aarch64
-%{_prefix}/lib/libnvidia-compiler.so*
-%endif
 %{_prefix}/lib/libnvidia-ml.so*
 %{_prefix}/lib/libnvidia-nvvm.so*
 %{_prefix}/lib/libnvidia-opencl.so*

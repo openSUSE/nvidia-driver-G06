@@ -1,4 +1,77 @@
 -------------------------------------------------------------------
+Thu Jun 15 09:23:46 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
+
+-  Update to version 535.54.03
+  * Fixed a bug that caused modesets to fail in some Wayland configurations.
+  * Fixed a bug that caused head-mounted displays (HMDs) to display black
+    after a modeset.
+  * Fixed a bug that prevented SLI Mosaic controls from being displayed in
+    the nvidia-settings control panel when using GSP Firmware.
+  * Fixed a bug that could cause image corruption when unbinding Vulkan
+    sparse textures.
+  * Added support for the VK_EXT_memory_priority, and
+    VK_EXT_pageable_device_memory
+    extensions for Turing+ GPUs.
+  * Improved the performance of Minecraft Java Edition on RTX 3000
+    series GPUs.
+  * Fixed a memory leak in the NVIDIA GLX driver, as reported at:
+    https://forums.developer.nvidia.com/t/222697
+  * Added support for driving very high pixel clock mode timings such as 8K @
+    60Hz.  Please see the "MaxOneHardwareHead" X11 ModeValidation token in the
+    README for details.
+  * Extended Dynamic Boost support on notebooks to include older Renoir
+    and Cezanne chipsets, in addition to Rembrandt and newer AMD chipsets.
+  * Fixed a bug that caused Vulkan X11 swapchain creation to fail on GPUs
+    without a display engine when the VK_KHR_present_id extension is used.
+  * Fixed console restore on legacy VGA consoles when using the NVIDIA
+    Open GPU Kernel Modules.
+  * Added nvoptix.bin to the driver package.  This data file is used by the
+    OptiX ray tracing engine library, libnvoptix.so.1.
+  * Removed libnvidia-compiler.so.VERSION from the driver package.  This
+    functionality is now provided by other driver libraries.
+  * Added power usage and power limits information to nvidia-settings
+    PowerMizer page.
+  * Updated NV_CTRL_GPU_POWER_SOURCE NV-CONTROL API to report undersized
+    power source.
+  * Add support for version 4 of the linux-dmabuf wayland protocol.
+  * Added NV-CONTROL attributes NV_CTRL_FRAMELOCK_MULTIPLY_DIVIDE_MODE
+    and NV_CTRL_FRAMELOCK_MULTIPLY_DIVIDE_VALUE to allow syncing a
+    Quadro Sync II card to different House Sync signal rates. This
+    feature requires firmware version 2.18 or later; to download the
+    latest firmware version, please visit:
+    https://www.nvidia.com/en-us/drivers/firmware/quadro-sync-firmware-driver/
+  * Added support for the VK_KHR_video_queue, VK_KHR_video_decode_queue,
+    VK_KHR_video_decode_h264 and VK_KHR_video_decode_h265 extensions.
+  * Added an application profile to avoid performance problems in Xfce 4
+    when the OpenGL compositor backend is enabled along with G-SYNC.
+  * Added support for suspend and resume when using GSP firmware.
+  * Moved the nvidia-settings application icon into the 'hicolor' icon theme,
+    which allows it to be customized by other icon themes selected in the
+    desktop environment.
+  * Fixed a bug that prevented PRIME render offload from working for
+    Wayland applications when running on a system with an AMD iGPU.
+  * Fixed a bug that prevented nvidia-installer from recording kernel log
+    output to the installer log in some module loading failure paths.
+  * Changed nvidia-installer to no longer use the $XDG_DATA_DIRS environment
+    variable. XDG data files are now installed to a path specified by the
+    --xdg-data-dir option, or /usr/share if not specified.
+    This fixes a problem when Flatpak is installed that caused the installer
+    to place the nvidia-settings.desktop file in
+    /root/.local/share/flatpak/exports/share/applications.
+  * Changed the behavior of glXGetRefreshRateSGI() for non-integer
+    refresh rates to round to the nearest whole number rather than
+    truncating.
+  * Changed the compression format of the .run installer package from xz
+    to zstd. This results in a smaller compressed package, and faster
+    decompression performance. A fallback zstd decompressor is embedded
+    into the installer package for systems which do not already have a
+    zstd decompression program installed.
+  * Fixed a bug that caused nvidia-installer to mistakenly unload some
+    already loaded non-NVIDIA kernel modules.
+- added nvoptix.bin, which is used by libnvoptix (see changelog above)
+- removed no longer available libnvidia-compiler (see changelog above)
+
+-------------------------------------------------------------------
 Wed May 24 13:08:20 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
 
 - back to require "GA" kernel-devel package for sle15-sp5 with the
