@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Mon Mar 27 18:54:47 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
+
+- build cuda-cloud-opengpu only on Leap 15.5/sle15-sp5 and TW;
+  planned for later: Leap 15.4/sle15-sp5 
+
+-------------------------------------------------------------------
 Mon Mar 27 15:50:37 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
 
 - added cuda-cloud-opengpu meta package to have a Meta package for 
