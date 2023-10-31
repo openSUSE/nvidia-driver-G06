@@ -1,5 +1,5 @@
 flavor=%1
-%if 0%{?sle_version} >= 150200
+%if (0%{?sle_version} >= 150200 || 0%{?suse_version} >= 1550)
 # remove MOK key
 if [ -x /usr/bin/mokutil ]; then
   pubkeydir=/var/lib/nvidia-pubkeys

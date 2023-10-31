@@ -1,4 +1,9 @@
 -------------------------------------------------------------------
+Sat Mar  4 19:35:37 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
+
+- sign kernel modules also on TW (boo#1208939) 
+
+-------------------------------------------------------------------
 Fri Feb 17 04:59:00 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
 
 - moved cuda-drivers provides to nvidia-compute-utils-G06 
