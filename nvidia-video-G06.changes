@@ -1,4 +1,23 @@
 -------------------------------------------------------------------
+Wed Jul 19 12:48:52 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
+
+- Update to version 535.86.05
+  * Fixed a bug that caused excessive memory consumption when OpenGL and
+    Vulkan applications were running while VT-switched away from X.
+  * Fixed a bug that could cause the kernel to panic when video memory
+    is full.
+  * Fixed a bug that prevented displays from refreshing when using an
+    NVIDIA PRIME Display Offload sink.
+  * Fixed a bug that could cause some Variable Refresh Rate (VRR)
+    monitors to flicker by allowing the refresh rate to drop below
+    the monitor's minimum.
+  * Fixed a bug that caused corruption when running Vulkan applications.
+  * Fixed a regression that could cause a system hang when running windowed
+    Vulkan applications with sync-to-vblank enabled.
+  * Fixed a video memory leak observed when turning off a connected
+    monitor while using certain Wayland compositors.
+
+-------------------------------------------------------------------
 Thu Jun 15 09:23:46 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
 
 -  Update to version 535.54.03
