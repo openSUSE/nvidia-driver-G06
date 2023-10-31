@@ -1,4 +1,15 @@
 -------------------------------------------------------------------
+Tue Jan 10 21:45:50 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
+
+- renamed nvidia-computeG06 to nvidia-compute-G06 package
+- renamed nvidia-glG06 to nvidia-gl-G06 package
+- let nvidia-video-G06, nvidia-compute-G06 and nvidia-gl-G06
+  packages alternatively require also
+  nvidia-open-driver-G06-signed-kmp package
+- make updates from old package names possible via appropriate
+  Provides/Obsoletes
+
+-------------------------------------------------------------------
 Tue Jan 10 14:49:21 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
 
 - renamed package to nvidia-video-G06 due to package redesign

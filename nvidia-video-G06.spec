@@ -44,8 +44,8 @@ NoSource:       4
 NoSource:       5
 BuildRequires:  update-desktop-files
 BuildRequires:  pkgconfig(systemd)
-Requires:       nvidia-computeG06 = %{version}
-Requires:       (nvidia-driver-G06-kmp = %{version} or nvidia-open-driver-G06-kmp = %{version})
+Requires:       nvidia-compute-G06 = %{version}
+Requires:       (nvidia-driver-G06-kmp = %{version} or nvidia-open-driver-G06-kmp = %{version} or nvidia-open-driver-G06-signed-kmp = %{version})
 Provides:       nvidia_driver = %{version}
 Provides:       nvidia-xconfig = %{version}
 Provides:       nvidia-settings = %{version}
@@ -57,6 +57,8 @@ Conflicts:      x11-video-nvidiaG02
 Conflicts:      x11-video-nvidiaG03
 Conflicts:      x11-video-nvidiaG04
 Conflicts:      x11-video-nvidiaG05
+Provides:       x11-video-nvidiaG06
+Obsoletes:      x11-video-nvidiaG06
 Conflicts:      fglrx_driver
 Recommends:     nvidia-video-G06-32bit
 Requires:       libvdpau1
@@ -73,45 +75,51 @@ Group:          System/Libraries
 Requires:       nvidia-video-G06 = %{version}
 Conflicts:      x11-video-nvidiaG04-32bit
 Conflicts:      x11-video-nvidiaG05-32bit
+Provides:       x11-video-nvidiaG06-32bit
+Obsoletes:      x11-video-nvidiaG06-32bit
 AutoReq: no
 
 %description -n nvidia-video-G06-32bit
 This package provides the closed-source 32bit NVIDIA graphics driver
 for GeForce 700 series and newer GPUs.
 
-%package -n nvidia-computeG06
+%package -n nvidia-compute-G06
 Summary:        NVIDIA driver for computing with GPGPU
 Group:          System/Libraries
-Requires:       (nvidia-driver-G06-kmp = %{version} or nvidia-open-driver-G06-kmp = %{version})
+Requires:       (nvidia-driver-G06-kmp = %{version} or nvidia-open-driver-G06-kmp = %{version} or nvidia-open-driver-G06-signed-kmp = %{version})
 Provides:       cuda-drivers = %{version}
 Conflicts:      nvidia-computeG02
 Conflicts:      nvidia-computeG03
 Conflicts:      nvidia-computeG04
 Conflicts:      nvidia-computeG05
-Recommends:     nvidia-computeG06-32bit
+Provides:       nvidia-computeG06
+Obsoletes:      nvidia-computeG06
+Recommends:     nvidia-compute-G06-32bit
 %if (0%{?sle_version} >= 150100 || 0%{?suse_version} >= 1550)
 Requires(pre):  update-alternatives
 %else
 Conflicts:      libOpenCL1
 %endif
 
-%description -n nvidia-computeG06
+%description -n nvidia-compute-G06
 NVIDIA driver for computing with GPGPUs using CUDA or OpenCL.
 
-%package -n nvidia-computeG06-32bit
+%package -n nvidia-compute-G06-32bit
 Summary:        32bit NVIDIA driver for computing with GPGPU
 Group:          System/Libraries
-Requires:       nvidia-computeG06 = %{version}
+Requires:       nvidia-compute-G06 = %{version}
 Conflicts:      nvidia-computeG04-32bit
 Conflicts:      nvidia-computeG05-32bit
+Provides:       nvidia-computeG06-32bit
+Obsoletes:      nvidia-computeG06-32bit
 
-%description -n nvidia-computeG06-32bit
+%description -n nvidia-compute-G06-32bit
 32bit NVIDIA driver for computing with GPGPUs using CUDA or OpenCL.
 
-%package -n nvidia-glG06
+%package -n nvidia-gl-G06
 Summary:        NVIDIA OpenGL libraries for OpenGL acceleration
 Group:          System/Libraries
-Requires:       (nvidia-driver-G06-kmp = %{version} or nvidia-open-driver-G06-kmp = %{version})
+Requires:       (nvidia-driver-G06-kmp = %{version} or nvidia-open-driver-G06-kmp = %{version} or nvidia-open-driver-G06-signed-kmp = %{version})
 %if 0%{?suse_version} >= 1550
 Requires:       libnvidia-egl-wayland1 >= %{eglwaylandversion}
 %endif
@@ -121,7 +129,9 @@ Requires(post):   xorg-x11-server
 Conflicts:      nvidia-glG03
 Conflicts:      nvidia-glG04
 Conflicts:      nvidia-glG05
-Recommends:     nvidia-glG06-32bit
+Provides:       nvidia-glG06
+Obsoletes:      nvidia-glG06
+Recommends:     nvidia-gl-G06-32bit
 # needed for Optimus systems once NVIDIA's libs get disabled (our default);
 # these packages won't get installed when adding NVIDIA's repository before
 # the installation, which e.g. happens on SLED (bsc#1111471)
@@ -131,19 +141,21 @@ Recommends:     Mesa-libGLESv1_CM1
 Recommends:     Mesa-libGLESv2-2
 AutoReq: no
 
-%description -n nvidia-glG06
+%description -n nvidia-gl-G06
 This package provides the NVIDIA OpenGL libraries to allow OpenGL
 acceleration under the closed-source NVIDIA drivers.
 
-%package -n nvidia-glG06-32bit
+%package -n nvidia-gl-G06-32bit
 Summary:        32bit NVIDIA OpenGL libraries for OpenGL acceleration
 Group:          System/Libraries
-Requires:       nvidia-glG06 = %{version}
+Requires:       nvidia-gl-G06 = %{version}
 Conflicts:      nvidia-glG04-32bit
 Conflicts:      nvidia-glG05-32bit
+Provides:       nvidia-glG06-32bit
+Obsoletes:      nvidia-glG06-32bit
 AutoReq: no
 
-%description -n nvidia-glG06-32bit
+%description -n nvidia-gl-G06-32bit
 This package provides 32bit NVIDIA OpenGL libraries to allow OpenGL
 acceleration under the closed-source NVIDIA drivers.
 
@@ -462,28 +474,28 @@ exit 0
 
 %if (0%{?sle_version} >= 150100 || 0%{?suse_version} >= 1550)
 
-%post -n nvidia-computeG06
+%post -n nvidia-compute-G06
 # apparently needed when updating from a pre update-alternatives package ...
 rm -f %{_libdir}/libOpenCL.so.1.*
 %{_sbindir}/update-alternatives --force --install \
    %{_libdir}/libOpenCL.so.1 libOpenCL.so.1 %{_libdir}/nvidia/libOpenCL.so.1 100
 /sbin/ldconfig
 
-%preun -n nvidia-computeG06
+%preun -n nvidia-compute-G06
 if [ "$1" = 0 ] ; then
    %{_sbindir}/update-alternatives --remove libOpenCL.so.1  %{_libdir}/nvidia/libOpenCL.so.1
 fi
 
 %else
 
-%post -n nvidia-computeG06 -p /sbin/ldconfig
+%post -n nvidia-compute-G06 -p /sbin/ldconfig
 
 %endif
 
-%postun -n nvidia-computeG06 -p /sbin/ldconfig
+%postun -n nvidia-compute-G06 -p /sbin/ldconfig
 
 %if (0%{?sle_version} >= 150100 || 0%{?suse_version} >= 1550)
-%posttrans -n nvidia-computeG06
+%posttrans -n nvidia-compute-G06
 if [ "$1" = 0 ] ; then
   if ! [ -f %{_libdir}/libOpenCl.so.1 ] ; then
       "%{_sbindir}/update-alternatives" --auto libOpenCL.so.1
@@ -491,7 +503,7 @@ if [ "$1" = 0 ] ; then
 fi
 %endif
 
-%post -n nvidia-glG06
+%post -n nvidia-gl-G06
 %if 0%{?suse_version} >= 1315
 # Transition to alternatives-free GLX version (boo#1149858)
 if [ -f %{_libdir}/xorg/modules/extensions/nvidia/nvidia-libglx.so ]; then
@@ -541,7 +553,7 @@ fi
 %endif
 /sbin/ldconfig
 
-%postun -n nvidia-glG06
+%postun -n nvidia-gl-G06
 /sbin/ldconfig
 %if 0%{?suse_version} >= 1315
 if [ "$1" = 0 ] ; then
@@ -629,7 +641,7 @@ fi
 /lib/firmware/nvidia/%{version}/gsp_ad10x.bin
 /lib/firmware/nvidia/%{version}/gsp_tu10x.bin
 
-%files -n nvidia-computeG06
+%files -n nvidia-compute-G06
 %defattr(-,root,root)
 %dir %{_sysconfdir}/OpenCL
 %dir %{_sysconfdir}/OpenCL/vendors
@@ -656,7 +668,7 @@ fi
 %{_bindir}/nvidia-cuda-mps-server
 %{_bindir}/nvidia-modprobe
 
-%files -n nvidia-glG06
+%files -n nvidia-gl-G06
 %defattr(-,root,root)
 %dir /etc/vulkan
 %dir /etc/vulkan/icd.d
@@ -751,7 +763,7 @@ fi
 %exclude %{_prefix}/lib/libnvidia-opencl.so*
 %exclude %{_prefix}/lib/libnvidia-ptxjitcompiler.so*
 
-%files -n nvidia-computeG06-32bit
+%files -n nvidia-compute-G06-32bit
 %defattr(-,root,root)
 %{_prefix}/lib/libcuda.so*
 %{_prefix}/lib/libOpenCL.so*
@@ -759,7 +771,7 @@ fi
 %{_prefix}/lib/libnvidia-opencl.so*
 %{_prefix}/lib/libnvidia-ptxjitcompiler.so*
 
-%files -n nvidia-glG06-32bit
+%files -n nvidia-gl-G06-32bit
 %defattr(-,root,root)
 %if 0%{?suse_version} < 1330
 %{_prefix}/X11R6/lib/libGL.so*
