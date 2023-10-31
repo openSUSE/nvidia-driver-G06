@@ -160,7 +160,7 @@ Requires:       (nvidia-driver-G06-kmp = %{version} or nvidia-open-driver-G06-km
 This is just a Meta package for compute only installations.
 
 # later also Leap 15.4/sle15-sp4
-%if 0%{?sle_version} >= 150500
+%if (0%{?sle_version} >= 150500 || 0%{?suse_version} >= 1550)
 %package -n cuda-cloud-opengpu
 Summary:        Meta package for CUDA minimal installation in the Cloud
 Group:          System/Utilities
@@ -786,7 +786,7 @@ fi
 %defattr(-,root,root)
 
 # later also Leap 15.4/sle15-sp4
-%if 0%{?sle_version} >= 150500
+%if (0%{?sle_version} >= 150500 || 0%{?suse_version} >= 1550)
 %files -n cuda-cloud-opengpu
 %defattr(-,root,root)
 %endif
