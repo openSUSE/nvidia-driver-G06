@@ -116,6 +116,26 @@ Obsoletes:      nvidia-computeG06-32bit
 %description -n nvidia-compute-G06-32bit
 32bit NVIDIA driver for computing with GPGPUs using CUDA or OpenCL.
 
+%package -n nvidia-compute-utils-G06
+Summary:        NVIDIA driver tools for computing with GPGPU
+Group:          System/X11/Utilities
+Requires:       nvidia-compute-G06
+Provides:       nvidia-computeG06:/usr/bin/nvidia-cuda-mps-control
+Provides:       nvidia-compute-G06:/usr/bin/nvidia-cuda-mps-control
+
+%description -n nvidia-compute-utils-G06
+NVIDIA driver tools for computing with GPGPUs using CUDA or OpenCL.
+
+%package -n nvidia-utils-G06
+Summary:        NVIDIA driver tools
+Group:          System/X11/Utilities
+Requires:       nvidia-compute-G06
+Provides:       x11-video-nvidiaG06:/usr/bin/nvidia-settings
+Provides:       nvidia-video-G06:/usr/bin/nvidia-settings
+
+%description -n nvidia-utils-G06
+NVIDIA driver tools.
+
 %package -n nvidia-gl-G06
 Summary:        NVIDIA OpenGL libraries for OpenGL acceleration
 Group:          System/Libraries
@@ -572,11 +592,17 @@ fi
 %files
 %defattr(-,root,root)
 %doc %{_datadir}/doc/packages/%{name}
+%exclude %{_datadir}/doc/packages/%{name}/html/nvidia-persistenced.html
+%exclude %{_datadir}/doc/packages/%{name}/html/nvidia-debugdump.html
+%exclude %{_datadir}/doc/packages/%{name}/html/nvidia-smi.html
+%exclude %{_datadir}/doc/packages/%{name}/nvidia-persistenced-init.tar.bz2
 %doc %{_mandir}/man1/*
 %exclude %{_mandir}/man1/nvidia-cuda-mps-control.1.gz
-%dir %{_datadir}/nvidia
-%{_datadir}/nvidia/nvidia-application-profiles-%{version}-rc
-%{_datadir}/nvidia/nvidia-application-profiles-%{version}-key-documentation
+%exclude %{_mandir}/man1/nvidia-modprobe.1.gz
+%exclude %{_mandir}/man1/nvidia-persistenced.1.gz
+%exclude %{_mandir}/man1/nvidia-smi.1.gz
+%exclude %{_mandir}/man1/nvidia-settings.1.gz
+%exclude %{_mandir}/man1/nvidia-xconfig.1.gz
 %if 0%{?suse_version} < 1330
 %{_bindir}/X.%{name}
 %endif
@@ -585,6 +611,12 @@ fi
 %exclude %{_bindir}/nvidia-smi
 %exclude %{_bindir}/nvidia-cuda-mps-control
 %exclude %{_bindir}/nvidia-cuda-mps-server
+%exclude %{_bindir}/nvidia-bug-report.sh
+%exclude %{_bindir}/nvidia-debugdump
+%exclude %{_bindir}/nvidia-persistenced
+%exclude %{_bindir}/nvidia-persistenced.sh
+%exclude %{_bindir}/nvidia-powerd
+%exclude %{_bindir}/nvidia-settings
 %if 0%{?suse_version} < 1330
 %dir %{_prefix}/X11R6/
 %dir %{_prefix}/X11R6/%{_lib}
@@ -628,12 +660,12 @@ fi
 %dir %{xlibdir}/modules
 %dir %{xmodulesdir}
 %{xmodulesdir}/drivers
-%{_datadir}/applications/*.desktop
-%{_datadir}/pixmaps/*.png
 %exclude %{_bindir}/nvidia-xconfig
 %exclude %{_prefix}/%{_lib}/libnvidia-cfg.so.*
 %{_bindir}/nvidia-sleep.sh
 /usr/lib/systemd/system/*.service
+%exclude /usr/lib/systemd/system/nvidia-persistenced.service
+%exclude /usr/lib/systemd/system/nvidia-powerd.service
 %dir /usr/lib/systemd/system-sleep
 /usr/lib/systemd/system-sleep/nvidia
 %dir /lib/firmware/nvidia
@@ -649,7 +681,6 @@ fi
 %dir %{_libdir}/nvidia/wine/
 %endif
 %config %{_sysconfdir}/OpenCL/vendors/nvidia.icd
-%{_mandir}/man1/nvidia-cuda-mps-control.1.gz
 %{_libdir}/libcuda.so*
 %{_libdir}/libcudadebugger.so*
 %if (0%{?sle_version} >= 150100 || 0%{?suse_version} >= 1550)
@@ -663,10 +694,40 @@ fi
 %{_libdir}/libnvidia-ml.so*
 %{_libdir}/libnvidia-opencl.so*
 %{_libdir}/libnvidia-ptxjitcompiler.so*
-%{_bindir}/nvidia-smi
+
+%files -n nvidia-compute-utils-G06
+%defattr(-,root,root)
+%{_bindir}/nvidia-bug-report.sh
 %{_bindir}/nvidia-cuda-mps-control
+%{_mandir}/man1/nvidia-cuda-mps-control.1.gz
 %{_bindir}/nvidia-cuda-mps-server
+%{_bindir}/nvidia-debugdump
+%{_datadir}/doc/packages/%{name}/html/nvidia-debugdump.html
 %{_bindir}/nvidia-modprobe
+%{_mandir}/man1/nvidia-modprobe.1.gz
+%{_bindir}/nvidia-persistenced
+%{_mandir}/man1/nvidia-persistenced.1.gz
+%{_datadir}/doc/packages/%{name}/nvidia-persistenced-init.tar.bz2
+%{_bindir}/nvidia-persistenced.sh
+/usr/lib/systemd/system/nvidia-persistenced.service
+%{_datadir}/doc/packages/%{name}/html/nvidia-persistenced.html
+%{_bindir}/nvidia-powerd
+/usr/lib/systemd/system/nvidia-powerd.service
+%{_bindir}/nvidia-smi
+%{_mandir}/man1/nvidia-smi.1.gz
+%{_datadir}/doc/packages/%{name}/html/nvidia-smi.html
+
+%files -n nvidia-utils-G06
+%defattr(-,root,root)
+%dir %{_datadir}/nvidia
+%{_datadir}/nvidia/nvidia-application-profiles-%{version}-rc
+%{_datadir}/nvidia/nvidia-application-profiles-%{version}-key-documentation
+%{_bindir}/nvidia-settings
+%{_mandir}/man1/nvidia-settings.1.gz
+%{_datadir}/applications/nvidia-settings.desktop
+%{_datadir}/pixmaps/nvidia-settings.png
+%{_bindir}/nvidia-xconfig
+%{_mandir}/man1/nvidia-xconfig.1.gz
 
 %files -n nvidia-gl-G06
 %defattr(-,root,root)
@@ -719,7 +780,6 @@ fi
 %{_libdir}/libnvidia-glsi.so*
 %{_libdir}/libnvidia-eglcore.so*
 %{xmodulesdir}/extensions
-%{_bindir}/nvidia-xconfig
 %{_prefix}/%{_lib}/libnvidia-cfg.so.*
 %ifarch x86_64
 %{_libdir}/nvidia/wine/{_nvngx.dll,nvngx.dll}
