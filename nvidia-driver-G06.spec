@@ -213,7 +213,7 @@ pushd %_sourcedir
 ln -sv %pci_id_file pci_ids-%{version}_k%{kbuildver}
 popd
 mkdir obj
-sed -i -e 's,-o "$ARCH" = "x86_64",-o "$ARCH" = "x86_64" -o "$ARCH" = "x86",' source/*/conftest.sh
+sed -i -e 's,-o "$ARCH" = "x86_64",-o "$ARCH" = "x86_64" -o "$ARCH" = "x86" -o "$ARCH" = "aarch64",' source/*/conftest.sh
 
 %build
 echo "*** sle_version: 0%{?sle_version} ***"
