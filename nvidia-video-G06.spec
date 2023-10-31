@@ -167,7 +167,7 @@ Group:          System/Utilities
 Requires:       cuda-libraries-devel-12-1
 Requires:       cuda-minimal-build-12-1
 Requires:       nvidia-drivers-minimal-G06
-Requires:       nvidia-open-driver-G06-signed-kmp-default = %{version}
+Requires:       nvidia-open-driver-G06-signed-kmp = %{version}
 
 %description -n cuda-cloud-opengpu
 This is a meta package for doing a CUDA minimal installation in the
