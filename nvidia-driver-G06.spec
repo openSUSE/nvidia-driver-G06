@@ -218,6 +218,8 @@ sed -i -e 's,-o "$ARCH" = "x86_64",-o "$ARCH" = "x86_64" -o "$ARCH" = "x86" -o "
 %build
 echo "*** sle_version: 0%{?sle_version} ***"
 export EXTRA_CFLAGS='-DVERSION=\"%{version}\"'
+# no longer needed and never worked anyway (it was only a stub)
+export NV_EXCLUDE_KERNEL_MODULES=nvidia-peermem
 for flavor in %flavors_to_build; do
     src=/lib/modules/$(make %{?jobs:-j%jobs} -siC %{kernel_source $flavor} kernelrelease)/source
     rm -rf obj/$flavor
