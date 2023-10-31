@@ -1,7 +1,7 @@
 -------------------------------------------------------------------
 Wed Jan 18 12:12:02 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
 
-- Update to version 525.85.04
+- Update to version 525.85.05
   * Improved the reliability of suspend and resume on UEFI systems
     when using certain display panels.
   * Fixed a bug that prevented some controls in the nvidia-settings
