@@ -1,4 +1,18 @@
 -------------------------------------------------------------------
+Thu Mar 30 11:05:42 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
+
+-  Update to version 525.105.17
+  * Fixed a bug that could cause the nvidia-settings control panel to
+    crash when resetting the display layout.
+  * Fixed a bug that could cause excessive GPU power consumption at idle
+    when driving multiple displays with a high refresh rate.
+  * Fixed a bug in nvidia-powerd which could cause excessive CPU usage.
+  * Fixed an issue which could cause applications to run at 1 FPS when
+    using an NVIDIA PRIME Display Offload sink as the only active display.
+  * Added compatibility for Linux kernels with Indirect Branch Tracking
+    (IBT).
+
+-------------------------------------------------------------------
 Tue Mar 28 13:16:16 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
 
 - cuda-cloud-opengpu
