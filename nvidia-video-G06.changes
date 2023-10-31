@@ -1,4 +1,9 @@
 -------------------------------------------------------------------
+Tue Apr 18 14:13:30 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
+
+- fix kernel module build on aarch64
+
+-------------------------------------------------------------------
 Thu Mar 30 11:05:42 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
 
 -  Update to version 525.105.17
