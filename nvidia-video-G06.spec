@@ -822,10 +822,16 @@ fi
 
 %files -n nvidia-video-G06-32bit
 %defattr(-,root,root)
+# libnvcuvid
+# libnvidia-allocator
+# libnvidia-encode
+# libnvidia-opticalflow.
+# libvdpau_nvidia
+%{_prefix}/lib/lib*
+%dir %{_prefix}/lib/vdpau
+%{_prefix}/lib/vdpau/*
 %if 0%{?suse_version} < 1330
 %dir %{_prefix}/X11R6/lib
-%endif
-%if 0%{?suse_version} < 1330
 %{_prefix}/X11R6/lib/lib*
 %exclude %{_prefix}/X11R6/lib/libGL.so*
 %exclude %{_prefix}/X11R6/lib/libGLX.so*
@@ -847,9 +853,6 @@ fi
 %exclude %{_prefix}/lib/libnvidia-glcore.so*
 %exclude %{_prefix}/lib/libnvidia-eglcore.so*
 %exclude %{_prefix}/lib/libnvidia-glsi.so*
-%dir %{_prefix}/lib/vdpau
-%{_prefix}/lib/lib*
-%{_prefix}/lib/vdpau/*
 %exclude %{_prefix}/lib/libcuda.so*
 %exclude %{_prefix}/lib/libOpenCL.so*
 %exclude %{_prefix}/lib/libnvidia-ml.so*

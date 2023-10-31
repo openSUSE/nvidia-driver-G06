@@ -1,4 +1,9 @@
 -------------------------------------------------------------------
+Fri Jan 13 14:05:47 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
+
+- moved files to package nvidia-video-G06-32bit according to Redesign 
+
+-------------------------------------------------------------------
 Fri Jan 13 13:54:05 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
 
 - moved files to package nvidia-video-G06 according to Redesign
