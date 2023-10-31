@@ -70,6 +70,7 @@ Thu Jun 15 09:23:46 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
     already loaded non-NVIDIA kernel modules.
 - added nvoptix.bin, which is used by libnvoptix (see changelog above)
 - removed no longer available libnvidia-compiler (see changelog above)
+- adjusted %eglwaylandversion
 
 -------------------------------------------------------------------
 Wed May 24 13:08:20 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>

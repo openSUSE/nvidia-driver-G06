@@ -19,7 +19,7 @@
 
 %define xmodulesdir %{xlibdir}/modules
 
-%define eglwaylandversion 1.1.10
+%define eglwaylandversion 1.1.11
 
 Name:           nvidia-video-G06
 Version:        535.54.03
