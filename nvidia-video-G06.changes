@@ -1,4 +1,11 @@
 -------------------------------------------------------------------
+Tue Jan 24 23:48:15 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
+
+- nvidia-driver-G06-kmp: added conflicts to openGPU driver packages
+  nvidia-open-driver-G06-kmp, nvidia-open-driver-G06-signed-kmp
+  (boo#1207495)
+
+-------------------------------------------------------------------
 Tue Jan 24 17:57:29 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
 
 - moved nvidia-xconfig from nvidia-compute-utils-G06 to
