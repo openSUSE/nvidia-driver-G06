@@ -87,8 +87,6 @@ for GeForce 700 series and newer GPUs.
 Summary:        NVIDIA driver for computing with GPGPU
 Group:          System/Libraries
 Requires:       (nvidia-driver-G06-kmp = %{version} or nvidia-open-driver-G06-kmp = %{version} or nvidia-open-driver-G06-signed-kmp = %{version})
-### TODO: remove when whole Redesign, i.e. also cuda meta packages on nVidia side, is done
-Provides:       cuda-drivers = %{version}
 Conflicts:      nvidia-computeG02
 Conflicts:      nvidia-computeG03
 Conflicts:      nvidia-computeG04
@@ -122,6 +120,8 @@ Summary:        NVIDIA driver tools for computing with GPGPU
 Group:          System/X11/Utilities
 Requires:       nvidia-compute-G06
 Provides:       nvidia-computeG06:/usr/bin/nvidia-cuda-mps-control
+### TODO: remove when whole Redesign, i.e. also cuda meta packages on nVidia side, is done
+Provides:       cuda-drivers = %{version}
 
 %description -n nvidia-compute-utils-G06
 NVIDIA driver tools for computing with GPGPUs using CUDA or OpenCL.

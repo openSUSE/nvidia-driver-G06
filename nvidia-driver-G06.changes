@@ -1,4 +1,9 @@
 -------------------------------------------------------------------
+Fri Feb 17 04:58:32 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
+
+- moved cuda-drivers provides to nvidia-compute-utils-G06 
+
+-------------------------------------------------------------------
 Wed Feb  8 22:07:27 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
 
 - Update to version 525.89.02
