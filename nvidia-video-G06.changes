@@ -1,4 +1,9 @@
 -------------------------------------------------------------------
+Thu Jan 12 13:30:15 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
+
+- no powerd on aarch64; remove from filelist there
+
+-------------------------------------------------------------------
 Thu Jan 12 12:47:18 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
 
 - introduced packages nvidia-compute-utils-G06 and nvidia-utils-G06

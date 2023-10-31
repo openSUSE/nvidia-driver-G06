@@ -711,8 +711,10 @@ fi
 %{_bindir}/nvidia-persistenced.sh
 /usr/lib/systemd/system/nvidia-persistenced.service
 %{_datadir}/doc/packages/%{name}/html/nvidia-persistenced.html
+%ifnarch aarch64
 %{_bindir}/nvidia-powerd
 /usr/lib/systemd/system/nvidia-powerd.service
+%endif
 %{_bindir}/nvidia-smi
 %{_mandir}/man1/nvidia-smi.1.gz
 %{_datadir}/doc/packages/%{name}/html/nvidia-smi.html
