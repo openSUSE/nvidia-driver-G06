@@ -22,7 +22,7 @@
 %define eglwaylandversion 1.1.10
 
 Name:           nvidia-video-G06
-Version:        525.116.03
+Version:        525.116.04
 Release:        0
 License:        SUSE-NonFree
 Summary:        NVIDIA graphics driver for GeForce 700 series and newer

@@ -1,4 +1,16 @@
 -------------------------------------------------------------------
+Tue May  9 18:35:24 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
+
+- Update to version 525.116.04
+  * Fixed a regression in Luxmark performance between 525.89.02 
+    and 525.105.17.
+  * Fixed a bug that could cause an unexpected 
+    VK_ERROR_NATIVE_WINDOW_IN_USE_KHR error in certain circumstances 
+    when recreating Vulkan surfaces.
+  * Fixed a regression that caused brightness control to not vary 
+    smoothly across the range of values.
+
+-------------------------------------------------------------------
 Tue Apr 25 17:43:08 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
 
 - Update to version 525.116.03
