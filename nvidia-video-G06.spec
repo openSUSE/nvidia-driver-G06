@@ -444,7 +444,7 @@ tar xf $RPM_SOURCE_DIR/nvidia-persistenced.tar.bz2 -C %{buildroot}
 # boo#1199030
 ln -snf libnvidia-vulkan-producer.so.%{version} %{buildroot}%{_libdir}/libnvidia-vulkan-producer.so
 
-%post
+%post -p /bin/bash
 /sbin/ldconfig
 # xorg.conf no longer been used since sle12
 # Bug #345125
@@ -482,7 +482,7 @@ systemctl enable nvidia-hibernate.service
 systemctl enable nvidia-resume.service
 exit 0
 
-%postun
+%postun -p /bin/bash
 /sbin/ldconfig
 if [ "$1" -eq 0 ]; then
   if ls var/lib/hardware/ids/* &> /dev/null; then

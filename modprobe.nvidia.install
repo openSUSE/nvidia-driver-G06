@@ -4,11 +4,11 @@ PATH=$PATH:/bin:/usr/bin;
 if /sbin/modprobe --ignore-install nvidia; then
   if /sbin/modprobe nvidia_uvm; then
     if [ ! -c /dev/nvidia-uvm ]; then
-      mknod -m 660 /dev/nvidia-uvm c $(cat /proc/devices | while read major device; do if [ "$device" == "nvidia-uvm" ]; then echo $major; break; fi ; done) 0; 
+      mknod -m 660 /dev/nvidia-uvm c $(cat /proc/devices | while read major device; do if [ "$device" = "nvidia-uvm" ]; then echo $major; break; fi ; done) 0; 
       chown :video /dev/nvidia-uvm;
     fi;
     if [ ! -c /dev/nvidia-uvm-tools ]; then
-      mknod -m 660 /dev/nvidia-uvm-tools c $(cat /proc/devices | while read major device; do if [ "$device" == "nvidia-uvm" ]; then echo $major; break; fi ; done) 1;
+      mknod -m 660 /dev/nvidia-uvm-tools c $(cat /proc/devices | while read major device; do if [ "$device" = "nvidia-uvm" ]; then echo $major; break; fi ; done) 1;
       chown :video /dev/nvidia-uvm-tools;
     fi;
   fi;
@@ -19,10 +19,10 @@ if /sbin/modprobe --ignore-install nvidia; then
   devid=-1;
   for dev in $(ls -d /sys/bus/pci/devices/*); do 
     vendorid=$(cat $dev/vendor);
-    if [ "$vendorid" == "0x10de" ]; then
+    if [ "$vendorid" = "0x10de" ]; then
       class=$(cat $dev/class);
       classid=${class%%00};
-      if [ "$classid" == "0x0300" -o "$classid" == "0x0302" ]; then 
+      if [ "$classid" = "0x0300" -o "$classid" = "0x0302" ]; then 
         devid=$((devid+1));
         if [ ! -c /dev/nvidia${devid} ]; then 
           mknod -m 660 /dev/nvidia${devid} c 195 ${devid}; 

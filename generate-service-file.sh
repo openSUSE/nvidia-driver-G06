@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 driver_version=$(grep -i ^version: nvidia-video-G0?.spec |awk '{print $2}')
 

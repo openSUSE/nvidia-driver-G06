@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # force kernel module reload after driver update; kernel module and
 # X driver version need to match (Novell Bugzilla #219456)

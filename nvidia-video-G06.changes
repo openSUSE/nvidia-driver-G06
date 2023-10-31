@@ -1,4 +1,8 @@
 -------------------------------------------------------------------
+Wed Jan 25 11:53:33 UTC 2023 - Bruno Pitrus <brunopitrus@hotmail.com>
+- Make package dash-sh compatible (boo#1195391)
+
+-------------------------------------------------------------------
 Tue Jan 24 23:48:15 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
 
 - nvidia-driver-G06-kmp: added conflicts to openGPU driver packages
