@@ -683,7 +683,9 @@ fi
 %{_libdir}/libcudadebugger.so*
 %{_libdir}/libcuda.so*
 %{_libdir}/libnvidia-api.so*
+%ifnarch aarch64
 %{_libdir}/libnvidia-compiler.so*
+%endif
 %{_libdir}/libnvidia-ml.so*
 %{_libdir}/libnvidia-ngx.so*
 %{_libdir}/libnvidia-nvvm.so*
@@ -838,7 +840,9 @@ fi
 %files -n nvidia-compute-G06-32bit
 %defattr(-,root,root)
 %{_prefix}/lib/libcuda.so*
+%ifnarch aarch64
 %{_prefix}/lib/libnvidia-compiler.so*
+%endif
 %{_prefix}/lib/libnvidia-ml.so*
 %{_prefix}/lib/libnvidia-nvvm.so*
 %{_prefix}/lib/libnvidia-opencl.so*

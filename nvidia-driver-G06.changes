@@ -1,4 +1,9 @@
 -------------------------------------------------------------------
+Thu Jan 12 15:12:51 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
+
+- no libnvidia-compiler on aarch64; remove from filelist there
+
+-------------------------------------------------------------------
 Thu Jan 12 14:55:53 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
 
 - moved files to package nvidia-compute-G06-32bit according to Redesign 
