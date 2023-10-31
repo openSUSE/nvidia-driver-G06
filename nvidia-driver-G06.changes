@@ -1,4 +1,11 @@
 -------------------------------------------------------------------
+Thu Oct 19 19:39:50 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
+
+- during beta period of sle15-sp6 no longer try to require a "GA"
+  kernel-devel package; this will be reverted with GM (see also
+  bsc#1208209; we had the same issue during beta period of sp5)
+
+-------------------------------------------------------------------
 Wed Oct 11 12:02:56 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
 
 - disabled build of nvidia-peermem module; it's no longer needed

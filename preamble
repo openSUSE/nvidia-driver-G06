@@ -1,4 +1,5 @@
-%if 0%{?suse_version} < 1550
+# switch back to "kernel-%1-devel = %2" with SLE-15-SP6 GM
+%if (0%{?suse_version} < 1550 &&  0%{?sle_version} < 150600)
 PreReq: kernel-%1-devel = %2 make gcc
 %else
 PreReq: kernel-%1-devel make gcc
