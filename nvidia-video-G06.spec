@@ -159,6 +159,27 @@ Requires:       (nvidia-driver-G06-kmp = %{version} or nvidia-open-driver-G06-km
 %description -n nvidia-drivers-minimal-G06
 This is just a Meta package for compute only installations.
 
+%package -n cuda-cloud-opengpu
+Summary:        Meta package for CUDA minimal installation in the Cloud
+Group:          System/Utilities
+Requires:       cuda-libraries-devel-12-1
+Requires:       cuda-minimal-build-12-1
+Requires:       nvidia-drivers-minimal-G06
+Requires:       nvidia-open-driver-G06-signed-kmp-default = %{version}
+
+%description -n cuda-cloud-opengpu
+This is a meta package for doing a CUDA minimal installation in the
+Cloud making use of NVIDIA's openGPU driver. Unfortunately this
+driver currently only supports headless GPUs with Turing and Ampere
+architecture. This meta package requires also packages from NVIDIA's
+CUDA repository. So if you haven't done this yet, this CUDA repository
+needs to be installed first by using the following zypper command:
+%if 0%{?is_opensuse}
+  zypper ar http://developer.download.nvidia.com/compute/cuda/repos/opensuse15/x86_64/ cuda
+%else
+  zypper ar http://developer.download.nvidia.com/compute/cuda/repos/sles15/x86_64/ cuda
+%endif
+
 %package -n nvidia-gl-G06
 Summary:        NVIDIA OpenGL libraries for OpenGL acceleration
 Group:          System/Libraries
@@ -759,6 +780,9 @@ fi
 %defattr(-,root,root)
 
 %files -n nvidia-drivers-minimal-G06
+%defattr(-,root,root)
+
+%files -n cuda-cloud-opengpu
 %defattr(-,root,root)
 
 %files -n nvidia-gl-G06
