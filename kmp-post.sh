@@ -162,7 +162,7 @@ if [ -f /etc/modprobe.d/50-nvidia-default.conf ]; then
 fi
 
 # Workaround needed on TW for simpledrm (boo#1201392)
-%if 0%{?suse_version} >= 1550
+%if 0%{?suse_version} >= 1550 || 0%{?sle_version} >= 150600
 pbl --add-option nosimplefb=1 --config
 %endif
 
