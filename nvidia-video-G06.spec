@@ -613,6 +613,7 @@ fi
 %exclude %{_bindir}/nvidia-powerd
 %exclude %{_bindir}/nvidia-settings
 %exclude %{_bindir}/nvidia-ngx-updater
+%exclude %{_bindir}/nvidia-sleep.sh
 %if 0%{?suse_version} < 1330
 %dir %{_prefix}/X11R6/
 %dir %{_prefix}/X11R6/%{_lib}
@@ -656,22 +657,22 @@ fi
 %exclude %{_libdir}/libnvidia-compiler.so*
 %exclude %{_libdir}/libnvidia-ngx.so*
 %exclude %{_libdir}/libnvidia-nvvm.so*
-%dir %{xlibdir}
-%dir %{xlibdir}/modules
-%dir %{xmodulesdir}
-%{xmodulesdir}/drivers
+%exclude %{_libdir}/libnvidia-glvkspirv.so*
+%exclude %{_libdir}/libnvidia-glvkspirv.so*
+%exclude %{_libdir}/libnvidia-gtk3.so*
+%exclude %{_libdir}/libnvidia-rtcore.so*
+%exclude %{_libdir}/libnvidia-tls.so*
+%exclude %{_libdir}/libnvidia-wayland-client.so*
+%exclude %{_libdir}/libnvoptix.so*
 %exclude %{_bindir}/nvidia-xconfig
 %exclude %{_prefix}/%{_lib}/libnvidia-cfg.so.*
-%{_bindir}/nvidia-sleep.sh
-/usr/lib/systemd/system/*.service
-%exclude /usr/lib/systemd/system/nvidia-persistenced.service
-%exclude /usr/lib/systemd/system/nvidia-powerd.service
-%dir /usr/lib/systemd/system-sleep
-/usr/lib/systemd/system-sleep/nvidia
 %dir /lib/firmware/nvidia
 %dir /lib/firmware/nvidia/%{version}
 /lib/firmware/nvidia/%{version}/gsp_ad10x.bin
 /lib/firmware/nvidia/%{version}/gsp_tu10x.bin
+# symlink to libnvidia-allocator
+%dir %{_libdir}/gbm
+%{_libdir}/gbm/nvidia-drm_gbm.so
 
 %files -n nvidia-compute-G06
 %defattr(-,root,root)
@@ -746,42 +747,42 @@ fi
 
 %files -n nvidia-gl-G06
 %defattr(-,root,root)
-%dir /etc/vulkan
-%dir /etc/vulkan/icd.d
-%dir /etc/vulkan/implicit_layer.d
-%dir %{_datadir}/egl
-%dir %{_datadir}/egl/egl_external_platform.d
-%config /etc/vulkan/icd.d/nvidia_icd.json
-%config /etc/vulkan/implicit_layer.d/nvidia_layers.json
-%config %{_datadir}/egl/egl_external_platform.d/10_nvidia_wayland.json
-%config %{_datadir}/egl/egl_external_platform.d/15_nvidia_gbm.json
 %dir %{_datadir}/glvnd
 %dir %{_datadir}/glvnd/egl_vendor.d
 %config %{_datadir}/glvnd/egl_vendor.d/10_nvidia.json
+%dir %{_datadir}/egl
+%dir %{_datadir}/egl/egl_external_platform.d
+%config %{_datadir}/egl/egl_external_platform.d/10_nvidia_wayland.json
+%config %{_datadir}/egl/egl_external_platform.d/15_nvidia_gbm.json
 %if 0%{?suse_version} < 1330
 %config %{_sysconfdir}/ld.so.conf.d/nvidia-driver-G06.conf
 %endif
 %if 0%{?suse_version} < 1330
-%{_prefix}/X11R6/%{_lib}/libGL.so*
-%{_prefix}/X11R6/%{_lib}/libGLX.so*
-%{_prefix}/X11R6/%{_lib}/libGLX_nvidia.so*
-%{_prefix}/X11R6/%{_lib}/libGLdispatch.so*
-%{_prefix}/X11R6/%{_lib}/libEGL.so*
-%{_prefix}/X11R6/%{_lib}/libGLESv1_CM.so*
-%{_prefix}/X11R6/%{_lib}/libGLESv2.so*
 %{_prefix}/X11R6/%{_lib}/libEGL_nvidia.so*
+%{_prefix}/X11R6/%{_lib}/libEGL.so*
+%{_prefix}/X11R6/%{_lib}/libGLdispatch.so*
 %{_prefix}/X11R6/%{_lib}/libGLESv1_CM_nvidia.so*
+%{_prefix}/X11R6/%{_lib}/libGLESv1_CM.so*
 %{_prefix}/X11R6/%{_lib}/libGLESv2_nvidia.so*
-%{_prefix}/X11R6/%{_lib}/libOpenGL.so*
+%{_prefix}/X11R6/%{_lib}/libGLESv2.so*
+%{_prefix}/X11R6/%{_lib}/libGL.so*
+%{_prefix}/X11R6/%{_lib}/libGLX_nvidia.so*
 %else
-%{_prefix}/%{_lib}/libGLX_nvidia.so*
 %{_prefix}/%{_lib}/libEGL_nvidia.so*
 %{_prefix}/%{_lib}/libGLESv1_CM_nvidia.so*
 %{_prefix}/%{_lib}/libGLESv2_nvidia.so*
+%{_prefix}/%{_lib}/libGLX_nvidia.so*
 %endif
-%{_libdir}/libnvidia-glcore.so*
-%{_libdir}/libnvidia-fbc.so*
-%{_libdir}/libnvidia-vulkan-producer.so*
+%dir %{xlibdir}
+%dir %{xlibdir}/modules
+%dir %{xmodulesdir}
+%{xmodulesdir}/extensions/libglxserver_nvidia.so*
+%if 0%{?suse_version} < 1330
+%{_prefix}/X11R6/%{_lib}/libGLX.so*
+%endif
+%{_libdir}/libnvidia-cfg.so.*
+%{_libdir}/libnvidia-eglcore.so*
+%{_libdir}/libnvidia-egl-gbm.so*
 %if 0%{?suse_version} < 1550
 %{_libdir}/libnvidia-egl-wayland.so.1
 %{_libdir}/libnvidia-egl-wayland.so.%{eglwaylandversion}
@@ -789,13 +790,33 @@ fi
 %exclude %{_libdir}/libnvidia-egl-wayland.so.1
 %exclude %{_libdir}/libnvidia-egl-wayland.so.%{eglwaylandversion}
 %endif
-%{_libdir}/libnvidia-egl-gbm.so*
-%dir %{_libdir}/gbm
-%{_libdir}/gbm/nvidia-drm_gbm.so
+%{_libdir}/libnvidia-fbc.so*
+%{_libdir}/libnvidia-glcore.so*
 %{_libdir}/libnvidia-glsi.so*
-%{_libdir}/libnvidia-eglcore.so*
-%{xmodulesdir}/extensions
-%{_prefix}/%{_lib}/libnvidia-cfg.so.*
+%{_libdir}/libnvidia-glvkspirv.so*
+%{_libdir}/libnvidia-gtk3.so*
+%{_libdir}/libnvidia-rtcore.so*
+%{_libdir}/libnvidia-tls.so*
+%{_libdir}/libnvidia-vulkan-producer.so*
+%{_libdir}/libnvidia-wayland-client.so*
+%{_libdir}/libnvoptix.so*
+%if 0%{?suse_version} < 1330
+%{_prefix}/X11R6/%{_lib}/libOpenGL.so*
+%endif
+### TODO
+### nvidia-dubs.conf
+%{xmodulesdir}/drivers/nvidia_drv.so
+%dir /etc/vulkan
+%dir /etc/vulkan/icd.d
+%config /etc/vulkan/icd.d/nvidia_icd.json
+%dir /etc/vulkan/implicit_layer.d
+%config /etc/vulkan/implicit_layer.d/nvidia_layers.json
+%{_bindir}/nvidia-sleep.sh
+/usr/lib/systemd/system/*.service
+%exclude /usr/lib/systemd/system/nvidia-persistenced.service
+%exclude /usr/lib/systemd/system/nvidia-powerd.service
+%dir /usr/lib/systemd/system-sleep
+/usr/lib/systemd/system-sleep/nvidia
 
 %ifarch x86_64
 

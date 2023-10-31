@@ -1,4 +1,11 @@
 -------------------------------------------------------------------
+Fri Jan 13 11:55:39 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
+
+- moved files to package nvidia-gl-G06 according to Redesign
+- moved %{_libdir}/gbm/nvidia-drm_gbm.so to package nvidia-video-G06
+  since it's a symlink to libnvidia-allocator
+
+-------------------------------------------------------------------
 Thu Jan 12 15:12:51 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
 
 - no libnvidia-compiler on aarch64; remove from filelist there
