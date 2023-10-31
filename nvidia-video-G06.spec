@@ -794,11 +794,15 @@ fi
 %{_libdir}/libnvidia-glcore.so*
 %{_libdir}/libnvidia-glsi.so*
 %{_libdir}/libnvidia-glvkspirv.so*
+%ifnarch aarch64
 %{_libdir}/libnvidia-gtk3.so*
+%endif
 %{_libdir}/libnvidia-rtcore.so*
 %{_libdir}/libnvidia-tls.so*
 %{_libdir}/libnvidia-vulkan-producer.so*
+%ifnarch aarch64
 %{_libdir}/libnvidia-wayland-client.so*
+%endif
 %{_libdir}/libnvoptix.so*
 %if 0%{?suse_version} < 1330
 %{_prefix}/X11R6/%{_lib}/libOpenGL.so*
