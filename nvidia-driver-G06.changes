@@ -1,4 +1,11 @@
 -------------------------------------------------------------------
+Wed Feb  8 22:07:27 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
+
+- Update to version 525.89.02
+  * Fixed a bug that could cause banding or flickering of color
+    gradients on DisplayPort monitors 
+
+-------------------------------------------------------------------
 Wed Jan 25 11:53:33 UTC 2023 - Bruno Pitrus <brunopitrus@hotmail.com>
 - Make package dash-sh compatible (boo#1195391)
 
