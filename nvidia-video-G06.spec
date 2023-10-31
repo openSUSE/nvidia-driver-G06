@@ -122,7 +122,6 @@ Summary:        NVIDIA driver tools for computing with GPGPU
 Group:          System/X11/Utilities
 Requires:       nvidia-compute-G06
 Provides:       nvidia-computeG06:/usr/bin/nvidia-cuda-mps-control
-Provides:       nvidia-compute-G06:/usr/bin/nvidia-cuda-mps-control
 
 %description -n nvidia-compute-utils-G06
 NVIDIA driver tools for computing with GPGPUs using CUDA or OpenCL.
@@ -132,7 +131,6 @@ Summary:        NVIDIA driver tools
 Group:          System/X11/Utilities
 Requires:       nvidia-compute-G06
 Provides:       x11-video-nvidiaG06:/usr/bin/nvidia-settings
-Provides:       nvidia-video-G06:/usr/bin/nvidia-settings
 
 %description -n nvidia-utils-G06
 NVIDIA driver tools.

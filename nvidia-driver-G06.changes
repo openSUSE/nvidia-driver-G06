@@ -1,4 +1,9 @@
 -------------------------------------------------------------------
+Tue Jan 17 13:32:56 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
+
+- minor cleanup 
+
+-------------------------------------------------------------------
 Tue Jan 17 12:23:06 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
 
 - created %triggerpostun for nvidia-gfxG06-kmp to recreate
