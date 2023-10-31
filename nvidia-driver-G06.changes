@@ -1,4 +1,12 @@
 -------------------------------------------------------------------
+Mon Aug 28 12:32:27 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
+
+- Update to version 535.104.05
+  * Fixed an issue which caused the following error message to appear
+    spuriously when using SLI with the NVIDIA Open GPU Kernel Modules:
+   (EE) NVIDIA: Unable to disable FB size compare
+
+-------------------------------------------------------------------
 Wed Aug  2 12:23:27 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
 
 - %postun: regenerate modules.dep, etc. to avoid dracut failures
