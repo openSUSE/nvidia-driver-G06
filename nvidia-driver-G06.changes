@@ -1,4 +1,17 @@
 -------------------------------------------------------------------
+Wed Jan 18 12:11:16 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
+
+- Update to version 525.85.04
+  * Improved the reliability of suspend and resume on UEFI systems
+    when using certain display panels.
+  * Fixed a bug that prevented some controls in the nvidia-settings
+    control panel from working when running an X server as an
+    unprivileged user.
+  * Fixed a bug that could cause VK_ERROR_DEVICE_LOST when using
+    VK_MEMORY_ALLOCATE_DEVICE_ADDRESS_CAPTURE_REPLAY_BIT to allocate
+    memory.
+
+-------------------------------------------------------------------
 Tue Jan 17 13:32:56 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
 
 - minor cleanup 
