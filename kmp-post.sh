@@ -1,9 +1,4 @@
-# switch back with SLE-15-SP5 GM
-%if 0%{?sle_version} >= 150500
-dir=linux-obj
-%else
 dir=linux-%{2}*-obj
-%endif
 %ifarch %ix86
 arch=i386
 %endif

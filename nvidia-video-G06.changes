@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Wed May 24 13:08:20 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
+
+- back to require "GA" kernel-devel package for sle15-sp5 with the
+  end of beta period ...
+
+-------------------------------------------------------------------
 Tue May  9 18:35:24 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
 
 - Update to version 525.116.04
