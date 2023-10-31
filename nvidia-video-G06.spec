@@ -22,7 +22,7 @@
 %define eglwaylandversion 1.1.10
 
 Name:           nvidia-video-G06
-Version:        525.78.01
+Version:        525.85.04
 Release:        0
 License:        SUSE-NonFree
 Summary:        NVIDIA graphics driver for GeForce 700 series and newer
@@ -57,8 +57,8 @@ Conflicts:      x11-video-nvidiaG02
 Conflicts:      x11-video-nvidiaG03
 Conflicts:      x11-video-nvidiaG04
 Conflicts:      x11-video-nvidiaG05
-Provides:       x11-video-nvidiaG06
-Obsoletes:      x11-video-nvidiaG06
+Provides:       x11-video-nvidiaG06 = %{version}
+Obsoletes:      x11-video-nvidiaG06 < %{version}
 Conflicts:      fglrx_driver
 Recommends:     nvidia-video-G06-32bit
 Requires:       libvdpau1
@@ -75,8 +75,8 @@ Group:          System/Libraries
 Requires:       nvidia-video-G06 = %{version}
 Conflicts:      x11-video-nvidiaG04-32bit
 Conflicts:      x11-video-nvidiaG05-32bit
-Provides:       x11-video-nvidiaG06-32bit
-Obsoletes:      x11-video-nvidiaG06-32bit
+Provides:       x11-video-nvidiaG06-32bit = %{version}
+Obsoletes:      x11-video-nvidiaG06-32bit < %{version}
 AutoReq: no
 
 %description -n nvidia-video-G06-32bit
@@ -93,8 +93,8 @@ Conflicts:      nvidia-computeG02
 Conflicts:      nvidia-computeG03
 Conflicts:      nvidia-computeG04
 Conflicts:      nvidia-computeG05
-Provides:       nvidia-computeG06
-Obsoletes:      nvidia-computeG06
+Provides:       nvidia-computeG06 = %{version}
+Obsoletes:      nvidia-computeG06 < %{version}
 Recommends:     nvidia-compute-G06-32bit
 %if (0%{?sle_version} >= 150100 || 0%{?suse_version} >= 1550)
 Requires(pre):  update-alternatives
@@ -111,8 +111,8 @@ Group:          System/Libraries
 Requires:       nvidia-compute-G06 = %{version}
 Conflicts:      nvidia-computeG04-32bit
 Conflicts:      nvidia-computeG05-32bit
-Provides:       nvidia-computeG06-32bit
-Obsoletes:      nvidia-computeG06-32bit
+Provides:       nvidia-computeG06-32bit = %{version}
+Obsoletes:      nvidia-computeG06-32bit < %{version}
 
 %description -n nvidia-compute-G06-32bit
 32bit NVIDIA driver for computing with GPGPUs using CUDA or OpenCL.
@@ -150,8 +150,8 @@ Requires(post):   xorg-x11-server
 Conflicts:      nvidia-glG03
 Conflicts:      nvidia-glG04
 Conflicts:      nvidia-glG05
-Provides:       nvidia-glG06
-Obsoletes:      nvidia-glG06
+Provides:       nvidia-glG06 = %{version}
+Obsoletes:      nvidia-glG06 < %{version}
 Recommends:     nvidia-gl-G06-32bit
 # needed for Optimus systems once NVIDIA's libs get disabled (our default);
 # these packages won't get installed when adding NVIDIA's repository before
@@ -172,8 +172,8 @@ Group:          System/Libraries
 Requires:       nvidia-gl-G06 = %{version}
 Conflicts:      nvidia-glG04-32bit
 Conflicts:      nvidia-glG05-32bit
-Provides:       nvidia-glG06-32bit
-Obsoletes:      nvidia-glG06-32bit
+Provides:       nvidia-glG06-32bit = %{version}
+Obsoletes:      nvidia-glG06-32bit < %{version}
 AutoReq: no
 
 %description -n nvidia-gl-G06-32bit

@@ -8,6 +8,8 @@ Recommends: nvidia-gl-G06 = %(echo %{-v*} | sed -e 's:_.*::')
 Obsoletes: nvidia-gfx-kmp nvidia-gfxG01-kmp nvidia-gfxG02-kmp nvidia-gfxG03-kmp nvidia-uvm-gfxG03-kmp nvidia-gfxG04-kmp nvidia-gfxG05-kmp
 Conflicts: nvidia-gfx-kmp nvidia-gfxG01-kmp nvidia-gfxG02-kmp nvidia-gfxG03-kmp nvidia-uvm-gfxG03-kmp nvidia-gfxG04-kmp nvidia-gfxG05-kmp
 Provides: nvidia-driver-G06-kmp-%1 = %{-v*}
+Provides:  nvidia-gfxG06-kmp-%1 =  %{-v*}
+Obsoletes: nvidia-gfxG06-kmp-%1 <  %{-v*}
 PreReq: kernel-%1
 %if 0%{?suse_version} >= 1500
 Supplements: (kernel-%1 and %name)

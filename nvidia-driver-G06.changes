@@ -1,4 +1,14 @@
 -------------------------------------------------------------------
+Mon Jan 16 13:44:37 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
+
+- Update to version 525.85.04
+  * adds official support for 
+    + NVIDIA H100 80GB HBM3
+    + NVIDIA H100 80GB HBM2e
+    + NVIDIA GeForce RTX 2050
+- make Provides/Obsoletes to old package names version specific
+
+-------------------------------------------------------------------
 Mon Jan 16 13:05:38 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
 
 - no longer package manual page for nvidia-installer, which isn't
