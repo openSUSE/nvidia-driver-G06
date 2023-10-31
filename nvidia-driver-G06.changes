@@ -1,4 +1,9 @@
 -------------------------------------------------------------------
+Fri Jan 13 13:18:10 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
+
+- moved files to package nvidia-gl-G06-32bit according to Redesign 
+
+-------------------------------------------------------------------
 Fri Jan 13 12:26:17 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
 
 - no libnvidia-wayland-client, libnvidia-gtk3 on aarch64; remove

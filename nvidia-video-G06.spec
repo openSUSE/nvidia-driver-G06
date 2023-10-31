@@ -861,6 +861,9 @@ fi
 %exclude %{_prefix}/lib/libnvidia-ptxjitcompiler.so*
 %exclude %{_prefix}/lib/libnvidia-compiler.so*
 %exclude %{_prefix}/lib/libnvidia-nvvm.so*
+%exclude %{_prefix}/lib/libnvidia-fbc.so*
+%exclude %{_prefix}/lib/libnvidia-glvkspirv.so*
+%exclude %{_prefix}/lib/libnvidia-tls.so*
 
 %files -n nvidia-compute-G06-32bit
 %defattr(-,root,root)
@@ -877,27 +880,33 @@ fi
 %files -n nvidia-gl-G06-32bit
 %defattr(-,root,root)
 %if 0%{?suse_version} < 1330
-%{_prefix}/X11R6/lib/libGL.so*
-%{_prefix}/X11R6/lib/libGLX.so*
-%{_prefix}/X11R6/lib/libGLX_nvidia.so*
-%{_prefix}/X11R6/lib/libGLdispatch.so*
-%{_prefix}/X11R6/lib/libEGL.so*
-%{_prefix}/X11R6/lib/libGLESv1_CM.so*
-%{_prefix}/X11R6/lib/libGLESv2.so*
 %{_prefix}/X11R6/lib/libEGL_nvidia.so*
+%{_prefix}/X11R6/lib/libEGL.so*
+%{_prefix}/X11R6/lib/libGLdispatch.so*
 %{_prefix}/X11R6/lib/libGLESv1_CM_nvidia.so*
+%{_prefix}/X11R6/lib/libGLESv1_CM.so*
 %{_prefix}/X11R6/lib/libGLESv2_nvidia.so*
-%{_prefix}/X11R6/lib/libOpenGL.so*
+%{_prefix}/X11R6/lib/libGLESv2.so*
+%{_prefix}/X11R6/lib/libGL.so*
+%{_prefix}/X11R6/lib/libGLX_nvidia.so*
 %else
-%{_prefix}/lib/libGLX_nvidia.so*
 %{_prefix}/lib/libEGL_nvidia.so*
 %{_prefix}/lib/libGLESv1_CM_nvidia.so*
 %{_prefix}/lib/libGLESv2_nvidia.so*
+%{_prefix}/lib/libGLX_nvidia.so*
 %endif
-%{_prefix}/lib/libnvidia-glcore.so*
+%if 0%{?suse_version} < 1330
+%{_prefix}/X11R6/lib/libGLX.so*
+%endif
 %{_prefix}/lib/libnvidia-eglcore.so*
+%{_prefix}/lib/libnvidia-fbc.so*
+%{_prefix}/lib/libnvidia-glcore.so*
 %{_prefix}/lib/libnvidia-glsi.so*
-
+%{_prefix}/lib/libnvidia-glvkspirv.so*
+%{_prefix}/lib/libnvidia-tls.so*
+%if 0%{?suse_version} < 1330
+%{_prefix}/X11R6/lib/libOpenGL.so*
+%endif
 %endif
 
 %changelog
