@@ -168,7 +168,9 @@ Requires:       cuda-libraries-devel-12-1
 Requires:       cuda-minimal-build-12-1
 Requires:       nvidia-drivers-minimal-G06
 Requires:       nvidia-open-driver-G06-signed-kmp = %{version}
+%ifnarch aarch64
 Requires:       cuda-demo-suite-12-1
+%endif
 
 %description -n cuda-cloud-opengpu
 This is a meta package for doing a CUDA minimal installation in the
@@ -177,10 +179,14 @@ driver currently only supports headless GPUs with Turing and Ampere
 architecture. This meta package requires also packages from NVIDIA's
 CUDA repository. So if you haven't done this yet, this CUDA repository
 needs to be installed first by using the following zypper command:
-%if 0%{?is_opensuse}
-  zypper ar http://developer.download.nvidia.com/compute/cuda/repos/opensuse15/x86_64/ cuda
+%ifarch aarch64
+  zypper ar https://developer.download.nvidia.com/compute/cuda/repos/sles15/sbsa/ cuda
 %else
+ %if 0%{?is_opensuse}
+  zypper ar http://developer.download.nvidia.com/compute/cuda/repos/opensuse15/x86_64/ cuda
+ %else
   zypper ar http://developer.download.nvidia.com/compute/cuda/repos/sles15/x86_64/ cuda
+ %endif
 %endif
 %endif
 

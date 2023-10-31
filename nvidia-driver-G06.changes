@@ -1,4 +1,12 @@
 -------------------------------------------------------------------
+Wed Apr 19 15:26:38 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
+
+- cuda-cloud-opengpu package
+  * description: adjusted URL of nVidia's CUDA repository for aarch64
+  * don't require cuda-demo-suite-12-1 on aarch64, since it's not 
+    availabable for this platform :-(
+
+-------------------------------------------------------------------
 Tue Apr 18 14:13:30 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
 
 - fix kernel module build on aarch64 
