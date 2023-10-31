@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Wed Aug  2 12:24:38 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
+
+- %postun: regenerate modules.dep, etc. to avoid dracut failures
+  later (boo#1213765)
+
+-------------------------------------------------------------------
 Wed Jul 19 12:48:52 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
 
 - Update to version 535.86.05
