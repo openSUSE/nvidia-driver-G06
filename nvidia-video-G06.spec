@@ -744,8 +744,6 @@ fi
 %endif
 %{_bindir}/nvidia-smi
 %{_mandir}/man1/nvidia-smi.1.gz
-%{_bindir}/nvidia-xconfig
-%{_mandir}/man1/nvidia-xconfig.1.gz
 
 %files -n nvidia-utils-G06
 %defattr(-,root,root)
@@ -842,6 +840,8 @@ fi
 %exclude /usr/lib/systemd/system/nvidia-powerd.service
 %dir /usr/lib/systemd/system-sleep
 /usr/lib/systemd/system-sleep/nvidia
+%{_bindir}/nvidia-xconfig
+%{_mandir}/man1/nvidia-xconfig.1.gz
 
 %ifarch x86_64
 

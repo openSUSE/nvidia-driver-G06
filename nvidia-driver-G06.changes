@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Tue Jan 24 17:56:41 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
+
+- moved nvidia-xconfig from nvidia-compute-utils-G06 to
+  nvidia-gl-G06 
+
+-------------------------------------------------------------------
 Tue Jan 24 13:22:12 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
 
 - added meta packages nvidia-drivers-G06 and nvidia-drivers-minimal-G06
