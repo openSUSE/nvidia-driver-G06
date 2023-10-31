@@ -821,6 +821,8 @@ fi
 %dir %{xlibdir}
 %dir %{xlibdir}/modules
 %dir %{xmodulesdir}
+%dir %{xmodulesdir}/drivers
+%dir %{xmodulesdir}/extensions
 %{xmodulesdir}/extensions/libglxserver_nvidia.so*
 %if 0%{?suse_version} < 1330
 %{_prefix}/X11R6/%{_lib}/libGLX.so*
