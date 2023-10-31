@@ -159,6 +159,8 @@ Requires:       (nvidia-driver-G06-kmp = %{version} or nvidia-open-driver-G06-km
 %description -n nvidia-drivers-minimal-G06
 This is just a Meta package for compute only installations.
 
+# later also Leap 15.4/sle15-sp4
+%if 0%{?sle_version} >= 150500
 %package -n cuda-cloud-opengpu
 Summary:        Meta package for CUDA minimal installation in the Cloud
 Group:          System/Utilities
@@ -178,6 +180,7 @@ needs to be installed first by using the following zypper command:
   zypper ar http://developer.download.nvidia.com/compute/cuda/repos/opensuse15/x86_64/ cuda
 %else
   zypper ar http://developer.download.nvidia.com/compute/cuda/repos/sles15/x86_64/ cuda
+%endif
 %endif
 
 %package -n nvidia-gl-G06
@@ -782,8 +785,11 @@ fi
 %files -n nvidia-drivers-minimal-G06
 %defattr(-,root,root)
 
+# later also Leap 15.4/sle15-sp4
+%if 0%{?sle_version} >= 150500
 %files -n cuda-cloud-opengpu
 %defattr(-,root,root)
+%endif
 
 %files -n nvidia-gl-G06
 %defattr(-,root,root)
