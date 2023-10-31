@@ -1,4 +1,4 @@
-%if (0%{?suse_version} < 1550
+%if 0%{?suse_version} < 1550
 PreReq: kernel-%1-devel = %2 make gcc
 %else
 PreReq: kernel-%1-devel make gcc
