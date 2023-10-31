@@ -1,4 +1,12 @@
 -------------------------------------------------------------------
+Tue Mar 28 13:12:21 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
+
+- cuda-cloud-opengpu
+  * added cuda-demo-suite-12-1 to requires in order to have a simple
+    tool for testing available such as 
+    /usr/local/cuda*/extras/demo_suite/deviceQuery 
+
+-------------------------------------------------------------------
 Mon Mar 27 18:53:23 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
 
 - build cuda-cloud-opengpu only on Leap 15.5/sle15-sp5 and TW;
