@@ -1,0 +1,1771 @@
+-------------------------------------------------------------------
+Tue Jan 10 12:41:49 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
+
+- renamed package to nvidia-driver-G06 due to package redesign
+
+-------------------------------------------------------------------
+Mon Jan  9 10:22:49 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
+
+- Update to version 525.78.01
+  * Fixed a bug that could cause the nvidia-settings control panel to
+    crash when using a newer control panel with an older driver.
+  * Fixed a regression that prevented the G-SYNC/G-SYNC Compatible Visual
+    Indicator from being displayed when running Vulkan X11 applications.
+  * Fixed a bug where usage of VK_KHR_present_id could cause applications to
+    crash with Xid 32 errors.
+  * Fixed excess CPU usage in hybrid graphics configurations where an
+    external display is connected to an NVIDIA discrete GPU and configured
+    as a PRIME Display Offload sink (also known as "Reverse Prime").
+- officially adds support for GeForce RTX 3050 and GeForce RTX 4070 Ti
+
+-------------------------------------------------------------------
+Mon Dec  5 14:52:04 UTC 2022 - Hans-Peter Jansen <hpj@urpla.net>
+
+- BuildRequire %kernel_module_package_buildreqs (boo#1205149)
+
+-------------------------------------------------------------------
+Mon Nov 28 12:34:14 UTC 2022 - Stefan Dirsch <sndirsch@suse.com>
+
+- Update to version 525.60.11
+  * Improved the performance of PRIME render-offloaded
+    applications.
+  * Fixed a regression that prevented Warp & Blend from working
+    correctly.
+  * Fixed a bug which caused suspend to fail on systems running
+    GNOME 3 as a Wayland compositor with
+    NVreg_PreserveVideoMemoryAllocations enabled.
+
+-------------------------------------------------------------------
+Fri Nov 25 12:46:13 UTC 2022 - Stefan Dirsch <sndirsch@suse.com>
+
+- %post of nvidia-glG06
+  * 'prime-select <nvidia|offload>'
+    Don't try to run it during driver update or in secureboot since
+    it will fail anyway when executing 
+    'nvidia-xconfig --query-gpu-info'. This tool is driver version
+    specific and needs the appropriate driver kernel modules loaded,
+    which is not possible during driver update (old modules still
+    loaded) and in secureboot mode (modules can't be loaded without
+    the signing key registered). (boo#1205642)
+
+-------------------------------------------------------------------
+Thu Nov 24 13:38:58 UTC 2022 - Stefan Dirsch <sndirsch@suse.com>
+
+- %post of nvidia-glG06
+  * when running 'prime-select <nvidia|offload>' ignore failure of
+    'nvidia-xconfig --query-gpu-info' during driver update; tool
+    is version specific and will always fail with older driver
+    kernel modules still loaded (boo#1205642)
+
+-------------------------------------------------------------------
+Mon Nov 21 12:30:46 UTC 2022 - Stefan Dirsch <sndirsch@suse.com>
+
+- NVreg_PreserveVideoMemoryAllocations kernel option and enabled
+  services nvidia-suspend, nvidia-resume and nvidia-hibernate now
+  needed for GNOME Wayland (gdm) since
+    commit 51181871e9db716546e9593216220389de0d8b03
+    Author: Ray Strode <rstrode@redhat.com>
+    Date:   Fri Mar 4 14:11:03 2022 -0500
+
+      data: Disable wayland on nvidia if suspend is broken
+
+-------------------------------------------------------------------
+Fri Nov 11 13:42:22 UTC 2022 - Stefan Dirsch <sndirsch@suse.com>
+
+- Update to version 525.53
+  * Fixed a bug which caused Dynamic Boost to not engage on certain Ampere
+    GPU based notebooks.
+  * Added support for Dynamic Boost on notebooks with AMD CPUs.
+  * Fixed a bug that resulted in stutter when moving windows in GNOME.
+  * Added support for the EGL_MESA_platform_surfaceless extension.
+  * Updated the nvidia-settings control panel to prevent the creation
+    of display layouts that exceed hardware size limitations when using
+    the SLI Mosaic configuration page, and to display a warning if such
+    a layout is created manually in the Display Configuration page.
+  * Removed the hard dependency on GTK 2 when building nvidia-settings
+    from source. nvidia-settings may now be built with support for GTK 2
+    only, GTK 3 only, or both GTK 2 and GTK 3.
+  * Updated the open kernel modules to support Quadro Sync, Stereo,
+    rotation in X11, and YUV 4:2:0 on Turing.
+  * Updated an error message that nvidia-installer displays when kernel
+    header files cannot be found to print full paths for the missing files.
+  * Updated nvidia-installer to use "command -v" in place of depending on
+    "which" to determine the availability and location of certain tools.
+  * Implemented support for over-the-air updates in the Proton and Wine NVIDIA
+    NGX build. This feature is disabled by default and can be enabled by
+    setting the "PROTON_ENABLE_NGX_UPDATER" environment variable to a value of
+    "1".
+  * Updated the Vulkan driver so that the following extensions no longer
+    depend on nvidia-uvm.ko being loaded at runtime:
+    * VK_KHR_acceleration_structure
+    * VK_KHR_deferred_host_operations
+    * VK_KHR_ray_query
+    * VK_KHR_ray_tracing_pipeline
+    * VK_NV_cuda_kernel_launch
+    * VK_NV_ray_tracing
+    * VK_NV_ray_tracing_motion_blur
+    * VK_NVX_binary_import
+    * VK_NVX_image_view_handle
+  * Updated nvidia-installer to allow use of the "--add-this-kernel"
+    feature by non-root users.
+  * Updated nvidia-installer to display a more accurate progress bar when
+    building the kernel modules.
+  * Updated nvidia-installer to display a warning message if a Vulkan
+    ICD loader is not detected.
+  * Reworked nvidia-installer's support for DKMS: the kernel modules will
+    now be optionally registered with DKMS after the installer has already
+    built and installed them on its own. nvidia-installer will now register
+    the kernel modules with DKMS by default when the dkms(8) utility is
+    detected on the system.
+  * Fixed a bug in the Vulkan driver which could lead to corruption in
+    geometry and tessellation control shaders.
+  * Added a new CUDA Debugger implementation for Pascal and newer
+    architectures as a part of the driver package: libcudadebugger.so
+    (previously released separately as "CUDA GDB Developer Preview").
+  * Updated the nvidia-settings control panel to correctly limit the
+    allowed values for GPUTargetFanSpeed to match the existing valid
+    fan speed ranges for supported NVIDIA GPUs. The valid ranges are
+    30%-100% for Ampere or newer GPUs, and 1%-100% for older GPUs.
+  * Fixed a regression in 515.76 that caused blank screens and hangs when
+    starting an X server on RTX 30 series GPUs in some configurations where
+    the boot display is connected via HDMI.
+  * Fixed a bug where Marvel's Spider-Man Remastered would sometimes crash
+    with Xid 13 errors on Turing and later.
+  * Added support for the following GPU:
+    * GeForce RTX 3050 OEM
+  * Added support for the following GPUs:
+    * GeForce RTX 3050
+    * GeForce RTX 3070 Ti Laptop GPU
+    * GeForce RTX 3080 Ti Laptop GPU
+    * GeForce RTX 3090 Ti
+    * RTX A500 Laptop GPU
+    * RTX A1000 Embedded GPU
+    * RTX A2000 Embedded GPU
+    * RTX A1000 Laptop GPU
+    * RTX A2000 8GB Laptop GPU
+    * RTX A3000 12GB Laptop GPU
+    * RTX A4500 Embedded GPU
+    * RTX A4500 Laptop GPU
+    * RTX A5500 Laptop GPU
+    * T550 Laptop GPU
+  * Added support for the following GPUs:
+    * NVIDIA GeForce MX550
+    * NVIDIA GeForce MX570
+    * NVIDIA GeForce RTX 2050
+  * Added support for the following GPU:
+      * NVIDIA PG509-210
+
+-------------------------------------------------------------------
+Tue Nov  1 14:24:56 UTC 2022 - Stefan Dirsch <sndirsch@suse.com>
+
+- fix build on aarch64 (nvidia-powerd only available on x86_64)
+
+-------------------------------------------------------------------
+Mon Oct 17 09:51:41 UTC 2022 - Stefan Dirsch <sndirsch@suse.com>
+
+- readded missing nvidia-powerd binary (reported by openSUSE user
+  @davidsmid in https://build.opensuse.org/package/show/X11:Drivers:Video/nvidia-gfxG06)
+
+-------------------------------------------------------------------
+Thu Oct 13 12:14:22 UTC 2022 - Stefan Dirsch <sndirsch@suse.com>
+
+- enable parallel build (make -j$(nproc)) of kernel modules in 
+  %post/%trigger scripts
+
+-------------------------------------------------------------------
+Mon Oct 10 12:04:30 UTC 2022 - Stefan Dirsch <sndirsch@suse.com>
+
+- fixed downloading .run files via 'osc service dr' in specfile 
+
+-------------------------------------------------------------------
+Sat Oct  8 08:21:25 UTC 2022 - Stefan Dirsch <sndirsch@suse.com>
+
+- Update to version 515.76
+  * Turing and later: fixed possible excessive GPU power draw on an
+    idle X11 or Wayland desktop when driving high resolutions or
+    refresh rates.
+  * Fixed a bug that caused the Xorg server to crash if an NvFBC
+    capture session is started while video memory is full.
+
+-------------------------------------------------------------------
+Sat Aug  6 18:02:47 UTC 2022 - Stefan Dirsch <sndirsch@suse.com>
+
+- no longer try to require a "GA" kernel-devel package on TW; 
+  there is no such thing on TW; it has been an oversight to do
+  the previous change below also for TW (boo#1202192)
+
+-------------------------------------------------------------------
+Thu Jul 28 14:42:02 UTC 2022 - Stefan Dirsch <sndirsch@suse.com>
+
+- require GA kernel-devel package, always build against GA
+  kernel-devel package and install to GA kernel tree, so new
+  symbols can be added to kABI without breaking compatibility
+  (boo#1201936)
+
+-------------------------------------------------------------------
+Thu Jul 28 12:23:40 UTC 2022 - Stefan Dirsch <sndirsch@suse.com>
+
+- remove leftovers from build, which are not handled by NVIDIA's
+  "make clean" (boo#1201937)
+
+-------------------------------------------------------------------
+Tue Jul 26 11:25:05 UTC 2022 - Stefan Dirsch <sndirsch@suse.com>
+
+- Update to version 515.65.01
+  * Fixed a bug that caused the X server to hang when VT-switching with
+    stereo enabled.
+  * Fixed an issue that caused OpenGL applications to be unresponsive in SLI
+    Mosaic mode with no monitors enabled on the primary GPU.
+
+-------------------------------------------------------------------
+Thu Jul 21 10:03:15 UTC 2022 - Stefan Dirsch <sndirsch@suse.com>
+
+- %post(nvidia-glG06): run 'prime-select nvidia' even on system
+  without Intel GPU visible on the PCI bus, if suse-prime
+  package is mistakenly (still) installed to avoid nvidia kernel
+  modules to be blacklisted
+
+-------------------------------------------------------------------
+Tue Jul 19 14:20:07 UTC 2022 - Stefan Dirsch <sndirsch@suse.com>
+
+-json-to-pci-id-list.py  
+ * added new Python script by Tamara Schmitz which is being used
+   now to parse supported-gpus.json in order to create the PCI ID
+   list
+
+-------------------------------------------------------------------
+Mon Jul 18 13:03:10 UTC 2022 - Stefan Dirsch <sndirsch@suse.com>
+
+- pci_ids-515.57/pci_ids-515.57.new
+  * added missing PCI IDs thanks to new Python script by Tamara Schmitz
+    parsing supported-gpus.json now (boo#1201586)
+
+-------------------------------------------------------------------
+Fri Jul 15 10:14:41 UTC 2022 - Stefan Dirsch <sndirsch@suse.com>
+
+- add "nosimplefb=1" kernel boot option as workaround for TW to
+  disable simpledrm during install and remove it again during
+  uninstall (boo#1201392) 
+
+-------------------------------------------------------------------
+Thu Jun 30 12:02:59 UTC 2022 - Stefan Dirsch <sndirsch@suse.com>
+
+- Update to version 515.57
+  * Fixed a bug that could cause some graphics applications to crash when
+    they are started while nvidia-drm.ko is not loaded.
+  * Fixed an issue where NvFBC could return an incorrect frame if a capture
+    request timed out.
+  * Fixed an issue where NvFBC direct capture would wait for multiple queued
+    frames to finish rendering, instead of returning the next rendered frame.
+  * Added support for NvFBC direct capture to composite the mouse cursor onto
+    frames.
+  * Fixed an issue where Vulkan direct to display could not drive more than
+    4 displays from a single VkInstance.
+- added _nvngx.dll, nvngx.dll to vidia-glG06 package (boo#1201002)
+
+-------------------------------------------------------------------
+Thu Jun 16 08:50:06 UTC 2022 - Stefan Dirsch <sndirsch@suse.com>
+
+- don't buildrequire azure on aarch64; no such kernel flavor
+  available on aarch64
+
+-------------------------------------------------------------------
+Thu Jun 16 08:31:38 UTC 2022 - Stefan Dirsch <sndirsch@suse.com>
+
+- generate-service-file.sh: enhanced for additional aarch64 
+
+-------------------------------------------------------------------
+Thu Jun 16 02:43:59 UTC 2022 - Hillwood Yang <hillwood@opensuse.org>
+
+- Add support for aarch64 
+
+-------------------------------------------------------------------
+Wed Jun 15 11:45:03 UTC 2022 - Stefan Dirsch <sndirsch@suse.com>
+
+- updated _service file 
+
+-------------------------------------------------------------------
+Thu Jun  9 20:37:57 UTC 2022 - Stefan Dirsch <sndirsch@suse.com>
+
+- moved cleanup of kernel module sourcetree from %preun to %post
+  (boo#1200310) 
+
+-------------------------------------------------------------------
+Thu Jun  9 13:21:31 UTC 2022 - Stefan Dirsch <sndirsch@suse.com>
+
+- moved cuda-drivers = %version provide from nvidia-open-gfxG06
+  KMP to nvidia-computeG06 package, since it provides libcuda and 
+  in addition requires nvidia-gfxG06-kmp or nvidia-open-gfxG06-kmp
+  packages respectively
+
+-------------------------------------------------------------------
+Wed Jun  8 10:58:27 UTC 2022 - Stefan Dirsch <sndirsch@suse.com>
+
+- preamble: PreReq instead of Require the kernel in the hope of
+  fixing system updates that way (boo#1200310)
+
+-------------------------------------------------------------------
+Tue May 31 18:36:28 UTC 2022 - Stefan Dirsch <sndirsch@suse.com>
+
+- Update to version 515.48.07
+  * Improved performance of GLX and Vulkan applications running in gamescope.
+  * Added a "kernelopen" feature tag to the supported-gpus.json file,
+    to indicate which GPUs are compatible with open-gpu-kernel-modules.
+  * Improved Vulkan swapchain creation failure reporting. Applications can
+    use the VK_EXT_debug_utils extension to receive additional information
+    when an error was  encountered in vkCreateSwapchainKHR().
+- supersedes backlight.patch
+
+-------------------------------------------------------------------
+Mon May 23 12:32:26 UTC 2022 - Stefan Dirsch <sndirsch@suse.com>
+
+- recommend 32bit library packages alongside their 64bit versions 
+
+-------------------------------------------------------------------
+Thu May 19 08:43:27 UTC 2022 - Stefan Dirsch <sndirsch@suse.com>
+
+- Requires: also accept OpenSource KMP driver package nvidia-open-gfxG06-kmp
+
+-------------------------------------------------------------------
+Thu May 12 20:01:28 UTC 2022 - Stefan Dirsch <sndirsch@suse.com>
+
+- backlight.patch 
+  * hopefully fixes build against -azure kernel flavor; stolen from
+    510.68.02
+
+-------------------------------------------------------------------
+Thu May 12 14:26:32 UTC 2022 - Stefan Dirsch <sndirsch@suse.com>
+
+- Update to version 515.43.04 (BETA)
+  * Published the source code to a variant of the NVIDIA Linux kernel
+    modules dual-licensed as MIT/GPLv2. The source is available here:
+        https://github.com/NVIDIA/open-gpu-kernel-modules
+    and will be updated each driver release. Please see the "Open
+    Linux Kernel Modules" chapter in the README for details.
+  * Added support for the VK_EXT_external_memory_dma_buf and
+    VK_EXT_image_drm_format_modifier Vulkan extensions. To use this
+    functionality, the nvidia-drm kernel module must be loaded with DRM KMS
+    mode setting enabled. See the DRM KMS section of the README for guidance
+    on enabling mode setting.
+  * Changed nvidia-suspend.service, nvidia-resume.service, and
+    nvidia-hibernate.service to use WantedBy= rather than RequiredBy=
+    dependencies for systemd-suspend.service and systemd-hibernate.service.
+    This avoids a problem where suspend or hibernate fails if the NVIDIA
+    driver is uninstalled without disabling these services first.
+    See https://github.com/systemd/systemd/issues/21991
+    If these services were manually enabled, it may be necessary to update
+    their dependencies by running
+        sudo systemctl reenable nvidia-suspend.service nvidia-resume.service nvidia-hibernate.service
+  * Interlaced modes are now disabled when active stereo is enabled.
+  * NVIDIA X Server Settings will now display the quit confirmation dialog
+    automatically if only there are pending changes that need to be manually
+    saved. The corresponding configuration option to control the appearance
+    of the quit dialog was thus also removed.
+  * Removed the warning message about mismatches between the compiler
+    used to build the Linux kernel and the compiler used to build the
+    NVIDIA kernel modules from nvidia-installer. Modern compilers are less
+    likely to cause problems when this type of mismatch occurs, and it has
+    become common in many distributions to build the Linux kernel with a
+    different compiler than the default system compiler.
+  * Updated nvidia-installer to skip test-loading the kernel modules
+    on systems where no supported NVIDIA GPUs are detected.
+  * Updated nvidia-installer to avoid a race condition which could cause
+    the kernel module test load to fail due to udev automatically loading
+    kernel modules left over from an existing NVIDIA driver installation.
+    This failure resulted in an installation error message "Kernel module
+    load error: File exists".
+  * Updated the RTD3 Video Memory Utilization Threshold
+    (NVreg_DynamicPowerManagementVideoMemoryThreshold) maximum value from
+    200 MB to 1024 MB.
+
+-------------------------------------------------------------------
+Fri Apr 29 18:33:08 UTC 2022 - Stefan Dirsch <sndirsch@suse.com>
+
+- added missing libnvidia-vulkan-producer.so symlink and moved lib
+  to nvidia-glG06 package (boo#1199030)
+
+-------------------------------------------------------------------
+Wed Apr 27 12:15:26 UTC 2022 - Stefan Dirsch <sndirsch@suse.com>
+
+- splitted off packages for 32bit libs (JIRA#PM-3447)
+  * x11-video-nvidiaG06-32bit (VDPAU, ...)
+  * nvidia-computeG06-32bit (OpenCL, libcuda, ...)
+  * nvidia-glG06-32bit (EGL, GLESv1, GLESv2, GLX, ...)
+
+-------------------------------------------------------------------
+Sun Apr 24 17:13:46 UTC 2022 - Stefan Dirsch <sndirsch@suse.com>
+
+- Update to version 510.68, which adds support for:
+  * T600 Laptop GPU
+  * GeForce RTX 3050 OEM
+  * GeForce RTX 3090 Ti
+  * RTX A500 Laptop GPU
+  * RTX A1000 Laptop GPU
+  * RTX A2000 8GB Laptop GPU
+  * RTX A5500 Laptop GPU
+  * RTX A3000 12GB Laptop GPU
+  * RTX A4500 Laptop GPU
+  * RTX A3000 12GB Laptop GPU
+
+-------------------------------------------------------------------
+Sat Mar 19 16:37:31 UTC 2022 - Stefan Dirsch <sndirsch@suse.com>
+
+- Update to version 510.60
+  * Fixed a bug that could cause displays with HDMI or DisplayPort audio
+    to be deselected as the default audio output device after resuming
+    from suspend.
+  * Fixed a regression that could cause OpenGL applications to hang or
+    render incorrectly after suspend/resume cycles or VT-switches
+  * Fixed a bug, introduced in 495.29.05, that caused GPU "Model:" in
+    /proc/driver/nvidia/gpus/<Bus:Device.Function>/information to be
+    "Unknown" for some GPUs.
+
+-------------------------------------------------------------------
+Thu Feb 17 17:24:36 UTC 2022 - Stefan Dirsch <sndirsch@suse.com>
+
+- remove again nvidia-kmod-simpledrm.patch since it broke the
+  console and we disabled simpledrm again anyway, so it's no
+  longer neede (boo#1195885) 
+- cleanup: /etc/sysconfig/kernel no longer exists 
+
+-------------------------------------------------------------------
+Mon Feb 14 16:27:31 UTC 2022 - Stefan Dirsch <sndirsch@suse.com>
+
+- nvidia-kmod-simpledrm.patch
+  * nvidia-drm: remove existing generic drivers to take over the
+    device (boo#1195885, boo#1195094)
+- disable nvidia-kmod-pci-request-regions.patch (superseded by
+  the patch 'nvidia-kmod-simpledrm.patch' above)
+
+-------------------------------------------------------------------
+Fri Feb 11 12:33:50 UTC 2022 - Stefan Dirsch <sndirsch@suse.com>
+
+- nvidia-persistenced.tar.bz2
+  * added systemd service for nvidia-persistenced, which is not
+    enabled by default; enable it via 
+    'systemctl enable nvidia-persistenced' (bsc#1190185)
+
+-------------------------------------------------------------------
+Fri Feb 11 11:22:19 UTC 2022 - Stefan Dirsch <sndirsch@suse.com>
+
+- Update to version 510.54
+  * Fixed a bug that could cause GPU exceptions when minimizing a
+    fullscreen Vulkan application on certain desktops, such as
+    Plasma.
+
+-------------------------------------------------------------------
+Thu Jan 27 22:35:54 UTC 2022 - Stefan Dirsch <sndirsch@suse.com>
+
+- Update to version 510.47.03
+  * Added support for Vulkan 1.3.
+
+-------------------------------------------------------------------
+Wed Jan 19 16:41:02 UTC 2022 - Stefan Dirsch <sndirsch@suse.com>
+
+- nvidia-kmod-pci-request-regions.patch
+  * workaround for kernels using simpledrm on Tumbleweed
+    https://forums.developer.nvidia.com/t/510-39-01-on-5-16-0-kernel-green-screen/200476/7
+    https://github.com/rpmfusion/nvidia-kmod/blob/master/nvidia-kmod-pci-request-regions.patch
+
+-------------------------------------------------------------------
+Wed Jan 19 14:33:50 UTC 2022 - Stefan Dirsch <sndirsch@suse.com>
+
+- _constraints: raise disk size to 7G 
+
+-------------------------------------------------------------------
+Tue Jan 11 22:08:08 UTC 2022 - Stefan Dirsch <sndirsch@suse.com>
+
+- moved libnvidia-egl-gbm.so* from x11-video-nvidiaG06 to 
+  nvidia-glG06 package
+- created GBM symlink for Mesa 'nvidia-drm_gbm.so' which is located
+  in $libdir/gbm and points to libnvidia-allocator.so.1
+
+-------------------------------------------------------------------
+Mon Jan 10 12:48:15 UTC 2022 - Stefan Dirsch <sndirsch@suse.com>
+
+- created G06 driver series 
+- Version 510.39.01
+
+-------------------------------------------------------------------
+Sat Dec 18 17:20:44 UTC 2021 - Hans-Peter Jansen <hpj@urpla.net>
+
+- Update 470.94
+  * Added support for the following GPUs:
+    + RTX 2060
+  * Worked around an issue that prevented some games from flipping 
+    (and therefore taking advantage of G-SYNC and G-SYNC Compatible 
+    monitors) on certain desktops such as GNOME.
+  * Fixed a bug that caused nvidia-drm.ko to crash when loading with
+    DRM-KMS enabled (modeset=1) on Linux v5.14.
+
+-------------------------------------------------------------------
+Wed Nov 10 23:07:15 UTC 2021 - Stefan Dirsch <sndirsch@suse.com>
+
+- Update 470.86
+  * RTX A2000 12GB
+  * RTX A4500
+  * T400 4GB
+  * T1000 8GB
+
+-------------------------------------------------------------------
+Tue Oct 26 18:31:31 UTC 2021 - Stefan Dirsch <sndirsch@suse.com>
+
+- Update 470.82
+  * Added support for the following GPUs:
+    + Matrox D-Series D2450
+    + Matrox D-Series D2480
+    + NVIDIA A2
+  * Fixed a bug that can cause a kernel crash in SLI Mosaic configurations.
+  * Added support for the EGL_NV_robustness_video_memory_purge extension
+
+-------------------------------------------------------------------
+Thu Oct 14 08:48:27 UTC 2021 - Hans-Peter Jansen <hpj@urpla.net>
+
+- minor adjusts to kernel module path (streamline with other kmp)
+
+-------------------------------------------------------------------
+Thu Sep 30 20:11:13 UTC 2021 - Stefan Dirsch <sndirsch@suse.com>
+
+- cleanup 
+
+-------------------------------------------------------------------
+Tue Sep 21 17:17:52 UTC 2021 - Stefan Dirsch <sndirsch@suse.com>
+
+- removed no longer needed patch n_dma-sle12-sp3.patch (sle12-sp3
+  no longer supported) 
+
+-------------------------------------------------------------------
+Tue Sep 21 12:36:35 UTC 2021 - Stefan Dirsch <sndirsch@suse.com>
+
+- Update 470.74
+  * Fixed a bug that could cause GPU applications to exit when
+    resuming from suspend.
+  * Fixed a regression which resulted in very-high system memory
+    usage for Direct3D 12 games when run through vkd3d-proton.
+  * Added an application profile to disable FXAA for Firefox to
+    prevent visual corruption.
+
+-------------------------------------------------------------------
+Thu Sep 16 09:30:00 UTC 2021 - Ludwig Nussel <lnussel@suse.de>
+
+- fix file list for usrmerge (boo#1184804)
+
+-------------------------------------------------------------------
+Mon Sep  6 16:49:55 UTC 2021 - Hans-Peter Jansen <hpj@urpla.net>
+
+- Newer rpmbuilds attach the kernel version and the major part of 
+  release to %pci_id_file of a __kmp_supplements script. Create
+  compatibility symlink in order to overcome this nuisance. (boo#1190210)
+- This allows us to revert the last two workarounds again.
+
+-------------------------------------------------------------------
+Mon Sep  6 14:22:17 UTC 2021 - Stefan Dirsch <sndirsch@suse.com>
+
+- nvidia-gfxG05.rpmlintrc 
+  * Workaround for boo#1190210 nvidia PCI ID Supplements no longer
+    available on TW
+
+-------------------------------------------------------------------
+Sat Sep  4 13:10:34 UTC 2021 - Stefan Dirsch <sndirsch@suse.com>
+
+- preample: removed again weird Supplements to (kernel-$flavor and
+  nvidia-gfxG05), which broke essential PCI ID supplements 
+
+-------------------------------------------------------------------
+Fri Sep  3 13:08:31 UTC 2021 - Hans-Peter Jansen <hpj@urpla.net>
+
+- Fix rpmlint complaints failing the build
+
+-------------------------------------------------------------------
+Mon Aug 30 10:01:14 UTC 2021 - Stefan Dirsch <sndirsch@suse.com>
+
+- Update 470.63.01
+  * Added support for the VK_KHR_wayland_surface extension.
+  * Fixed a Vulkan performance regression that affected rFactor2.
+  * adds libnvidia-vulkan-producer.so
+
+-------------------------------------------------------------------
+Sat Aug 28 18:30:34 UTC 2021 - Stefan Dirsch <sndirsch@suse.com>
+
+- moved modprobe.d snippet files from /etc/modprobe.d to 
+  /usr/lib/modprobe.d and dracut.conf.d snippet files from 
+  /etc/dracut.conf.d to /usr/lib/dracut/dracut.conf.d (boo#1173003)
+
+-------------------------------------------------------------------
+Wed Jul 21 16:18:14 UTC 2021 - Stefan Dirsch <sndirsch@suse.com>
+
+- only require libnvidia-egl-wayland1 on Tumbleweed (boo#1188567)
+
+-------------------------------------------------------------------
+Thu Jul 15 09:12:00 UTC 2021 - Stefan Dirsch <sndirsch@suse.com>
+
+- Update 470.57.02 
+
+-------------------------------------------------------------------
+Tue Jul 13 15:34:25 UTC 2021 - Stefan Dirsch <sndirsch@suse.com>
+
+- Update 470.57.01
+  * Updated the nvidia-settings command line interface to confirm successful
+    assignment of string attributes. This makes the behavior more consistent
+    with other types of attribute assignments.
+  * Fixed a bug that could cause flickering in Blender and Steam when
+    running on Xwayland.
+  * Fixed a bug that caused GTK+3 applications using the GtkGLArea class
+    to crash when running on Xwayland.
+  * Added a workaround for DOOM Eternal, which avoids an application bug where
+    Vulkan swapchain recreation events are not properly handled. On desktops
+    like GNOME where the window is initially redirected to the compositor,
+    this may prevent the game from flipping (and thus enabling G-SYNC).
+  * Added a workaround for Far Cry 5 when run through DXVK, which avoids a
+    shader race condition bug that was previously exposed by new compiler
+    optimizations.
+  * Added support for the following GPUs:
+    + NVIDIA A100 80GB PCIe
+    + NVIDIA A16
+    + NVIDIA PG506-243
+    + NVIDIA PG506-242
+    + NVIDIA CMP 90HX
+    + NVIDIA CMP 70HX
+    + NVIDIA RTX A2000
+    + NVIDIA T4G
+
+-------------------------------------------------------------------
+Tue Jul 13 14:14:05 UTC 2021 - Stefan Dirsch <sndirsch@suse.com>
+
+- modprobe.nvidia
+  * enable DRM KMS (nvidia-drm.modeset=1), which is needed for 
+    Wayland support
+
+-------------------------------------------------------------------
+Sat Jul 10 09:44:47 UTC 2021 - Stefan Dirsch <sndirsch@suse.com>
+
+- kmp-post.sh
+  * fixed build failure on sle15-sp2 
+
+-------------------------------------------------------------------
+Fri Jul  9 10:26:13 UTC 2021 - Stefan Dirsch <sndirsch@suse.com>
+
+- no longer package libnvidia-egl-wayland.so.1* for Tumbleweed
+  due to new package libnvidia-egl-wayland1 introduced there; 
+  instead require this new package on TW now
+
+-------------------------------------------------------------------
+Fri Jul  2 09:36:16 UTC 2021 - Stefan Dirsch <sndirsch@suse.com>
+
+- Update to 470.42.01 (Beta)
+   * Added support for the following GPUs:
+       * A100-PG506-207
+       * A100-PG506-217
+   * Increased the maximum limit on concurrent OpenGL contexts. This
+     limit was previously constrained by a fixed-size internal driver
+     resource, and is now constrained by available system memory.
+   * Applications that exceed the maximum limit on concurrent OpenGL
+     contexts will now receive a BadAlloc X error rather than crashing.
+   * Fixed a bug that could cause the X server to crash upon shutdown
+     with some configurations using GPU screens.
+   * Fixed a bug that could cause rendering errors when displaying scaled
+     MetaModes using the "Nearest" resampling method.
+   * Fixed a bug that could cause OpenGL applications run in PID namespaces to
+     hang upon exit, generating warnings such as the following in the X log:
+     (WW) NVIDIA: Wait for channel idle timed out.
+   * Added support for PRIME Display Offload where both the display offload
+     source and display offload sink are driven by the NVIDIA X Driver.
+   * Added support for PRIME Display Offload where the display offload source
+     is AMDGPU.
+   * Fixed a bug that could prevent the driver from applying application
+     profiles when running applications through Proton or Wine on a PRIME
+     Render Offload configuration.
+   * Fixed a bug that could cause NvFBC's "direct capture" to crash the X
+     server when certain GLX calls are made during a capture.
+   * Removed usage of the sysctl(2) system call as a fallback for procfs in
+     nvidia-installer. This system call has been deprecated since Linux
+     2.6.24, and has been removed completely with recent versions of Linux
+     and glibc.
+   * Added an NVIDIA NGX build for use with Proton and Wine. A new library,
+     nvngx.dll, has been added to enable driver-side support for running
+     Windows applications which make use of DLSS. Changes to Proton, Wine, and
+     other third-party software are needed for this feature.
+   * Added support for VK_QUEUE_GLOBAL_PRIORITY_REALTIME_EXT from the
+     VK_EXT_global_priority extension. This enables support for asynchronous
+     reprojection in SteamVR.
+     VK_QUEUE_GLOBAL_PRIORITY_REALTIME_EXT is supported on Pascal GPUs and
+     newer.
+     Global priorities other than VK_QUEUE_GLOBAL_PRIORITY_MEDIUM_EXT require
+     root privileges or the CAP_SYS_NICE capability.
+   * Added support for the VK_EXT_global_priority_query extension.
+   * Added the nvidia-peermem.ko kernel module. This module provides
+     Mellanox InfiniBand HCAs (Host Channel Adapters) direct peer-to-peer access
+     access to NVIDIA GPU memory without need without needing to copy data to
+     to host memory.
+     See the chapter "GPUDirect RDMA Peer Memory Client" in the README
+     for details.
+   * Added support for the VK_EXT_provoking_vertex extension.
+   * Initial support for hardware accelerated OpenGL and Vulkan rendering
+     on Xwayland. See the chapter "OpenGL and Vulkan on Xwayland" in the
+     README for details.
+   * Fixed a bug that could cause intermittent corruption in Wolfenstein:
+     Youngblood when using NVIDIA Kepler, Maxwell, Pascal, and Volta GPUs.
+   * Fixed a bug that could cause games running with DXVK to crash with Xid 31
+     (MMU Fault) errors when using NVIDIA Pascal GPUs.
+   * Added support for the VK_EXT_extended_dynamic_state2 extension.
+   * Added support for the VK_EXT_color_write_enable extension.
+   * Added support for the VK_EXT_vertex_input_dynamic_state extension.
+   * Added support for the VK_EXT_ycbcr_2plane_444_formats extension.
+   * Added support for the VK_NV_inherited_viewport_scissor extension.
+   * NvFBC's "direct capture" mode no longer causes flipping to be
+     disabled for applications being captured. G-SYNC can now also be
+     used simultaneously with NvFBC direct capture.
+   * Deprecated NvIFROpenGL support.  Release 470 will be the last to
+     support this functionality.  NvIFROpenGL header files, samples
+     and documentation were removed from the NVIDIA Capture SDK 7.1.9
+     release.  Future drivers will remove libnvidia-ifr.so and any
+     other reference to NvIFROpenGL.
+     For details please see:
+       https://developer.nvidia.com/nvidia-video-codec-sdk
+   * Fixed a bug that prevented Vulkan direct-to-display from working when
+     DRM KMS is enabled.
+   * Enabled the NVIDIA driver, by default, to attempt to initialize SLI when
+     using GPUs with different amounts of video memory.  Previously, this was
+     only available when bit 1 was set in the "Coolbits" X config option.
+   * Updated GPU fan control to be available by default in
+     nvidia-settings and NV-CONTROL, for GPU boards that support
+     programmable fan control.  Previously, this was only available
+     when bit 2 was set in the "Coolbits" X config option.
+   * Fixed an issue where vkCreate{Graphics,Compute}Pipeline would sometimes
+     crash when the shaders contained resources with no set/binding.
+   * Fixed a memory fault in the Vulkan driver when using some smaller
+     dimensions of sparse images.
+   * Fixed an issue with vkCmdSetViewport when firstViewport is non-zero.
+   * Fixed handling of VK_DESCRIPTOR_BINDING_VARIABLE_DESCRIPTOR_COUNT_BIT for
+     variable size descriptor bindings.
+   * Added gsp.bin firmware file which is used to offload the GPU initialization
+     and management tasks on some GPUs. See the "GSP Firmware" chapter in the
+     README for more information.
+   * Updated the nvidia-settings control panel to be more consistent about
+     displaying layout controls which are only applicable for some displays
+     or GPUs connected to the system.
+   * Improved X11 DrawText() performance when rendering stippled text.
+   * Fixed a bug that could prevent some hardware configurations with large
+     numbers of displays connected to the same GPU from working correctly.
+   * Fixed a bug that could cause multi-threaded GLX applications to hang
+     while attempting to handle an XError.
+  * Fixed a potential crash in the Vulkan driver when clearing images with
+     multiple layers.
+   * Fixed a bug with the host-visible device-local memory heap, where if an
+     allocation failed due to space constraints, it could cause the application
+     to crash on future Vulkan function calls.
+   * Fixed corruption in the Vulkan driver that sometimes occurred with shadow
+     rendering with image arrays.
+   * Added support for the VK_KHR_synchronization2 extension.
+   * Added support for the VK_KHR_workgroup_memory_explicit_layout extension.
+   * Added support for the VK_KHR_zero_initialize_workgroup_memory extension.
+   * Added support for linear images for use with host-visible video memory in
+     Vulkan.
+   * Fixed an issue with OpenGL where imported Vulkan buffers would fail with
+     GL_OUT_OF_MEMORY when marked as resident.
+   * Fixed a bug that caused the NVIDIA driver to retain an incorrect
+     memory mapping of the UEFI system console when booting with the
+     kernel parameter pci=realloc. This could cause the console to corrupt
+     memory in use by the NVIDIA driver, and vice versa.
+   * Runtime D3 Power Management is now enabled by default on supported
+     notebook systems with Ampere or newer GPUs. See the chapter titled
+     "PCI-Express Runtime D3 (RTD3) Power Management" in the README for
+     further details.
+   * Updated the .run package installer to install and enable the
+     nvidia-suspend.service, nvidia-hibernate.service, and
+     nvidia-resume.service systemd units. These units are used when the
+     NVreg_PreserveVideoMemoryAllocations=1 nvidia module parameter is
+     specified to provide advanced suspend, hibernate, and resume
+     functionality.
+     See the chapter titled "Configuring Power Management Support" in the
+     README for more information.
+     This functionality can be disabled by passing the --no-systemd parameter
+     to the installer.
+   * Updated the NVIDIA X driver to allow OpenGL applications running on an X
+     server that has left the active virtual terminal (VT) to continue running
+     on the GPU, but with a limited frame rate.
+     This functionality is only enabled when the
+     NVreg_PreserveVideoMemoryAllocations=1 nvidia module parameter is enabled.
+   * Fix a Vulkan clamping bug where fragment depth values would not be clamped
+     to the range [0,1] if VK_EXT_depth_range_unrestricted was not enabled.
+   * Fix a bug related to SPIR-V 1.4 non-Input/Output entry point variables.
+   * Fixed a bug in compilation of SPIR-V intersection shaders when modules
+      with multiple entry points are used.
+   * Added support for the following GPUs:
+       * GeForce RTX 3070 Ti
+       * CMP 50HX
+
+-------------------------------------------------------------------
+Thu Jun 17 08:51:09 UTC 2021 - Stefan Dirsch <sndirsch@suse.com>
+
+- removed workaround for Tumbleweed (kernel symlinks are functional
+  again [boo#1186710]) 
+
+-------------------------------------------------------------------
+Mon Jun  7 09:36:22 UTC 2021 - Stefan Dirsch <sndirsch@suse.com>
+
+- Update to 460.84
+  * Added support for GeForce RTX 3080 Ti
+- build workarounded on Tumbleweed (regressions in kernel symlinks
+  due to usrmerge [boo#1186710])
+
+-------------------------------------------------------------------
+Mon May 10 10:52:34 UTC 2021 - Stefan Dirsch <sndirsch@suse.com>
+
+- Update to 460.80
+  * Fixed a bug that could cause AddressSanitizer to report a
+    heap-buffer-overflow during initialization of the OpenGL and Vulkan
+    libraries.
+  * Added support for the following GPUs:
+    + GeForce RTX 3050 Ti Laptop GPU
+    + GeForce RTX 3050 Laptop GPU
+    + T600 Laptop GPU
+    + T1200 Laptop GPU
+    + RTX A5000 Laptop GPU
+    + RTX A4000 Laptop GPU
+    + RTX A3000 Laptop GPU
+    + RTX A2000 Laptop GPU
+  * Fixed a bug that could prevent a system from resuming from suspend
+    when DisplayPort activity occurred while the system was suspended.
+  * Fixed a regression that prevented eglQueryDevicesEXT from correctly
+    enumerating GPUs on systems with multiple GPUs where access to the
+    GPU device files was restricted for some GPUs.
+  * Fixed a regression that could cause system hangs when changing display
+    resolution on SLI Mosaic configurations.
+
+-------------------------------------------------------------------
+Tue Apr 20 19:13:52 UTC 2021 - Stefan Dirsch <sndirsch@suse.com>
+
+- apply nvidia-fix-linux-5.12.patch only on Kernel >= 5.11 
+
+-------------------------------------------------------------------
+Tue Apr 20 18:37:47 UTC 2021 - Stefan Dirsch <sndirsch@suse.com>
+
+- nvidia-fix-linux-5.12.patch
+  * fixed build against kernel 5.12 
+
+-------------------------------------------------------------------
+Tue Apr 13 17:40:01 UTC 2021 - Stefan Dirsch <sndirsch@suse.com>
+
+- Update to 460.73.01
+  * Added support for the following GPUs:
+    + A10
+    + A10G
+    + A30
+    + PG506-232
+    + RTX A4000
+    + RTX A5000
+    + T400
+    + T600
+
+-------------------------------------------------------------------
+Thu Mar 18 19:34:23 UTC 2021 - Stefan Dirsch <sndirsch@suse.com>
+
+- Update to 460.67
+  * Fixed a bug where using ray tracing extensions on multi-GPU setups could
+    result in application instability if the GPUs did not match.
+  * Fixed an issue that prevented G-SYNC from working properly after a mode
+    switch on Kepler-based GPUs.
+- adds support for 0x1FDD GeForce GTX 1650
+- adjusted nvidia-fix-linux-5.12.patch
+
+-------------------------------------------------------------------
+Thu Mar 18 15:07:02 UTC 2021 - Stefan Dirsch <sndirsch@suse.com>
+
+- Unfortunately removing no longer used kernel modules via 
+  %triggerpostun doesn't work since kernel updates are not
+  considered "atomar" when using YaST/zypper (only safe when
+  using rpm) [boo#1182666, boo#1164520]
+
+-------------------------------------------------------------------
+Sat Mar 13 21:03:10 UTC 2021 - Stefan Dirsch <sndirsch@suse.com>
+
+- nvidia-fix-linux-5.12.patch
+  * fix for Kernel 5.12-rc1
+  * Source: http://rglinuxtech.com/?p=2896 
+
+-------------------------------------------------------------------
+Thu Feb 25 18:25:25 UTC 2021 - Stefan Dirsch <sndirsch@suse.com>
+
+- Update to 460.56
+  * Added support for the following GPUs:
+    + GeForce RTX 3060
+    + CMP 40HX
+    + CMP 30HX
+  * Fixed a bug with indexed ray payloads in Vulkan.
+
+-------------------------------------------------------------------
+Thu Jan 28 19:53:50 UTC 2021 - Stefan Dirsch <sndirsch@suse.com>
+
+- Update to 460.39
+  * Updated the NVIDIA driver to restore functionality of some features,
+    including runtime power management, hotplugging audio-capable display
+    devices, and S0ix-based system suspend, with recent kernels such as
+    Linux 5.10.
+  * Fixed a bug that caused bindless texture samplers to be incorrectly
+    counted towards the MAX_COMPUTE_TEXTURE_IMAGE_UNITS limit.
+  * Fixed a bug that could cause the GPU to hang when attempting to
+    perform link training on an HDMI 2.1 Fixed Rate Link (FRL) display,
+    while the display is powered off.
+  * Added support for the following GPUs:
+    + GeForce RTX 3080 Laptop GPU
+    + GeForce RTX 3070 Laptop GPU
+    + GeForce RTX 3060 Laptop GPU
+    + GeForce GT 1010
+  * Fixed a bug that could intermittently cause NvFBC applications to fail
+    with the error message "Unable to send exported fds".
+
+-------------------------------------------------------------------
+Tue Jan  5 11:27:27 UTC 2021 - Stefan Dirsch <sndirsch@suse.com>
+
+- Update to 460.32.03 
+  * Added a new "NoInterlacedModes" token to the NVIDIA X driver's
+    "ModeValidation" option, to allow preventing interlaced modes from
+    being validated. Refer to the "X Config Options" appendix of the
+    driver README for further details.
+  * Added support for the following GPU:
+    + A40
+    + T500
+    + A100-SXM4-80GB
+  * Fixed the X driver's composition pipeline (used, e.g., for X desktop
+    rotation, "ForceCompositionPipeline", and some OpenGL Swap Group
+    configurations) to correctly preserve color precision in depth 30.
+  * Fixed a bug that could cause X clients to crash when closing display
+    connections to the X server.
+  * Fixed a bug that could cause the X server to configure DisplayPort
+    Multi-Stream Transport displays in an inconsistent order.
+  * Fixed an interaction problem with 5.4 and newer Linux kernels that caused
+    a performance regression when allocating system memory.
+
+-------------------------------------------------------------------
+Tue Dec 15 13:27:39 UTC 2020 - Stefan Dirsch <sndirsch@suse.com>
+
+- %postun: get rid of *all* nvidia kernel modules when 
+  uninstalling KMP (boo#1180010) 
+
+-------------------------------------------------------------------
+Fri Dec 11 11:28:08 UTC 2020 - Stefan Dirsch <sndirsch@suse.com>
+
+- Update to Public Beta Release 460.27.04
+  * adds uvm kernel module support for Kernel >= 5.9; which is
+    reenabled now, i.e. things like CUDA are working again with
+    kernels >= 5.9
+  * many bugfixes and enhancements including support for new GPUs
+- supersedes nvidia-fix-linux-5.10.patch
+- added nvidia-ngx-updater and nvidia-powerd
+- supported-gpus.json now in a directory with LICENSE file
+- n_dma-sle12-sp3.patch: fixes bulid on sle12-sp3
+
+-------------------------------------------------------------------
+Mon Nov 16 17:23:57 UTC 2020 - Stefan Dirsch <sndirsch@suse.com>
+
+- MOK keypair for kernel module signing needs codessign EKU now
+  since boo#1177353; adding -addext "extendedKeyUsage=codeSigning"
+  to openssl command when generating the keypair therefore
+  (boo#1178793)
+
+-------------------------------------------------------------------
+Tue Nov 10 11:53:51 UTC 2020 - Stefan Dirsch <sndirsch@suse.com>
+
+- nvidia-fix-linux-5.10.patch
+  * fixes build against kernel >= 5.10-rc1 
+
+-------------------------------------------------------------------
+Fri Oct 23 16:44:43 UTC 2020 - Stefan Dirsch <sndirsch@suse.com>
+
+- only disable build of uvm kernel module when building against
+  Kernels >= 5.9.0 (boo#1177995) 
+
+-------------------------------------------------------------------
+Sat Oct 17 12:00:04 UTC 2020 - Stefan Dirsch <sndirsch@suse.com>
+
+- %post of x11-video-nvidiaG05
+  * fixed result of "prime-select get-current" with enabled
+    bbswitch (boo#1177815)
+
+-------------------------------------------------------------------
+Wed Oct  7 11:44:54 UTC 2020 - Stefan Dirsch <sndirsch@suse.com>
+
+- more cleanup: remove support for sle11 builds 
+
+-------------------------------------------------------------------
+Tue Oct  6 21:50:10 UTC 2020 - Stefan Dirsch <sndirsch@suse.com>
+
+- cleanup: remove support for sle10 builds 
+
+-------------------------------------------------------------------
+Thu Oct  1 19:07:53 UTC 2020 - Stefan Dirsch <sndirsch@suse.com>
+
+- Update to Public UDA Release 450.80.02
+  * Added support for the following GPUs:
+    + DGX Display
+    + GeForce MX450
+
+-------------------------------------------------------------------
+Thu Sep 24 10:22:39 UTC 2020 - Stefan Dirsch <sndirsch@suse.com>
+
+- cleanup for Tumbleweed packages: remove no longer used kernel
+  modules via %triggerpostun; added kmp-triggerpostun.sh for this
+  job (boo#1164520) 
+
+-------------------------------------------------------------------
+Fri Sep  4 13:15:56 UTC 2020 - Martin Wilck <mwilck@suse.com>
+
+- MOK handling: include package release in certificate file name
+- MOK handling: fix package reinstallation (zypper in --force)
+  case (bsc#1175626)
+
+-------------------------------------------------------------------
+Thu Sep  3 03:26:04 UTC 2020 - Stefan Dirsch <sndirsch@suse.com>
+
+- removed unneeded mmu.patch since nvidia-uvm kernel module 
+  build needs to be disabled on TW anyway
+- use orginal kernel-5.9.patch again after having removed mmu.patch
+- removed unused and no longer needed kernel-5.8rc1.patch
+
+-------------------------------------------------------------------
+Wed Sep  2 21:32:20 UTC 2020 - Stefan Dirsch <sndirsch@suse.com>
+
+- readded n_kernel_write.patch and apply it again for 
+  sle12-sp4/sle12-sp5/sle15/sle15-sp1/Leap15/Leap15.1 
+
+-------------------------------------------------------------------
+Wed Sep  2 16:22:05 UTC 2020 - Stefan Dirsch <sndirsch@suse.com>
+
+- no longer apply and remove n_kernel_write.patch, which is no
+  longer needed with 450.66
+- always apply mmu.patch/kernel-5.9.patch on TW, not only with
+  Kernel 5.9(rcX)
+
+-------------------------------------------------------------------
+Tue Sep  1 12:09:44 UTC 2020 - Stefan Dirsch <sndirsch@suse.com>
+
+- disabled build of nvidia-uvm kernel module on Tumbleweed. Since
+  Kernel 5.9 it's no longer allowed to use symbols from proprietary
+  modules (here "nvidia" with license "NVIDIA") for GPL compatible
+  modules (here "nvidia-uvm" with license "Dual MIT/GPL"). Changing
+  licese of "nvidia-uvm" to license "MIT" doesn't help since it uses
+  the GPL-only symbol '__mmu_notifier_register'
+
+-------------------------------------------------------------------
+Mon Aug 31 10:08:47 UTC 2020 - Stefan Dirsch <sndirsch@suse.com>
+
+- mmu.patch/kernel-5.9.patch
+  * fixes build against kernel 5.9.rc1 
+
+-------------------------------------------------------------------
+Sun Aug 23 18:40:07 UTC 2020 - Stefan Dirsch <sndirsch@suse.com>
+
+- Update to Public UDA Release 450.66
+  * Added support for the following GPUs:
+    + EIZO Quadro MED-XN31LP
+    + EIZO Quadro MED-XN50LP
+    + EIZO Quadro MED-XN51LP
+    + EIZO Quadro MED-XN70
+    + EIZO Quadro MED-XN71
+    + EIZO Quadro MED-XN72
+    + EIZO Quadro MED-XN90
+    + EIZO Quadro MED-XN91
+    + EIZO Quadro MED-XN92
+    + Matrox D-Series D1450
+    + Matrox D-Series D1480
+  * Fixed triple buffering support of Vulkan X11 swapchains when applications
+    are syncing to vblank.
+
+-------------------------------------------------------------------
+Tue Jul 21 09:08:17 UTC 2020 - Stefan Dirsch <sndirsch@suse.com>
+
+- added /etc/dracut.conf.d/60-nvidia-default.conf in order to
+  omit nvidia modules in initrd, which apparently were added
+  automatically on many systems - apart from nvidia-uvm module! -
+  which then made GPU computing/CUDA impossible on all theses
+  systems (boo#1173733)
+
+-------------------------------------------------------------------
+Thu Jul 16 19:36:52 UTC 2020 - Stefan Dirsch <sndirsch@suse.com>
+
+- remove still existing old kernel modules during installation of
+  new modules, since otherwise weak-modules doesn't work 
+  (boo#1174204)
+
+-------------------------------------------------------------------
+Thu Jul 16 12:07:37 UTC 2020 - Stefan Dirsch <sndirsch@suse.com>
+
+- improved certificat description. So it looks like this now:
+  "Local build for nvidia-gfxG05 450.57 on 2020-07-16" 
+
+-------------------------------------------------------------------
+Wed Jul 15 22:57:25 UTC 2020 - Stefan Dirsch <sndirsch@suse.com>
+
+- figured out that additional usage of weak-updates2 is not needed
+  all; therefore removed it again
+
+-------------------------------------------------------------------
+Wed Jul 15 15:12:26 UTC 2020 - Stefan Dirsch <sndirsch@suse.com>
+
+- make usage of weak-updates2 as it is being used by the kernel; 
+  this appears to work ... use this for the kernel, against which
+  the kernel modules are built, but also for all the other kernels
+  installed below /lib/modules ...
+
+-------------------------------------------------------------------
+Wed Jul 15 11:57:24 UTC 2020 - Stefan Dirsch <sndirsch@suse.com>
+
+- kernel module signing for secureboot mode (boo#1173682)
+  * add ghosts for public MOK keyfile/keydir
+  * install kernel modules also to modules dir below /lib/modules, 
+    with which the modules have been built, since weak-updates
+    apparently is (no longer?) working ... and of course sign
+    the modules there as well ...
+  * include package name in public MOK key filename
+  * remove MOK key during package uninstallation
+  * fixed wrong bug number in RPM changelog
+
+-------------------------------------------------------------------
+Tue Jul 14 11:11:17 UTC 2020 - Stefan Dirsch <sndirsch@suse.com>
+
+- sign kernel modules on Leap 15.2/sle15-sp2 on systems running
+  with secureboot enabled (boo#1173682, boo#1173158)
+
+-------------------------------------------------------------------
+Tue Jul  7 21:52:00 UTC 2020 - Stefan Dirsch <sndirsch@suse.com>
+
+- Update to Public UDA Release 450.57
+  * Fixed a bug that caused a brief orange flash on some platforms when a
+    display mode is being set.
+  * Added support for Vulkan direct-to-display on DisplayPort displays which
+    are connected via DisplayPort Multi-Stream Transport (DP-MST).
+  * Added a new documentation file, supported-gpus.json, which exposes a
+    machine-readable list of supported GPUs and features.
+  * Added an implementation of glNamedBufferPageCommitmentARB, which was
+    missing from the NVIDIA driver's support for the GL_ARB_sparse_buffer
+    extension.
+  * Fixed a bug that could cause a KDE Plasma session to crash when running
+    under Wayland.
+  * Fixed a bug that could cause some Swap Group configurations to present
+    at half of the display refresh rate.
+  * Added a new Connector-N display connector name alias type, with a unique
+    alias assigned to each physical display connector on a GPU. See the
+    README for more information.
+  * Fixed a bug that prevented X11 EGL displays from being reinitialized.
+  * The 450 driver series is the last that supports NvFBC's
+    NVFBC_CAPTURE_TO_HW_ENCODER capture interface, which has been deprecated
+    since NVIDIA Capture SDK 6.0 released in 2017. Future NVIDIA drivers
+    after the 450 series will return NVFBC_ERR_UNSUPPORTED if that capture
+    interface is requested.
+    The recommended way to encode captured frames with NVENC is by using the
+    NVIDIA Video Codec SDK.
+    See: https://developer.nvidia.com/nvidia-video-codec-sdk
+  * Implemented support for NVIDIA NGX. A new library, libnvidia-ngx.so, has
+    been added to support the new functionality. This new library is needed by
+    applications which link against any of the following SDKs:
+    + NVIDIA DLSS SDK
+    + NVIDIA NGX SDK
+  * Fixed a bug which caused Vulkan applications to leak file descriptors
+    when destroying Vulkan instances.
+  * Added a fallback presentation path for PRIME Render Offload
+    configurations where the DRI3 and/or Present extension are unavailable.
+  * Fixed a bug where vkCreateSampler would fail with no borderColor data,
+    even though it wasn't needed.
+  * Fixed a bug where vkUpdateDescriptorSetWithTemplate would ignore the
+    stride parameter for some VkDescriptorType values.
+  * Fixed a bug causing the Plasma desktop panel to freeze when
+    compositing is disabled (https://bugs.kde.org/show_bug.cgi?id=353983)
+  * Added support for the following GPUs:
+    + A100-PCIE-40GB
+    + A100-PG509-200
+    + A100-SXM4-40GB
+  * Improved Vulkan device enumeration under an X.Org X server environment.
+    See the "Known Issues" in the README for more information.
+  * Fixed a visual glitch of Vulkan applications when they stop flipping
+    due to a window change, such as when alt-tab is used to change
+    window focus.
+  * Fixed a bug where XGetImage requests would return stale data for
+    flipping Vulkan applications. In particular, this fixes screen-scraping
+    tools such as VNC and import.
+  * Removed libnvidia-fatbinaryloader.so from the driver package.  This
+    functionality is now built into other driver libraries.
+  * Extended the dynamic runtime power management support in the NVIDIA
+    driver to shut off power to video memory under certain conditions.
+    See the chapter titled "PCI-Express Runtime D3 (RTD3) Power Management"
+    in the README for more information.
+  * Added HEVC 10/12 bit "decode only" support to the NVIDIA VDPAU driver. 
+    Note that VDPAU's presentation pipeline and OpenGL-VDPAU interop
+    does not support 10- and 12-bit video surfaces yet. See the "VDPAU Support"
+    appendix in the README for supported HEVC decoder profiles.
+  * Added support for Image Sharpening for OpenGL and Vulkan applications
+  * Added new VdpYCbCrFormats VDP_YCBCR_FORMAT_Y_U_V_444_16,
+    VDP_YCBCR_FORMAT_P010 and VDP_YCBCR_FORMAT_P016 for accessing 16-bit
+    surfaces via VdpVideoSurfaceGetBitsYCbCr() and VdpVideoSurfacePutBitsYCbCr()
+    in the NVIDIA VDPAU driver.
+  * Added support to create 16-bit video surfaces in the NVIDIA VDPAU driver.
+  * Modified nvidia-persistenced and libnvidia-ml (NVML) to use libtirpc for
+    communication instead of relying on the deprecated glibc RPC
+    implementation.
+  * Enabled GPU screens by default on X.Org xserver version 1.20.7 and higher.
+  * Fixed a bug where rendering in a separate user namespace (unshare -U)
+    would show black window and produce Xid 13 errors.
+  * Removed support for "IgnoreDisplayDevices" X configuration option.
+  * Added support for PRIME Synchronization when using displays driven by
+    the x86-video-amdgpu driver as PRIME display offload sinks.
+  * Added support for displays connected to NVIDIA GPUs to act as PRIME
+    display offload sinks, also known as "Reverse PRIME". See the chapter
+    titled "Offloading Graphics Display with RandR 1.4" in the README for
+    additional information.
+  * Removed 'libGL.la' libtool archive from the install package.
+  * Fixed a bug that could cause the X server to crash when using large
+    cursor images with PRIME display offloading.
+  * Fixed an interaction problem with 5.4 and newer Linux kernels that caused
+    a performance regression when allocating system memory.
+  * Fixed a bug where a Vulkan application under PRIME render
+    offload would not always be correctly throttled to vsync despite
+    the application's request for VK_PRESENT_MODE_FIFO_KHR. This was
+    particularly prevalent on DXVK titles.
+
+-------------------------------------------------------------------
+Tue Jul  7 09:32:54 UTC 2020 - Stefan Dirsch <sndirsch@suse.com>
+
+- added device node creation and permission handling for 
+  /dev/nvidia-uvm-tools needed by various computing software
+  (boo#1173733)
+
+-------------------------------------------------------------------
+Mon Jul  6 09:51:29 UTC 2020 - Stefan Dirsch <sndirsch@suse.com>
+
+- fixed hardware supplements for Leap 15.1, 15.2, sle15-sp1, 
+  sle15-sp2 and Tubmleweed
+
+-------------------------------------------------------------------
+Tue Jun 30 11:30:37 UTC 2020 - Stefan Dirsch <sndirsch@suse.com>
+
+- only rebuild kernel module(s) on kernel update on Tumbleweed; as
+  designed; forgot to adjust specfile, when TW switched from 
+  %suse_version = 1330 to 1550 ...
+
+-------------------------------------------------------------------
+Thu Jun 25 21:27:07 UTC 2020 - Stefan Dirsch <sndirsch@suse.com>
+
+- kernel-5.8rc1.patch
+  * adds support for kernel 5.8rc1 (https://gitlab.com/snippets/1986228)
+
+-------------------------------------------------------------------
+Thu Jun 25 15:08:04 UTC 2020 - Stefan Dirsch <sndirsch@suse.com>
+
+- Update to Public UDA Release 440.100
+  * Added a workaround for some Pascal based notebooks, where the GPU
+    could fall off the bus when idle.
+
+  * Added support for the following GPUs:
+    + GeForce GTX 1650 Ti
+    + GeForce GTX 1650 Ti with Max-Q Design
+    + GeForce RTX 2060 with Max-Q Design
+    + Quadro T1000 with Max-Q Design
+
+  * Added new "Connector-N" display device aliases to the X driver's
+    X configuration option parser.  This is useful in conjunction with
+    the "ConnectedMonitor" X configuration option, for emulating the
+    presence of connected monitors without knowing what specific
+    connectors are available.  See the "Display Device Names" appendix
+    in the README for details.
+- supersedes kernel-5.7.patch
+
+-------------------------------------------------------------------
+Mon Jun 15 04:59:33 UTC 2020 - Ismail Dönmez <idonmez@suse.com>
+
+- Add kernel-5.7.patch to fix kernel 5.7 build
+- Remove commented out check-for-swiotlb_map_sg_attrs.patch
+
+-------------------------------------------------------------------
+Fri Jun  5 10:52:45 UTC 2020 - Stefan Dirsch <sndirsch@suse.com>
+
+- added _constraints file in order to reserve 4G for buildroot 
+
+-------------------------------------------------------------------
+Fri Jun  5 10:18:21 UTC 2020 - Stefan Dirsch <sndirsch@suse.com>
+
+- no longer require 3ddiag, which is no longer needed at all ... 
+
+-------------------------------------------------------------------
+Thu May 14 11:00:01 UTC 2020 - Stefan Dirsch <sndirsch@suse.com>
+
+- get rid of ksym Requires on Leap 15.1/15.2 by redefining 
+  %__kmp_requires
+
+-------------------------------------------------------------------
+Sun Apr  5 10:07:19 UTC 2020 - Stefan Dirsch <sndirsch@suse.com>
+
+- Update to Public UDA Release 440.82
+  * Added a workaround for Steam Play title DOOM Eternal, which
+    overrides application requested memory locations, to ensure
+    performance-critical resources be placed in video memory.
+  * Allow presenting from queue families which only expose
+    VK_QUEUE_COMPUTE_BIT when using XCB in addition to Xlib
+    surfaces.
+  * Fixed a bug that caused render-offloaded applications to crash
+    on exit.
+- supersedes kernel-5.6.patch
+
+-------------------------------------------------------------------
+Thu Apr  2 17:51:11 UTC 2020 - Hans-Peter Jansen <hpj@urpla.net>
+
+- Add patch kernel-5.6.patch in order to compile with 5.6
+
+-------------------------------------------------------------------
+Thu Mar 12 11:36:49 UTC 2020 - Stefan Dirsch <sndirsch@suse.com>
+
+- using /usr/lib/tmpfiles.d/nvidia-logind-acl-trick-G0X.conf now,
+  so a driver series update (when user ignores the explicit driver
+  series conflict!) no longer will result in no access to NVIDIA
+  devices (boo#1165987)
+
+-------------------------------------------------------------------
+Wed Feb 26 10:31:53 UTC 2020 - Stefan Dirsch <sndirsch@suse.com>
+
+- Update to Public UDA Release 440.64
+  * Added support for the following GPUs:
+    + GeForce MX330
+    + GeForce MX350
+  * Fixed a regression that allowed displays to enter DPMS mode
+    even when DPMS is disabled in the X server settings.
+
+-------------------------------------------------------------------
+Fri Feb  7 14:37:15 UTC 2020 - Stefan Dirsch <sndirsch@suse.com>
+
+- Update to Public UDA Release 440.59
+  * Disabled frame rate limiting for configurations without active
+    displays when HardDPMS is enabled.
+  * Restricted the maximum number of GPU Screens to one GPU Screen per
+    GPU device, to prevent X from crashing when more than one GPU Screen
+    is configured for a single GPU device.
+  * Fixed a bug that could cause the X server to crash while exiting
+    DPMS with HardDPMS enabled.
+  * Added support for the following GPUs:
+    + Tesla PG500-216
+    + Tesla PG503-216
+  * Added a default filename when saving the Display Configuration file
+    in nvidia-settings if an existing configuration file is not detected.
+  * Added support for audio over DisplayPort Multi-Stream. This support
+    requires Linux kernel version 5.5 or newer.
+  * Updated the NVIDIA driver to allow NVIDIA High Definition Audio (HDA)
+    controllers to respond to display hotplug events while the HDA is
+    runtime-suspended.
+  * Fixed a bug that caused DXVK titles to endlessly loop during shader
+    compilation if no OpSource instruction was present.
+- supersedes kernel-5.5.patch
+
+-------------------------------------------------------------------
+Mon Feb  3 10:21:57 UTC 2020 - Hans-Peter Jansen <hpj@urpla.net>
+
+- add (temporary) patch kernel-5.5.patch to fix build with kernel 5.5
+
+-------------------------------------------------------------------
+Mon Jan  6 12:48:53 UTC 2020 - Stefan Dirsch <sndirsch@suse.com>
+
+- added "azure" kernel flavor 
+
+-------------------------------------------------------------------
+Sun Jan  5 12:13:26 UTC 2020 - Stefan Dirsch <sndirsch@suse.com>
+
+- Update to Public UDA Release 440.44
+  * Added support for GeForce GTX 1650 SUPER
+  * Added support for the __GL_SYNC_DISPLAY_DEVICE environment
+    variable for Vulkan applications.
+  * Fixed a bug that caused applications running directly on a display
+    (such as VR HMDs) to tear when a G-SYNC or G-SYNC Compatible monitor
+    is plugged in the system.
+
+-------------------------------------------------------------------
+Fri Nov 22 13:08:32 UTC 2019 - Stefan Dirsch <sndirsch@suse.com>
+
+- Update to Public UDA Release 440.36
+  * Fixed graphical corruption that can occur when using
+    glslang SPIR-V Generator Version <= 2.
+
+-------------------------------------------------------------------
+Thu Oct 31 10:47:06 UTC 2019 - Stefan Dirsch <sndirsch@suse.com>
+
+- Update to Public UDA Release 440.31
+  * Added support for the following GPUs:
+    + Tesla V100S-PCIE-32GB
+    + GeForce GTX 1660 SUPER
+ * Fixed a regression in the 440.26 driver that could prevent the NVIDIA
+   kernel modules from building correctly on systems localized to a
+   language other than English.
+- supersedes U_Use_preprocessor-based_test_for_header_file_detection.patch
+
+-------------------------------------------------------------------
+Fri Oct 25 13:56:23 UTC 2019 - Stefan Dirsch <sndirsch@suse.com>
+
+- U_Use_preprocessor-based_test_for_header_file_detection.patch
+  * Use preprocessor-based test for header file detection instead
+    of compiler test that depends on error message text (boo#1155053)
+
+-------------------------------------------------------------------
+Tue Oct 15 20:58:54 UTC 2019 - Stefan Dirsch <sndirsch@suse.com>
+
+- Update to Public Beta RC 440.26
+  * Updated the confirmation dialog box that is displayed when quitting
+    the nvidia-settings control panel to report when there are pending
+    configuration changes which will be lost if they are not applied or
+    saved before quitting.
+  * Enabled parallel GLSL shader linking by default; i.e., allow
+    GL_ARB_parallel_shader_compile to work without first calling
+    glMaxShaderCompilerThreadsARB().
+  * Added support for HDMI 2.1 variable refresh rate (VRR) G-SYNC Compatible
+    monitors on supported GPUs.  For more details, see "Configuring Multiple
+    Display Devices on One X Screen" in the README.
+  * Fixed a bug that prevented Vulkan applications running on systems
+    configured for SLI. Vulkan applications can now run while SLI is
+    enabled; however, they will only be able to use a single GPU.
+  * Simplified the nvidia-sleep.sh sample script to no longer depend on
+    unreliable detection of the current VT through X server logs.
+  * Added EGL support for PRIME render offload. Please see the PRIME Render
+    Offload chapter in the README for configuration details.
+
+-------------------------------------------------------------------
+Fri Oct 11 10:34:29 UTC 2019 - Stefan Dirsch <sndirsch@suse.com>
+
+- Update to OEM Beta release 440.17
+  * Added support for the GLX_NV_multigpu_context and GL_NV_gpu_multicast
+    extensions.  For more details, see the "Configuring SLI and Multi-GPU
+    FrameRendering" chapter of the README, and the extension specifications:
+      https://www.khronos.org/registry/OpenGL/extensions/NV/GLX_NV_multigpu_context.txt
+      https://www.khronos.org/registry/OpenGL/extensions/NV/NV_gpu_multicast.txt
+  * Fixed a regression introduced in 435.19.02 that would cause some
+    applications which use the VK_KHR_DISPLAY extension to result in a 
+    segmentation fault.
+  * Enabled HardDPMS by default. See the README entry on the X configuration
+    option "HardDPMS" for more information.
+  * Fixed a bug which caused corruption in the following DXVK titles:
+    + Saints Row IV
+    + Saints Row: The Third
+  * Added VP9 decode support to the NVIDIA VDPAU driver. See the
+    VDPAU Support appendix in the README for supported VP9 decoder
+    profiles.
+  * Fixed a bug that could cause heapUsage values reported by
+    VK_EXT_memory_budget to not immediately update after vkFreeMemory was
+    called.
+  * Changed GPU clock management strategy to more quickly ramp down clocks
+    after a drop in GPU utilization.
+  * Added X configuration option, "SidebandSocketPath", which
+    controls the directory in which the X driver will create a
+    pathname UNIX domain socket used to communicate with the NVIDIA
+    OpenGL, Vulkan and VDPAU driver components.
+  * The X driver will now create a fallback pathname UNIX domain
+    socket in the directory specified by the "SidebandSocketPath"
+    option, or /var/run by default, which will be used by other
+    NVIDIA driver components if they are unable to connect to the
+    default abstract socket.  This fixes a bug where graphics
+    applications run within a network namespace (which prevents the
+    use of abstract sockets) were unable to take advantage of some
+    driver features, such as G-Sync.
+- adds libnvidia-alllocator.so
+- adds support for GeForce RTX 2060
+
+-------------------------------------------------------------------
+Thu Oct  3 11:28:09 UTC 2019 - Stefan Dirsch <sndirsch@suse.com>
+
+- get rid of /etc/dracut.conf.d/50-nvidia-default.conf in order
+  to fix DynamicPowermanagement of NVIDIA GPU driver >= 435.xx,
+  which is being enabled for NVIDIA PRIME Render Offload since
+  suse-prime 0.7
+
+-------------------------------------------------------------------
+Wed Sep 11 02:46:25 UTC 2019 - Stefan Dirsch <sndirsch@suse.com>
+
+- %post(nvidia-glG05): make active transition to alternatives-free
+  GLX version (boo#1149858)
+
+-------------------------------------------------------------------
+Mon Sep  9 13:12:33 UTC 2019 - Stefan Dirsch <sndirsch@suse.com>
+
+- get rid of update-alternatives for NVIDIA's GLX extension; no
+  longer needed since 410.xx (boo#1149858)
+
+-------------------------------------------------------------------
+Wed Aug 28 14:31:37 UTC 2019 - Stefan Dirsch <sndirsch@suse.com>
+
+- Update to UDA release 435.21
+  * biggest change: non-GLVND OpenGL libs removed
+- added libglvnd libs now required for sle12 due to change 
+  mentioned above
+
+-------------------------------------------------------------------
+Mon Aug 12 20:25:20 UTC 2019 - Stefan Dirsch <sndirsch@suse.com>
+
+- moved exit from %post snippet file to specfile after running
+  weak-modules2 (boo#1145316)
+
+-------------------------------------------------------------------
+Tue Jul 23 12:21:06 UTC 2019 - Stefan Dirsch <sndirsch@suse.com>
+
+- Update to UDA release 430.40
+  * Added support for the following GPU:
+    + GeForce RTX 2080 SUPER
+  * Fixed a driver installation failure in Linux kernel
+    configurations with CONFIG_HOTPLUG_CPU.
+
+-------------------------------------------------------------------
+Wed Jul 10 13:35:45 UTC 2019 - Stefan Dirsch <sndirsch@suse.com>
+
+- Update to UDA release 430.34
+  * Added support for GeForce RTX 2060/2070 SUPER,
+    Quadro RTX 4000/5000 with Max-Q Design
+
+-------------------------------------------------------------------
+Mon Jul  8 14:04:20 UTC 2019 - Stefan Dirsch <sndirsch@suse.com>
+
+- kmp-post.sh/kmp-trigger.sh
+  * exit with error code 1 from %post/%trigger, if kernel module
+    build/install fails (boo#1131028)
+
+-------------------------------------------------------------------
+Tue Jul  2 08:06:00 UTC 2019 - Stefan Dirsch <sndirsch@suse.com>
+
+- no longer touch xorg.conf on suse >= sle12
+
+-------------------------------------------------------------------
+Thu Jun 13 17:04:36 UTC 2019 - Stefan Dirsch <sndirsch@suse.com>
+
+- making use of parallel builds with make's -j option
+
+-------------------------------------------------------------------
+Wed Jun 12 14:35:35 UTC 2019 - Stefan Dirsch <sndirsch@suse.com>
+
+- Update to UDA release 430.26
+  * Added support for the following GPUs:
+    + Quadro P520
+    + Quadro RTX 3000
+    + Quadro T1000
+    + Quadro T2000
+ * Fixed a bug, introduced in 415.13, that caused audio over
+   DisplayPort to not work in some configurations.
+
+-------------------------------------------------------------------
+Wed May 15 13:36:36 UTC 2019 - Stefan Dirsch <sndirsch@suse.com>
+
+- n_kernel_write.patch
+  * workaround for build on sle12-sp4/sle12-sp5/sle15/sle15-sp1/
+    Leap15/Leap15.1
+
+-------------------------------------------------------------------
+Wed May 15 10:09:48 UTC 2019 - Stefan Dirsch <sndirsch@suse.com>
+
+- Update to UDA release 430.14
+  * Improved performance of the Vulkan title, DiRT4.
+  * Added support for presentation from queue families which only
+    expose VK_QUEUE_COMPUTE_BIT. This improves performance of
+    Steam Play title, Wolfenstein II: The New Colossus.
+  * Fixed a bug that could cause the display to be driven at a low
+    resolution when configuring PRIME display offloading with
+    `nvidia-xconfig --prime`.
+  * Added HEVC YUV 4:4:4 decode support to the NVIDIA VDPAU driver.
+  * Added the new per-decoder profile capability bit 
+    VDP_DECODER_PROFILE_SUPPORTED_CHROMA_TYPES to the NVIDIA VDPAU driver.
+  * Added new VdpYCbCrFormats VDP_YCBCR_FORMAT_Y_UV_444 and 
+    VDP_YCBCR_FORMAT_Y_U_V_444 for accessing YUV 4:4:4 surfaces via
+    VdpVideoSurfaceGetBitsYCbCr() and VdpVideoSurfacePutBitsYCbCr()
+    in the NVIDIA VDPAU driver.
+  * Added support for creation of YUV 4:4:4 video surfaces in the
+    NVIDIA VDPAU driver.
+  * Raised the minimum supported X.Org xserver version to 1.7 (video
+    driver ABI version 6).
+  * Updated the NVIDIA VDPAU driver to support allocating VDPAU
+    video surfaces with explicit field or frame picture structure.
+  * Added support for the GL_NV_vdpau_interop2 OpenGL extension, 
+    which allows VDPAU/OpenGL surface sharing with explicit field
+    or frame picture structure. Picture structure selection by
+    applications can avoid the need for implicit surface structure
+    conversion by the OpenGL implementation.
+  * Updated nvidia-installer to avoid problems with commands whose
+    proper functionality may be dependent on system localization
+    (e.g. via the LANG environment variable.) For example, some 
+    kernel configurations may produce unusable kernel modules if 
+    LANG is set to a language other than English.
+
+-------------------------------------------------------------------
+Tue Mar 26 12:47:48 UTC 2019 - Stefan Dirsch <sndirsch@suse.com>
+
+- Update to UDA release 418.56
+  * Updated nvidia-settings to disable line wrapping when outputting to a
+    non-terminal in command-line mode. From GitHub pull request:
+    https://github.com/NVIDIA/nvidia-settings/pull/37
+  * Updated the nvidia-settings control panel to more accurately reflect the
+    current availability of G-SYNC or G-SYNC compatible display settings.
+  * Added support for the following GPUs:
+    + GeForce GTX 1660
+    + GeForce MX230
+    + GeForce MX250
+  * Fixed a bug which could sometimes cause Vulkan applications to lock up the
+    GPU when freeing large chunks of memory on systems with PRIME enabled.
+  * Updated the driver to restrict use of the GPU performance counters to
+    system administrators by default. The previous more permissive behavior
+    can be restored by setting NVreg_RestrictProfilingToAdminUsers=0 when
+    loading nvidia.ko.
+
+-------------------------------------------------------------------
+Thu Feb 21 14:18:24 UTC 2019 - sndirsch@suse.com
+
+- Update to UDA release 418.43
+  * bugfixes
+  * support for new GPUs
+  * Added initial support for G-SYNC Compatible monitors.
+  * Added support for stereo presentation in Vulkan.
+  * NVIDIA Video Codec SDK 9.0
+  * Added NVIDIA optical flow support.
+  * Added support for VK_EXT_transform_feedback.
+
+-------------------------------------------------------------------
+Tue Jan 29 16:24:13 UTC 2019 - sndirsch@suse.com
+
+- adjusted summary/description to supported GPU families
+
+-------------------------------------------------------------------
+Tue Jan 29 15:32:40 UTC 2019 - sndirsch@suse.com
+
+- use full pci id list only for TW (later: sle16/Leap 16) 
+
+-------------------------------------------------------------------
+Sat Jan 26 15:35:20 UTC 2019 - sndirsch@suse.com
+
+- cleanup: run "prime-select unset" in %postun of nvidia-glG05
+  when uninstalling the package
+
+-------------------------------------------------------------------
+Fri Jan 25 20:10:14 UTC 2019 - sndirsch@suse.com
+
+- adjusted prime-select calls to latest changes in suse-prime 
+
+-------------------------------------------------------------------
+Sun Jan 13 21:25:35 UTC 2019 - sndirsch@suse.com
+
+- sle15-sp1/Leap15.1 and newer: switch to usage of update-alternatives
+  for libOpenCL.so.1, so nvidia-computeG05 package no longer 
+  conflicts with libOpenCL1 package (boo#1108304)
+
+-------------------------------------------------------------------
+Fri Jan 11 19:33:43 UTC 2019 - sndirsch@suse.com
+
+- Remove dependency on gtk2 for Tumbleweed and next major version
+  update of Leap via rm'ing the offending .so used only for
+  nvidia-settings, and not used by default anymore, users have to
+  pass an explicit --use-gtk2 to launch it in gtk2 mode.
+
+-------------------------------------------------------------------
+Fri Jan 11 16:54:08 UTC 2019 - sndirsch@suse.com
+
+- if "prime-select nvidia" fails - which may happen easily - run
+  "prime-select intel" afterwards; better safe than sorry ...
+
+-------------------------------------------------------------------
+Fri Jan 11 14:58:24 UTC 2019 - sndirsch@suse.com
+
+- moved nvidia-xconfig/libnvidia-cfg to nvidia-glG05, since it's 
+  required by prime-select tool, which is running in %post of that
+  package
+
+-------------------------------------------------------------------
+Thu Jan 10 14:02:14 UTC 2019 - sndirsch@suse.com
+
+- since sle15-sp1/Leap 15.1 and on TW:
+  * enable usage of NVIDIA driver on Optimus systems (Intel/NVIDIA
+    combo) by default, if not yet configured differently via
+    prime-select (requires suse-prime package being installed
+    before), i.e. make use of NVIDIA GPU for rendering on such
+    systems (boo#1121246)
+
+-------------------------------------------------------------------
+Sun Jan  6 19:26:42 UTC 2019 - sndirsch@suse.com
+
+- Update to UDA release 410.93
+  * Added support for the following GPUs: Quadro RTX 8000 
+  * Fixed a bug that could prevent display detection from working
+    on displays connected to some notebook docking stations.
+  * Fixed a bug which could cause VK_KHR_external_semaphore_fd
+    operations to fail.
+  * Fixed a build failure, "implicit declaration of function
+    'vm_insert_pfn'", when building the NVIDIA DRM kernel module
+    for Linux kernel 4.20 release candidates.
+  * Fixed a build failure, "unknown type name 'ipmi_user_t'", when
+    building the NVIDIA kernel module for Linux kernel 4.20 release
+    candidates.
+  * Fixed a bug that caused kwin OpenGL compositing to crash when
+    launching certain OpenGL applications.
+  * Added a new kernel module parameter, 
+    NVreg_RestrictProfilingToAdminUsers, to allow restricting the
+    use of GPU performance counters to system administrators only. 
+
+-------------------------------------------------------------------
+Fri Nov 16 10:51:45 UTC 2018 - sndirsch@suse.com
+
+- Update to UDA release 410.78
+  * Added support for Quadro RTX 4000 
+  * Fixed a bug that could cause the X server to hang on systems
+    booted in legacy VGA mode when using a DisplayPort Multi-Stream
+    link.
+  * Fixed a bug that caused mode switches to fail when an SDI
+    output board was connected.
+  * Fixed a bug that could cause rendering corruption in Vulkan
+    programs.
+  * Added a new hook script, "pre-unload", to the nvidia-installer
+    hook script system. This script, if present, will be executed
+    before nvidia-installer attempts to unload existing NVIDIA
+    kernel modules. 
+
+-------------------------------------------------------------------
+Tue Oct 30 14:51:29 UTC 2018 - sndirsch@suse.com
+
+- Update to UDA release 410.73
+  * Added support for the following GPUs:
+    + Quadro RTX 6000
+    + Quadro RTX 5000
+  * Added a USB-C display connector type identifier, such that a
+    display connected using Turing's USB-C connector will be 
+    named, e.g., "USB-C-0" rather than "DP-5". Scripts and 
+    configuration files that use the DP identifier for this 
+    connector will be affected.
+  * Fixed a bug that caused vkGetPhysicalDeviceDisplayPropertiesKHR()
+    to occasionally return incorrect values for physicalResolution.
+  * Added the synchronization state for PRIME Displays to nvidia-settings.
+
+-------------------------------------------------------------------
+Fri Oct 26 10:14:56 UTC 2018 - sndirsch@suse.com
+
+- trigger script
+  * get rid of broken weak-updates symlinks created in some %post
+    apparently; either by kmp itself or by kernel package update
+
+-------------------------------------------------------------------
+Fri Oct 12 13:35:04 UTC 2018 - sndirsch@suse.com
+
+- let nvidia-glG05 %post-require xorg-x11-server, since on       
+  Optimus we want to switch back to X.Org's libglx.so (bsc#1111471)
+
+-------------------------------------------------------------------
+Fri Oct 12 11:02:29 UTC 2018 - sndirsch@suse.com
+
+- Update to UDA release 410.66
+  * Added a USB-C connector type identifier, such that a display connected
+    using the USB-C connector that was previously reported as e.g. DP-5 will
+    now be USB-C-0. Scripts and configuration files that use the DP identifier
+    for this connector will be affected.
+  * Added support for the following GPU:
+    + GeForce RTX 2070
+
+-------------------------------------------------------------------
+Fri Oct 12 09:50:56 UTC 2018 - sndirsch@suse.com
+
+- let nvidia-glG05 recommend the following packages:
+  * Mesa-libGL1
+  * Mesa-libEGL1
+  * Mesa-libGLESv1_CM1
+  * Mesa-libGLESv2-2
+  This is needed for Optimus systems once NVIDIA's GL libs get disabled
+  (our default); these packages won't get installed when adding NVIDIA's
+  repository before the installation, which e.g. happens on SLED
+  (bsc#1111471)
+
+-------------------------------------------------------------------
+Tue Sep 25 13:46:19 UTC 2018 - sndirsch@suse.com
+
+- created package 

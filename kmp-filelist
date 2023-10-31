@@ -1,0 +1,29 @@
+%defattr (-,root,root)
+%dir %{kernel_module_directory}/%2-%1
+%dir %{kernel_module_directory}/%2-%1/updates
+%dir /usr/src/kernel-modules
+%if 0%{?suse_version} >= 1550
+%dir /usr/lib/dracut
+%dir /usr/lib/dracut/dracut.conf.d
+/usr/lib/dracut/dracut.conf.d/60-nvidia-%1.conf
+/usr/lib/modprobe.d/nvidia-%1.conf
+%dir /usr/lib/modprobe.d
+%config /usr/lib/modprobe.d/50-nvidia-%1.conf
+%else
+%dir /etc/dracut.conf.d
+/etc/dracut.conf.d/60-nvidia-%1.conf
+/etc/modprobe.d/nvidia-%1.conf
+%dir %{_sysconfdir}/modprobe.d
+%config %{_sysconfdir}/modprobe.d/50-nvidia-%1.conf
+%endif
+%dir /usr/lib/nvidia
+/usr/lib/nvidia/alternate-install-present-%1
+%ghost %attr(644,root,root) /usr/lib/nvidia/alternate-install-present
+%ghost %{kernel_module_directory}/%2-%1/updates/nvidia*.ko
+#%%{kernel_module_directory}/%2-%1/updates/nv-kernel.o
+#%%{kernel_module_directory}/%2-%1/updates/nv-linux.o
+/usr/src/kernel-modules/nvidia-%{-v*}-%1
+%if 0%{?sle_version} >= 150200
+%ghost %attr(755,root,root) %dir /var/lib/nvidia-pubkeys
+%ghost %attr(644,root,root) /var/lib/nvidia-pubkeys/MOK-%{name}-%{-v*}-%1.der
+%endif
