@@ -591,11 +591,6 @@ fi
 
 %files
 %defattr(-,root,root)
-%doc %{_datadir}/doc/packages/%{name}
-%exclude %{_datadir}/doc/packages/%{name}/html/nvidia-persistenced.html
-%exclude %{_datadir}/doc/packages/%{name}/html/nvidia-debugdump.html
-%exclude %{_datadir}/doc/packages/%{name}/html/nvidia-smi.html
-%exclude %{_datadir}/doc/packages/%{name}/nvidia-persistenced-init.tar.bz2
 %doc %{_mandir}/man1/*
 %exclude %{_mandir}/man1/nvidia-cuda-mps-control.1.gz
 %exclude %{_mandir}/man1/nvidia-modprobe.1.gz
@@ -617,6 +612,7 @@ fi
 %exclude %{_bindir}/nvidia-persistenced.sh
 %exclude %{_bindir}/nvidia-powerd
 %exclude %{_bindir}/nvidia-settings
+%exclude %{_bindir}/nvidia-ngx-updater
 %if 0%{?suse_version} < 1330
 %dir %{_prefix}/X11R6/
 %dir %{_prefix}/X11R6/%{_lib}
@@ -656,6 +652,10 @@ fi
 %exclude %{_libdir}/libnvidia-eglcore.so*
 %exclude %{_libdir}/libnvidia-ptxjitcompiler.so*
 %exclude %{_libdir}/libnvidia-vulkan-producer.so*
+%exclude %{_libdir}/libnvidia-api.so*
+%exclude %{_libdir}/libnvidia-compiler.so*
+%exclude %{_libdir}/libnvidia-ngx.so*
+%exclude %{_libdir}/libnvidia-nvvm.so*
 %dir %{xlibdir}
 %dir %{xlibdir}/modules
 %dir %{xmodulesdir}
@@ -675,14 +675,20 @@ fi
 
 %files -n nvidia-compute-G06
 %defattr(-,root,root)
-%dir %{_sysconfdir}/OpenCL
-%dir %{_sysconfdir}/OpenCL/vendors
-%ifarch x86_64
-%dir %{_libdir}/nvidia/wine/
-%endif
-%config %{_sysconfdir}/OpenCL/vendors/nvidia.icd
-%{_libdir}/libcuda.so*
+%doc %{_datadir}/doc/packages/%{name}
+%exclude %{_datadir}/doc/packages/%{name}/html/nvidia-persistenced.html
+%exclude %{_datadir}/doc/packages/%{name}/html/nvidia-debugdump.html
+%exclude %{_datadir}/doc/packages/%{name}/html/nvidia-smi.html
+%exclude %{_datadir}/doc/packages/%{name}/nvidia-persistenced-init.tar.bz2
 %{_libdir}/libcudadebugger.so*
+%{_libdir}/libcuda.so*
+%{_libdir}/libnvidia-api.so*
+%{_libdir}/libnvidia-compiler.so*
+%{_libdir}/libnvidia-ml.so*
+%{_libdir}/libnvidia-ngx.so*
+%{_libdir}/libnvidia-nvvm.so*
+%{_libdir}/libnvidia-opencl.so*
+%{_libdir}/libnvidia-ptxjitcompiler.so*
 %if (0%{?sle_version} >= 150100 || 0%{?suse_version} >= 1550)
 %dir %{_libdir}/nvidia
 %{_libdir}/nvidia/libOpenCL.so*
@@ -691,9 +697,14 @@ fi
 %else
 %{_libdir}/libOpenCL.so*
 %endif
-%{_libdir}/libnvidia-ml.so*
-%{_libdir}/libnvidia-opencl.so*
-%{_libdir}/libnvidia-ptxjitcompiler.so*
+%dir %{_sysconfdir}/OpenCL
+%dir %{_sysconfdir}/OpenCL/vendors
+%config %{_sysconfdir}/OpenCL/vendors/nvidia.icd
+%{_bindir}/nvidia-ngx-updater
+%ifarch x86_64
+%dir %{_libdir}/nvidia/wine/
+%{_libdir}/nvidia/wine/{_nvngx.dll,nvngx.dll}
+%endif
 
 %files -n nvidia-compute-utils-G06
 %defattr(-,root,root)
@@ -783,9 +794,6 @@ fi
 %{_libdir}/libnvidia-eglcore.so*
 %{xmodulesdir}/extensions
 %{_prefix}/%{_lib}/libnvidia-cfg.so.*
-%ifarch x86_64
-%{_libdir}/nvidia/wine/{_nvngx.dll,nvngx.dll}
-%endif
 
 %ifarch x86_64
 

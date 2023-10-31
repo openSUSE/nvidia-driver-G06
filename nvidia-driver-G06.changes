@@ -1,4 +1,9 @@
 -------------------------------------------------------------------
+Thu Jan 12 14:36:27 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
+
+- moved files to package nvidia-compute-G06 according to Redesign
+
+-------------------------------------------------------------------
 Thu Jan 12 13:29:41 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
 
 - no powerd on aarch64; remove from filelist there 
