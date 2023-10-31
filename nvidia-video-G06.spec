@@ -87,6 +87,7 @@ for GeForce 700 series and newer GPUs.
 Summary:        NVIDIA driver for computing with GPGPU
 Group:          System/Libraries
 Requires:       (nvidia-driver-G06-kmp = %{version} or nvidia-open-driver-G06-kmp = %{version} or nvidia-open-driver-G06-signed-kmp = %{version})
+### TODO: remove when whole Redesign, i.e. also cuda meta packages on nVidia side, is done
 Provides:       cuda-drivers = %{version}
 Conflicts:      nvidia-computeG02
 Conflicts:      nvidia-computeG03
@@ -804,7 +805,7 @@ fi
 %{_prefix}/X11R6/%{_lib}/libOpenGL.so*
 %endif
 ### TODO
-### nvidia-dubs.conf
+### nvidia-dbus.conf
 %{xmodulesdir}/drivers/nvidia_drv.so
 %dir /etc/vulkan
 %dir /etc/vulkan/icd.d
