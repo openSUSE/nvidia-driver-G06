@@ -1,4 +1,13 @@
 -------------------------------------------------------------------
+Mon Jan 16 13:08:48 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
+
+- no longer package manual page for nvidia-installer, which isn't
+  packages for obvious reasons
+- move html pages for nvidia-persistenced, nvidia-debugdump and
+  nvidia-smi to nvidia-compute-G06 where alsoall the other html
+  pages are
+
+-------------------------------------------------------------------
 Fri Jan 13 14:05:47 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
 
 - moved files to package nvidia-video-G06-32bit according to Redesign 

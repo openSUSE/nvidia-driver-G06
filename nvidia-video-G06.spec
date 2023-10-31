@@ -590,6 +590,8 @@ fi
 %files
 %defattr(-,root,root)
 %doc %{_mandir}/man1/*
+# nvidia-installer not packaged for obvious reasons
+%exclude %{_mandir}/man1/nvidia-installer.1.gz
 %exclude %{_mandir}/man1/nvidia-cuda-mps-control.1.gz
 %exclude %{_mandir}/man1/nvidia-modprobe.1.gz
 %exclude %{_mandir}/man1/nvidia-persistenced.1.gz
@@ -671,9 +673,6 @@ fi
 %files -n nvidia-compute-G06
 %defattr(-,root,root)
 %doc %{_datadir}/doc/packages/%{name}
-%exclude %{_datadir}/doc/packages/%{name}/html/nvidia-persistenced.html
-%exclude %{_datadir}/doc/packages/%{name}/html/nvidia-debugdump.html
-%exclude %{_datadir}/doc/packages/%{name}/html/nvidia-smi.html
 %exclude %{_datadir}/doc/packages/%{name}/nvidia-persistenced-init.tar.bz2
 %{_libdir}/libcudadebugger.so*
 %{_libdir}/libcuda.so*
@@ -710,7 +709,6 @@ fi
 %{_mandir}/man1/nvidia-cuda-mps-control.1.gz
 %{_bindir}/nvidia-cuda-mps-server
 %{_bindir}/nvidia-debugdump
-%{_datadir}/doc/packages/%{name}/html/nvidia-debugdump.html
 %{_bindir}/nvidia-modprobe
 %{_mandir}/man1/nvidia-modprobe.1.gz
 %{_bindir}/nvidia-persistenced
@@ -718,14 +716,12 @@ fi
 %{_datadir}/doc/packages/%{name}/nvidia-persistenced-init.tar.bz2
 %{_bindir}/nvidia-persistenced.sh
 /usr/lib/systemd/system/nvidia-persistenced.service
-%{_datadir}/doc/packages/%{name}/html/nvidia-persistenced.html
 %ifnarch aarch64
 %{_bindir}/nvidia-powerd
 /usr/lib/systemd/system/nvidia-powerd.service
 %endif
 %{_bindir}/nvidia-smi
 %{_mandir}/man1/nvidia-smi.1.gz
-%{_datadir}/doc/packages/%{name}/html/nvidia-smi.html
 
 %files -n nvidia-utils-G06
 %defattr(-,root,root)
