@@ -409,9 +409,6 @@ mv %{buildroot}/%{_libdir}/libOpenCL.so.1* %{buildroot}/%{_libdir}/nvidia
 ln -s %{_sysconfdir}/alternatives/libOpenCL.so.1 %{buildroot}/%{_libdir}/libOpenCL.so.1
 ln -s %{_libdir}/nvidia/libOpenCL.so.1 %{buildroot}/%{_sysconfdir}/alternatives/libOpenCL.so.1
 %endif
-# GSP firmware
-mkdir -p %{buildroot}/lib/firmware/nvidia/%{version}
-install -m 644 firmware/{gsp_ad10x.bin,gsp_tu10x.bin} %{buildroot}/lib/firmware/nvidia/%{version}
 # GBM symlink for Mesa
 mkdir -p %{buildroot}%{_libdir}/gbm
 if [ -f %{buildroot}%{_libdir}/libnvidia-allocator.so.1 ]; then
@@ -598,9 +595,6 @@ fi
 %exclude %{_mandir}/man1/nvidia-smi.1.gz
 %exclude %{_mandir}/man1/nvidia-settings.1.gz
 %exclude %{_mandir}/man1/nvidia-xconfig.1.gz
-%if 0%{?suse_version} < 1330
-%{_bindir}/X.%{name}
-%endif
 %{_bindir}/nvidia*
 %exclude %{_bindir}/nvidia-modprobe
 %exclude %{_bindir}/nvidia-smi
@@ -614,11 +608,21 @@ fi
 %exclude %{_bindir}/nvidia-settings
 %exclude %{_bindir}/nvidia-ngx-updater
 %exclude %{_bindir}/nvidia-sleep.sh
+%exclude %{_bindir}/nvidia-xconfig
+# libnvcuvid
+# libnvidia-allocator
+# libnvidia-encode
+# libnvidia-opticalflow.
+# libvdpau_nvidia
+%{_libdir}/lib*
+%dir %{_libdir}/vdpau
+%{_libdir}/vdpau/*
+# symlink to libnvidia-allocator
+%dir %{_libdir}/gbm
+%{_libdir}/gbm/nvidia-drm_gbm.so
 %if 0%{?suse_version} < 1330
 %dir %{_prefix}/X11R6/
 %dir %{_prefix}/X11R6/%{_lib}
-%endif
-%if 0%{?suse_version} < 1330
 %{_prefix}/X11R6/%{_lib}/lib*
 %exclude %{_prefix}/X11R6/%{_lib}/libGL.so*
 %exclude %{_prefix}/X11R6/%{_lib}/libGLX.so*
@@ -632,18 +636,15 @@ fi
 %exclude %{_prefix}/X11R6/%{_lib}/libGLESv2_nvidia.so*
 %exclude %{_prefix}/X11R6/%{_lib}/libOpenGL.so*
 %else
-%exclude %{_prefix}/%{_lib}/libGLX_nvidia.so*
-%exclude %{_prefix}/%{_lib}/libEGL_nvidia.so*
-%exclude %{_prefix}/%{_lib}/libGLESv1_CM_nvidia.so*
-%exclude %{_prefix}/%{_lib}/libGLESv2_nvidia.so*
+%exclude %{_libdir}/libGLX_nvidia.so*
+%exclude %{_libdir}/libEGL_nvidia.so*
+%exclude %{_libdir}/libGLESv1_CM_nvidia.so*
+%exclude %{_libdir}/libGLESv2_nvidia.so*
 %endif
 %exclude %{_libdir}/libnvidia-glcore.so*
 %exclude %{_libdir}/libnvidia-fbc.so*
 %exclude %{_libdir}/libnvidia-egl-gbm.so*
 %exclude %{_libdir}/libnvidia-egl-wayland.so*
-%dir %{_libdir}/vdpau
-%{_libdir}/lib*
-%{_libdir}/vdpau/*
 %exclude %{_libdir}/libcuda.so*
 %exclude %{_libdir}/libcudadebugger.so*
 %exclude %{_libdir}/libOpenCL.so*
@@ -664,15 +665,7 @@ fi
 %exclude %{_libdir}/libnvidia-tls.so*
 %exclude %{_libdir}/libnvidia-wayland-client.so*
 %exclude %{_libdir}/libnvoptix.so*
-%exclude %{_bindir}/nvidia-xconfig
-%exclude %{_prefix}/%{_lib}/libnvidia-cfg.so.*
-%dir /lib/firmware/nvidia
-%dir /lib/firmware/nvidia/%{version}
-/lib/firmware/nvidia/%{version}/gsp_ad10x.bin
-/lib/firmware/nvidia/%{version}/gsp_tu10x.bin
-# symlink to libnvidia-allocator
-%dir %{_libdir}/gbm
-%{_libdir}/gbm/nvidia-drm_gbm.so
+%exclude %{_libdir}/libnvidia-cfg.so.*
 
 %files -n nvidia-compute-G06
 %defattr(-,root,root)
@@ -772,6 +765,9 @@ fi
 %{_prefix}/%{_lib}/libGLESv1_CM_nvidia.so*
 %{_prefix}/%{_lib}/libGLESv2_nvidia.so*
 %{_prefix}/%{_lib}/libGLX_nvidia.so*
+%endif
+%if 0%{?suse_version} < 1330
+%{_bindir}/X.%{name}
 %endif
 %dir %{xlibdir}
 %dir %{xlibdir}/modules
