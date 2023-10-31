@@ -1,13 +1,13 @@
 <services>
   <service name="download_files" mode="disabled"/>
   <service name="verify_file" mode="disabled">
-    <param name="file">NVIDIA-Linux-x86_64-525.105.17.run</param>
+    <param name="file">NVIDIA-Linux-x86_64-525.116.03.run</param>
     <param name="verifier">sha256</param>
-    <param name="checksum">c635a21a282c9b53485f19ebb64a0f4b536a968b94d4d97629e0bc547a58142a</param>
+    <param name="checksum">5c295b02ebec2e9a9ec0d79ba9292eb623b4b2fbba8a6ed619060929a30d0469</param>
   </service>
   <service name="verify_file" mode="disabled">
-    <param name="file">NVIDIA-Linux-aarch64-525.105.17.run</param>
+    <param name="file">NVIDIA-Linux-aarch64-525.116.03.run</param>
     <param name="verifier">sha256</param>
-    <param name="checksum">1546e6ba91cd55a6f7b0cfd28435cf33ba4afb9182dbfae2d585b6d07c77bdb1</param>
+    <param name="checksum">c78159c6d303b654b02ef874ac24dd169f3e9423e8c5d7af08303e6f723c0dee</param>
   </service>
 </services>
