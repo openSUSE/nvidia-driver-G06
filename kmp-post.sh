@@ -1,3 +1,9 @@
+# switch back with SLE-15-SP5 GM
+%if 0%{?sle_version} >= 150500
+dir=linux-obj
+%else
+dir=linux-%{2}*-obj
+%endif
 %ifarch %ix86
 arch=i386
 %endif
@@ -9,18 +15,18 @@ flavor=%1
 #export JOBS=${CONCURRENCY_LEVEL} && \
 #export __JOBS=${JOBS} && \ 
 #export MAKEFLAGS="-j ${JOBS}"
-kver=$(make -j$(nproc) -sC /usr/src/linux-%{2}*-obj/$arch/$flavor kernelrelease)
+kver=$(make -j$(nproc) -sC /usr/src/$dir/$arch/$flavor kernelrelease)
 RES=0
-make -j$(nproc) -C /usr/src/linux-%{2}*-obj/$arch/$flavor \
+make -j$(nproc) -C /usr/src/$dir/$arch/$flavor \
      modules \
      M=/usr/src/kernel-modules/nvidia-%{-v*}-$flavor \
      SYSSRC=/lib/modules/$kver/source \
-     SYSOUT=/usr/src/linux-%{2}*-obj/$arch/$flavor || RES=1
+     SYSOUT=/usr/src/$dir/$arch/$flavor || RES=1
 pushd /usr/src/kernel-modules/nvidia-%{-v*}-$flavor 
 make -j$(nproc) -f Makefile \
      nv-linux.o \
      SYSSRC=/lib/modules/$kver/source \
-     SYSOUT=/usr/src/linux-%{2}*-obj/$arch/$flavor || RES=1
+     SYSOUT=/usr/src/$dir/$arch/$flavor || RES=1
 popd
 # remove still existing old kernel modules (boo#1174204)
 rm -f /lib/modules/$kver/updates/nvidia*.ko

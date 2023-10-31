@@ -216,6 +216,7 @@ mkdir obj
 sed -i -e 's,-o "$ARCH" = "x86_64",-o "$ARCH" = "x86_64" -o "$ARCH" = "x86",' source/*/conftest.sh
 
 %build
+echo "*** sle_version: 0%{?sle_version} ***"
 export EXTRA_CFLAGS='-DVERSION=\"%{version}\"'
 for flavor in %flavors_to_build; do
     src=/lib/modules/$(make %{?jobs:-j%jobs} -siC %{kernel_source $flavor} kernelrelease)/source
