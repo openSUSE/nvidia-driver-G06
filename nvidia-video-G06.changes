@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Tue Jan 24 13:23:20 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
+
+- added meta packages nvidia-drivers-G06 and nvidia-drivers-minimal-G06
+  for full and compute only installations according to Redesign
+
+-------------------------------------------------------------------
 Tue Jan 24 12:29:26 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
 
 - moved nvidia-xconfig to nvidia-compute-utils-G06, since this is 

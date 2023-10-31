@@ -135,6 +135,30 @@ Provides:       x11-video-nvidiaG06:/usr/bin/nvidia-settings
 %description -n nvidia-utils-G06
 NVIDIA driver tools.
 
+%package -n nvidia-drivers-G06
+Summary:        Meta package for full installations (X, GL, etc.)
+Group:          System/X11/Utilities
+Requires:       nvidia-gl-G06
+Requires:       (nvidia-driver-G06-kmp = %{version} or nvidia-open-driver-G06-kmp = %{version} or nvidia-open-driver-G06-signed-kmp = %{version})
+Requires:       nvidia-utils-G06
+Requires:       nvidia-compute-utils-G06
+Requires:       nvidia-compute-G06
+Requires:       nvidia-video-G06
+
+%description -n nvidia-drivers-G06
+This is just a Meta package for full installations (X dependancies, GL libs,
+etc.).						    
+
+%package -n nvidia-drivers-minimal-G06
+Summary:        Meta package for compute only installations
+Group:          System/X11/Utilities
+Requires:       nvidia-compute-utils-G06
+Requires:       nvidia-compute-G06
+Requires:       (nvidia-driver-G06-kmp = %{version} or nvidia-open-driver-G06-kmp = %{version} or nvidia-open-driver-G06-signed-kmp = %{version})
+
+%description -n nvidia-drivers-minimal-G06
+This is just a Meta package for compute only installations.
+
 %package -n nvidia-gl-G06
 Summary:        NVIDIA OpenGL libraries for OpenGL acceleration
 Group:          System/Libraries
@@ -732,6 +756,12 @@ fi
 %{_mandir}/man1/nvidia-settings.1.gz
 %{_datadir}/applications/nvidia-settings.desktop
 %{_datadir}/pixmaps/nvidia-settings.png
+
+%files -n nvidia-drivers-G06
+%defattr(-,root,root)
+
+%files -n nvidia-drivers-minimal-G06
+%defattr(-,root,root)
 
 %files -n nvidia-gl-G06
 %defattr(-,root,root)
