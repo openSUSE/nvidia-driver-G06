@@ -1,4 +1,13 @@
 -------------------------------------------------------------------
+Thu Apr 20 11:53:24 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
+
+- kmp-post.sh/kmp-trigger.sh
+  * load modules already in initrd on non-Optimus, i.e. nVidia-only
+    systems 
+- kmp-filelist
+  * mark dracut config file as %config
+
+-------------------------------------------------------------------
 Wed Apr 19 15:26:38 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
 
 - cuda-cloud-opengpu package
