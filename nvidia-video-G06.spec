@@ -832,14 +832,18 @@ fi
 %exclude %{_prefix}/lib/libnvidia-ml.so*
 %exclude %{_prefix}/lib/libnvidia-opencl.so*
 %exclude %{_prefix}/lib/libnvidia-ptxjitcompiler.so*
+%exclude %{_prefix}/lib/libnvidia-compiler.so*
+%exclude %{_prefix}/lib/libnvidia-nvvm.so*
 
 %files -n nvidia-compute-G06-32bit
 %defattr(-,root,root)
 %{_prefix}/lib/libcuda.so*
-%{_prefix}/lib/libOpenCL.so*
+%{_prefix}/lib/libnvidia-compiler.so*
 %{_prefix}/lib/libnvidia-ml.so*
+%{_prefix}/lib/libnvidia-nvvm.so*
 %{_prefix}/lib/libnvidia-opencl.so*
 %{_prefix}/lib/libnvidia-ptxjitcompiler.so*
+%{_prefix}/lib/libOpenCL.so*
 
 %files -n nvidia-gl-G06-32bit
 %defattr(-,root,root)
