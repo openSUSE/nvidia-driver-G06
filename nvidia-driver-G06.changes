@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Tue Jan 17 12:23:06 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
+
+- created %triggerpostun for nvidia-gfxG06-kmp to recreate
+  weak-updates, when this package gets replaced by nvidia-driver-G06-kmp
+
+-------------------------------------------------------------------
 Mon Jan 16 13:44:37 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
 
 - Update to version 525.85.04
