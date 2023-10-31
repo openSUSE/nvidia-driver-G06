@@ -720,6 +720,8 @@ fi
 %endif
 %{_bindir}/nvidia-smi
 %{_mandir}/man1/nvidia-smi.1.gz
+%{_bindir}/nvidia-xconfig
+%{_mandir}/man1/nvidia-xconfig.1.gz
 
 %files -n nvidia-utils-G06
 %defattr(-,root,root)
@@ -730,8 +732,6 @@ fi
 %{_mandir}/man1/nvidia-settings.1.gz
 %{_datadir}/applications/nvidia-settings.desktop
 %{_datadir}/pixmaps/nvidia-settings.png
-%{_bindir}/nvidia-xconfig
-%{_mandir}/man1/nvidia-xconfig.1.gz
 
 %files -n nvidia-gl-G06
 %defattr(-,root,root)

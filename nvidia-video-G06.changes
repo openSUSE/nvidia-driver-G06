@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Tue Jan 24 12:29:26 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
+
+- moved nvidia-xconfig to nvidia-compute-utils-G06, since this is 
+  needed by suse-prime/prime-select to detect nvidia's PCI busid.
+
+-------------------------------------------------------------------
 Fri Jan 20 10:58:21 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
 
 - created %triggerpostun for nvidia-gfxG06-kmp also for Tumbleweed
