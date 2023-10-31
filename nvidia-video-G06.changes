@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Wed Oct 25 14:07:24 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
+
+- transition to alternatives-free GLX version no longer needed;
+  therefore get rid of 'Requires(post): xorg-x11-server' as well
+
+-------------------------------------------------------------------
 Thu Oct 19 19:41:32 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
 
 - during beta period of sle15-sp6 no longer try to require a "GA"

@@ -197,8 +197,6 @@ Requires:       (nvidia-driver-G06-kmp = %{version} or nvidia-open-driver-G06-km
 Requires:       libnvidia-egl-wayland1 >= %{eglwaylandversion}
 %endif
 Requires(post):   update-alternatives
-# Transition back to X.Org's libglx.so (boo#1149858)
-Requires(post):   xorg-x11-server
 Conflicts:      nvidia-glG03
 Conflicts:      nvidia-glG04
 Conflicts:      nvidia-glG05
@@ -577,11 +575,6 @@ fi
 
 %post -n nvidia-gl-G06
 %if 0%{?suse_version} >= 1315
-# Transition to alternatives-free GLX version (boo#1149858)
-if [ -f %{_libdir}/xorg/modules/extensions/nvidia/nvidia-libglx.so ]; then
-  "%_sbindir/update-alternatives" --remove libglx.so %{_libdir}/xorg/modules/extensions/nvidia/nvidia-libglx.so
-  "%_sbindir/update-alternatives" --auto libglx.so
-fi 
 # Optimus systems 
 if lspci -n | grep -e '^..:..\.. 0300: ' | cut -d " "  -f3 | cut -d ":" -f1 | grep -q 8086; then
   # Support is available since sle15-sp1/Leap 15.1
