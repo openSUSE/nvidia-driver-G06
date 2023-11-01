@@ -1,4 +1,21 @@
 -------------------------------------------------------------------
+Wed Nov  1 18:40:39 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
+
+- Update to version 535.129.03
+  * Fixed a bug that could cause modes to fail validation when 
+    Option "ModeValidation" "NoExtendedGpuCapabilitiesCheck" is 
+    specified in xorg.conf.
+  * Fixed a bug that could cause GPU memory utilization to be 
+    reported incorrectly for Multi-Instance GPU (MIG) partitions 
+    on Grace Hopper systems.
+  * Fixed a bug that intermittently caused the display to freeze 
+    when resuming from suspend on some Ada GPUs.
+  * Fixed a bug which could cause some DisplayPort monitors to 
+    flicker.
+  * Fixed a bug that could cause monitors to flicker when the 
+    performance state changes on Turing GPUs.
+
+-------------------------------------------------------------------
 Wed Oct 25 14:07:24 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
 
 - transition to alternatives-free GLX version no longer needed;
