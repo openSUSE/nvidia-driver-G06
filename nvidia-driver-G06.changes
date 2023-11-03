@@ -1,4 +1,9 @@
 -------------------------------------------------------------------
+Fri Nov  3 19:44:58 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
+
+- cleanup; sle12 is no longer supported 
+
+-------------------------------------------------------------------
 Wed Nov  1 18:38:29 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
 
 - Update to version 535.129.03

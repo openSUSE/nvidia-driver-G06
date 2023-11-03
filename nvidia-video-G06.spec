@@ -406,9 +406,6 @@ install -m 644 nvoptix.bin %{buildroot}%{_datadir}/nvidia
 /sbin/ldconfig -n %{buildroot}%{_prefix}/lib/vdpau
 /sbin/ldconfig -n %{buildroot}%{_prefix}/X11R6/lib
 %endif
-%if 0%{?suse_version} < 1330
-install -m 755 $RPM_SOURCE_DIR/Xwrapper %{buildroot}%{_bindir}/X.%{name}
-%endif
 install -m 644 nvidia.icd \
   %{buildroot}%{_sysconfdir}/OpenCL/vendors/
 # Create /etc/ld.so.conf.d/nvidia-driver-G06
@@ -436,7 +433,6 @@ install -m 644 10_nvidia_wayland.json 15_nvidia_gbm.json %{buildroot}/%{_datadir
 mkdir -p %{buildroot}/etc/vulkan/implicit_layer.d/
 install -m 644 nvidia_layers.json %{buildroot}/etc/vulkan/implicit_layer.d/
 # libglvnd is preinstalled on sle15/TW
-%if 0%{?suse_version} >= 1330
 rm %{buildroot}/etc/ld.so.conf.d/nvidia-driver-G06.conf \
    %{buildroot}/usr/X11R6/lib*/libEGL.so.* \
    %{buildroot}/usr/X11R6/lib*/libGL.so* \
@@ -451,7 +447,6 @@ rm %{buildroot}/etc/ld.so.conf.d/nvidia-driver-G06.conf \
 %endif
    rmdir %{buildroot}/usr/X11R6/lib* \
          %{buildroot}/usr/X11R6
-%endif
    mkdir -p %{buildroot}/%{_datadir}/glvnd/egl_vendor.d
    install -m 644 10_nvidia.json %{buildroot}/%{_datadir}/glvnd/egl_vendor.d
 %if (0%{?sle_version} >= 150100 || 0%{?suse_version} >= 1550)
@@ -488,21 +483,6 @@ if ls var/lib/hardware/ids/* &> /dev/null; then
     cat $i >> var/lib/hardware/hd.ids
   done
 fi
-%if 0%{?suse_version} < 1330
-test -f etc/sysconfig/displaymanager && \
-. etc/sysconfig/displaymanager
-if [ "${DISPLAYMANAGER_XSERVER}" == "X.%{name}" ]; then
-  # broken entry in /etc/sysconfig/displaymanager:DISPLAYMANAGER_XSERVER
-  # use a sane default instead
-  DISPLAYMANAGER_XSERVER=Xorg
-fi
-sed -i s/REPLACE_ME/${DISPLAYMANAGER_XSERVER}/g usr/bin/X.%{name}
-test -f etc/sysconfig/displaymanager && \
-sed -i 's/DISPLAYMANAGER_XSERVER=.*/DISPLAYMANAGER_XSERVER=X.%{name}/g' \
-       etc/sysconfig/displaymanager
-test -x /etc/X11/xdm/SuSEconfig.xdm && \
-/etc/X11/xdm/SuSEconfig.xdm
-%endif
 # needed for GNOME Wayland
 %service_add_post nvidia-suspend.service
 %service_add_post nvidia-hibernate.service
@@ -529,12 +509,6 @@ if [ "$1" -eq 0 ]; then
   elif test -x /usr/bin/xgl-switch; then
     /usr/bin/xgl-switch --disable-xgl
   fi
-  # Make sure that after driver uninstall /var/lib/X11/X link points
-  # to a valid Xserver binary again (bnc#903732)
-%if 0%{?suse_version} < 1330
-  test -x /etc/X11/xdm/SuSEconfig.xdm && \
-  /etc/X11/xdm/SuSEconfig.xdm
-%endif
 # needed for GNOME Wayland
 %service_del_postun nvidia-suspend.service
 %service_del_postun nvidia-hibernate.service
@@ -574,7 +548,6 @@ fi
 %endif
 
 %post -n nvidia-gl-G06
-%if 0%{?suse_version} >= 1315
 # Optimus systems 
 if lspci -n | grep -e '^..:..\.. 0300: ' | cut -d " "  -f3 | cut -d ":" -f1 | grep -q 8086; then
   # Support is available since sle15-sp1/Leap 15.1
@@ -603,24 +576,16 @@ if lspci -n | grep -e '^..:..\.. 0300: ' | cut -d " "  -f3 | cut -d ":" -f1 | gr
           /usr/sbin/prime-select nvidia
         ;;
     esac
-%if 0%{?suse_version} < 1330
-  else
-    # Disable it before sle15-sp1/Leap 15.1 (bnc#902667)
-    # use libglvnd since sle15 (the right way)
-    sed -i 's/\(^\/.*\)/#\1/g' %{_sysconfdir}/ld.so.conf.d/nvidia-driver-G06.conf
-%endif
   fi
 elif  [ -x /usr/sbin/prime-select ]; then
   # suse-prime package mistakenly (still) installed; make sure nvidia
   # kernel modules are not blacklisted
   /usr/sbin/prime-select nvidia
 fi
-%endif
 /sbin/ldconfig
 
 %postun -n nvidia-gl-G06
 /sbin/ldconfig
-%if 0%{?suse_version} >= 1315
 if [ "$1" = 0 ] ; then
   # Support is available since sle15-sp1/Leap 15.1
   if [ -x /usr/sbin/prime-select ]; then
@@ -628,7 +593,6 @@ if [ "$1" = 0 ] ; then
 	/usr/sbin/prime-select unset
   fi
 fi
-%endif
 
 %post -n libvdpau1 -p /sbin/ldconfig
 
@@ -670,27 +634,10 @@ fi
 # symlink to libnvidia-allocator
 %dir %{_libdir}/gbm
 %{_libdir}/gbm/nvidia-drm_gbm.so
-%if 0%{?suse_version} < 1330
-%dir %{_prefix}/X11R6/
-%dir %{_prefix}/X11R6/%{_lib}
-%{_prefix}/X11R6/%{_lib}/lib*
-%exclude %{_prefix}/X11R6/%{_lib}/libGL.so*
-%exclude %{_prefix}/X11R6/%{_lib}/libGLX.so*
-%exclude %{_prefix}/X11R6/%{_lib}/libGLX_nvidia.so*
-%exclude %{_prefix}/X11R6/%{_lib}/libGLdispatch.so*
-%exclude %{_prefix}/X11R6/%{_lib}/libEGL.so*
-%exclude %{_prefix}/X11R6/%{_lib}/libGLESv1_CM.so*
-%exclude %{_prefix}/X11R6/%{_lib}/libGLESv2.so*
-%exclude %{_prefix}/X11R6/%{_lib}/libEGL_nvidia.so*
-%exclude %{_prefix}/X11R6/%{_lib}/libGLESv1_CM_nvidia.so*
-%exclude %{_prefix}/X11R6/%{_lib}/libGLESv2_nvidia.so*
-%exclude %{_prefix}/X11R6/%{_lib}/libOpenGL.so*
-%else
 %exclude %{_libdir}/libGLX_nvidia.so*
 %exclude %{_libdir}/libEGL_nvidia.so*
 %exclude %{_libdir}/libGLESv1_CM_nvidia.so*
 %exclude %{_libdir}/libGLESv2_nvidia.so*
-%endif
 %exclude %{_libdir}/libnvidia-glcore.so*
 %exclude %{_libdir}/libnvidia-fbc.so*
 %exclude %{_libdir}/libnvidia-egl-gbm.so*
@@ -796,37 +743,16 @@ fi
 %dir %{_datadir}/egl/egl_external_platform.d
 %config %{_datadir}/egl/egl_external_platform.d/10_nvidia_wayland.json
 %config %{_datadir}/egl/egl_external_platform.d/15_nvidia_gbm.json
-%if 0%{?suse_version} < 1330
-%config %{_sysconfdir}/ld.so.conf.d/nvidia-driver-G06.conf
-%endif
-%if 0%{?suse_version} < 1330
-%{_prefix}/X11R6/%{_lib}/libEGL_nvidia.so*
-%{_prefix}/X11R6/%{_lib}/libEGL.so*
-%{_prefix}/X11R6/%{_lib}/libGLdispatch.so*
-%{_prefix}/X11R6/%{_lib}/libGLESv1_CM_nvidia.so*
-%{_prefix}/X11R6/%{_lib}/libGLESv1_CM.so*
-%{_prefix}/X11R6/%{_lib}/libGLESv2_nvidia.so*
-%{_prefix}/X11R6/%{_lib}/libGLESv2.so*
-%{_prefix}/X11R6/%{_lib}/libGL.so*
-%{_prefix}/X11R6/%{_lib}/libGLX_nvidia.so*
-%else
 %{_prefix}/%{_lib}/libEGL_nvidia.so*
 %{_prefix}/%{_lib}/libGLESv1_CM_nvidia.so*
 %{_prefix}/%{_lib}/libGLESv2_nvidia.so*
 %{_prefix}/%{_lib}/libGLX_nvidia.so*
-%endif
-%if 0%{?suse_version} < 1330
-%{_bindir}/X.%{name}
-%endif
 %dir %{xlibdir}
 %dir %{xlibdir}/modules
 %dir %{xmodulesdir}
 %dir %{xmodulesdir}/drivers
 %dir %{xmodulesdir}/extensions
 %{xmodulesdir}/extensions/libglxserver_nvidia.so*
-%if 0%{?suse_version} < 1330
-%{_prefix}/X11R6/%{_lib}/libGLX.so*
-%endif
 %{_libdir}/libnvidia-cfg.so.*
 %{_libdir}/libnvidia-eglcore.so*
 %{_libdir}/libnvidia-egl-gbm.so*
@@ -852,9 +778,6 @@ fi
 %endif
 %{_libdir}/libnvoptix.so*
 %{_datadir}/nvidia/nvoptix.bin
-%if 0%{?suse_version} < 1330
-%{_prefix}/X11R6/%{_lib}/libOpenGL.so*
-%endif
 ### TODO
 ### nvidia-dbus.conf
 %{xmodulesdir}/drivers/nvidia_drv.so
@@ -884,26 +807,10 @@ fi
 %{_prefix}/lib/lib*
 %dir %{_prefix}/lib/vdpau
 %{_prefix}/lib/vdpau/*
-%if 0%{?suse_version} < 1330
-%dir %{_prefix}/X11R6/lib
-%{_prefix}/X11R6/lib/lib*
-%exclude %{_prefix}/X11R6/lib/libGL.so*
-%exclude %{_prefix}/X11R6/lib/libGLX.so*
-%exclude %{_prefix}/X11R6/lib/libGLX_nvidia.so*
-%exclude %{_prefix}/X11R6/lib/libGLdispatch.so*
-%exclude %{_prefix}/X11R6/lib/libEGL.so*
-%exclude %{_prefix}/X11R6/lib/libGLESv1_CM.so*
-%exclude %{_prefix}/X11R6/lib/libGLESv2.so*
-%exclude %{_prefix}/X11R6/lib/libEGL_nvidia.so*
-%exclude %{_prefix}/X11R6/lib/libGLESv1_CM_nvidia.so*
-%exclude %{_prefix}/X11R6/lib/libGLESv2_nvidia.so*
-%exclude %{_prefix}/X11R6/lib/libOpenGL.so*
-%else
 %exclude %{_prefix}/lib/libGLX_nvidia.so*
 %exclude %{_prefix}/lib/libEGL_nvidia.so*
 %exclude %{_prefix}/lib/libGLESv1_CM_nvidia.so*
 %exclude %{_prefix}/lib/libGLESv2_nvidia.so*
-%endif
 %exclude %{_prefix}/lib/libnvidia-glcore.so*
 %exclude %{_prefix}/lib/libnvidia-eglcore.so*
 %exclude %{_prefix}/lib/libnvidia-glsi.so*
@@ -928,34 +835,16 @@ fi
 
 %files -n nvidia-gl-G06-32bit
 %defattr(-,root,root)
-%if 0%{?suse_version} < 1330
-%{_prefix}/X11R6/lib/libEGL_nvidia.so*
-%{_prefix}/X11R6/lib/libEGL.so*
-%{_prefix}/X11R6/lib/libGLdispatch.so*
-%{_prefix}/X11R6/lib/libGLESv1_CM_nvidia.so*
-%{_prefix}/X11R6/lib/libGLESv1_CM.so*
-%{_prefix}/X11R6/lib/libGLESv2_nvidia.so*
-%{_prefix}/X11R6/lib/libGLESv2.so*
-%{_prefix}/X11R6/lib/libGL.so*
-%{_prefix}/X11R6/lib/libGLX_nvidia.so*
-%else
 %{_prefix}/lib/libEGL_nvidia.so*
 %{_prefix}/lib/libGLESv1_CM_nvidia.so*
 %{_prefix}/lib/libGLESv2_nvidia.so*
 %{_prefix}/lib/libGLX_nvidia.so*
-%endif
-%if 0%{?suse_version} < 1330
-%{_prefix}/X11R6/lib/libGLX.so*
-%endif
 %{_prefix}/lib/libnvidia-eglcore.so*
 %{_prefix}/lib/libnvidia-fbc.so*
 %{_prefix}/lib/libnvidia-glcore.so*
 %{_prefix}/lib/libnvidia-glsi.so*
 %{_prefix}/lib/libnvidia-glvkspirv.so*
 %{_prefix}/lib/libnvidia-tls.so*
-%if 0%{?suse_version} < 1330
-%{_prefix}/X11R6/lib/libOpenGL.so*
-%endif
 %endif
 
 %changelog
