@@ -65,6 +65,8 @@ BuildRequires:  kernel-syms-azure
 BuildRequires:  %kernel_module_package_buildreqs
 BuildRequires:  module-init-tools
 BuildRequires:  update-alternatives
+BuildRequires:  pciutils
+BuildRequires:  perl-Bootloader
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 ExclusiveArch:  x86_64 aarch64
 # patch the kmp template

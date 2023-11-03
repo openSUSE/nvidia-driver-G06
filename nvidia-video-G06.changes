@@ -1,4 +1,11 @@
 -------------------------------------------------------------------
+Fri Nov  3 20:34:52 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
+
+- added pciutils and perl-Bootloader to BuildRequires/PreReq in the
+  hope to get build fixed in ibs (build doesn't fail in a local
+  build for some reason)
+
+-------------------------------------------------------------------
 Fri Nov  3 20:14:29 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
 
 - enabled secureboot signing on Tumbleweed (boo#1203725)

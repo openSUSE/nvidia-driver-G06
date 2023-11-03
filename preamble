@@ -11,7 +11,7 @@ Conflicts: nvidia-gfx-kmp nvidia-gfxG01-kmp nvidia-gfxG02-kmp nvidia-gfxG03-kmp 
 Provides: nvidia-driver-G06-kmp-%1 = %{-v*}
 Provides:  nvidia-gfxG06-kmp-%1 =  %{-v*}
 Obsoletes: nvidia-gfxG06-kmp-%1 <  %{-v*}
-PreReq: kernel-%1
+PreReq: kernel-%1 pciutils perl-Bootloader
 %if (0%{?sle_version} >= 150100 || 0%{?suse_version} >= 1550)
 Supplements: (kernel-%1 and %name)
 %endif
