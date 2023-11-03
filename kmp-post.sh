@@ -1,5 +1,5 @@
 # switch back with SLE-15-SP6 GM
-%if 0%{?sle_version} >= 150600
+%if (0%{?sle_version} >= 150600 || 0%{?suse_version} >= 1550)
 dir=linux-obj
 %else
 dir=linux-%{2}*-obj
@@ -47,7 +47,7 @@ rm -f conftest*.c nv_compiler.h
 mv Makefile{.tmp,} || true
 popd || true
 
-%if 0%{?sle_version} >= 150200
+%if (0%{?sle_version} >= 150200 || 0%{?suse_version} >= 1550)
 # Sign modules on secureboot systems
 if [ -x /usr/bin/mokutil ]; then
   mokutil --sb-state | grep -q "SecureBoot enabled"

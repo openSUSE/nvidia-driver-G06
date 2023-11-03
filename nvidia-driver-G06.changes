@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Fri Nov  3 20:12:29 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
+
+- enabled secureboot signing on Tumbleweed (boo#1203725)
+- fixed filelist and supplements for Tumbleweed
+
+-------------------------------------------------------------------
 Fri Nov  3 19:44:58 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
 
 - cleanup; sle12 is no longer supported 

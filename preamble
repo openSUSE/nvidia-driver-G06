@@ -12,7 +12,7 @@ Provides: nvidia-driver-G06-kmp-%1 = %{-v*}
 Provides:  nvidia-gfxG06-kmp-%1 =  %{-v*}
 Obsoletes: nvidia-gfxG06-kmp-%1 <  %{-v*}
 PreReq: kernel-%1
-%if 0%{?suse_version} >= 1500
+%if (0%{?sle_version} >= 150100 || 0%{?suse_version} >= 1550)
 Supplements: (kernel-%1 and %name)
 %endif
 BuildRequires: kernel-syms

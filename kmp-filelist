@@ -23,7 +23,7 @@
 #%%{kernel_module_directory}/%2-%1/updates/nv-kernel.o
 #%%{kernel_module_directory}/%2-%1/updates/nv-linux.o
 /usr/src/kernel-modules/nvidia-%{-v*}-%1
-%if 0%{?sle_version} >= 150200
+%if (0%{?sle_version} >= 150200 || 0%{?suse_version} >= 1550)
 %ghost %attr(755,root,root) %dir /var/lib/nvidia-pubkeys
 %ghost %attr(644,root,root) /var/lib/nvidia-pubkeys/MOK-%{name}-%{-v*}-%1.der
 %endif
