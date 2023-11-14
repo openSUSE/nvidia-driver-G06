@@ -1,3 +1,3 @@
 # NVreg_PreserveVideoMemoryAllocations needed for GNOME Wayland
 options nvidia NVreg_DeviceFileUID=0 NVreg_DeviceFileGID=33 NVreg_DeviceFileMode=0660 NVreg_PreserveVideoMemoryAllocations=1
-options nvidia-drm modeset=1
+options nvidia-drm modeset=1 fbdev=1

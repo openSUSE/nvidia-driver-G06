@@ -19,10 +19,10 @@
 
 %define xmodulesdir %{xlibdir}/modules
 
-%define eglwaylandversion 1.1.11
+%define eglwaylandversion 1.1.12
 
 Name:           nvidia-video-G06
-Version:        535.129.03
+Version:        545.29.02
 Release:        0
 License:        SUSE-NonFree
 Summary:        NVIDIA graphics driver for GeForce 700 series and newer
@@ -466,8 +466,6 @@ else
   exit 1
 fi
 tar xf $RPM_SOURCE_DIR/nvidia-persistenced.tar.bz2 -C %{buildroot}
-# boo#1199030
-ln -snf libnvidia-vulkan-producer.so.%{version} %{buildroot}%{_libdir}/libnvidia-vulkan-producer.so
 
 %post -p /bin/bash
 /sbin/ldconfig
@@ -650,7 +648,6 @@ fi
 %exclude %{_libdir}/libnvidia-glsi.so*
 %exclude %{_libdir}/libnvidia-eglcore.so*
 %exclude %{_libdir}/libnvidia-ptxjitcompiler.so*
-%exclude %{_libdir}/libnvidia-vulkan-producer.so*
 %exclude %{_libdir}/libnvidia-api.so*
 %exclude %{_libdir}/libnvidia-ngx.so*
 %exclude %{_libdir}/libnvidia-nvvm.so*
@@ -662,6 +659,7 @@ fi
 %exclude %{_libdir}/libnvidia-wayland-client.so*
 %exclude %{_libdir}/libnvoptix.so*
 %exclude %{_libdir}/libnvidia-cfg.so.*
+%exclude %{_libdir}/libnvidia-gpucomp.so.*
 
 %files -n nvidia-compute-G06
 %defattr(-,root,root)
@@ -772,7 +770,7 @@ fi
 %endif
 %{_libdir}/libnvidia-rtcore.so*
 %{_libdir}/libnvidia-tls.so*
-%{_libdir}/libnvidia-vulkan-producer.so*
+%{_libdir}/libnvidia-gpucomp.so*
 %ifnarch aarch64
 %{_libdir}/libnvidia-wayland-client.so*
 %endif
@@ -823,6 +821,7 @@ fi
 %exclude %{_prefix}/lib/libnvidia-fbc.so*
 %exclude %{_prefix}/lib/libnvidia-glvkspirv.so*
 %exclude %{_prefix}/lib/libnvidia-tls.so*
+%exclude %{_prefix}/lib/libnvidia-gpucomp.so*
 
 %files -n nvidia-compute-G06-32bit
 %defattr(-,root,root)
@@ -845,6 +844,7 @@ fi
 %{_prefix}/lib/libnvidia-glsi.so*
 %{_prefix}/lib/libnvidia-glvkspirv.so*
 %{_prefix}/lib/libnvidia-tls.so*
+%{_prefix}/lib/libnvidia-gpucomp.so*
 %endif
 
 %changelog

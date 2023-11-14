@@ -1,4 +1,74 @@
 -------------------------------------------------------------------
+Mon Nov 13 13:37:11 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
+
+- Update to version 545.29.02
+  * Added experimental HDMI 10 bits per component support; enable by
+    loading nvidia-modeset with `hdmi_deepcolor=1`.
+  * Added support for the CTM, DEGAMMA_LUT, and GAMMA_LUT DRM-KMS CRTC
+    properties. These are used by features such as the "Night Light"
+    feature in GNOME and the "Night Color" feature in KDE, when they
+    are used as Wayland compositors.
+  * Added CERTIFIED-quality support for GeForce and Workstation GPUs
+    to open kernelmodules. Please see the "Open Linux Kernel Modules"
+    chapter in the README for details.
+  * Added initial experimental support for runtime D3 (RTD3) power
+    management on Desktop GPUs. Please see the 'PCI-Express Runtime D3
+    (RTD3) Power Management' chapter in the README for more details.
+  * Added support for the EGL_ANDROID_native_fence_sync EGL extension
+    and the VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_SYNC_FD_BIT and
+    VK_EXTERNAL_FENCE_HANDLE_TYPE_SYNC_FD_BIT Vulkan external handle
+    types when the nvidia-drm kernel module is loaded with the modeset=1
+    parameter.
+  * Added experimental support for framebuffer consoles provided by
+    nvidia-drm. On kernels that implement drm_fbdev_generic_setup and
+    drm_aperture_remove_conflicting_pci_framebuffers, nvidia-drm will
+    install a framebuffer console when loaded with both `modeset=1` and
+    `fbdev=1` kernel module parameters. This will replace the Linux boot
+    console driven by a system framebuffer driver such as efifb or vesafb.
+    Note that when an nvidia-drm framebuffer console is enabled, unloading
+    nvidia-drm will cause the screen to turn off.
+  * Updated nvidia-installer to allow installing the driver while an existing
+    NVIDIA driver is already loaded.
+  * Added support for virtual reality displays, such as the SteamVR
+    platform, on Wayland compositors that support DRM leasing. Support
+    requires xwayland version 22.1.0 and wayland-protocols version 1.22, 
+    or later. Tested on sway, minimum version 1.7 with wlroots version 0.15,
+    and also on Kwin, minimum version 5.24.
+    Note: Before xwayland 23.2, there is a known issue with HDMI displays
+    where the headset will fail to start a second time after closing SteamVR.
+    This can be worked around by unplugging and replugging in the headset.
+  * Fixed a bug that prevented VRR (Variable Refresh Rate) from working with
+    Wayland.
+  * Added support to the NVIDIA VDPAU driver for running in Xwayland.
+    Please refer to the "Xwayland support in VDPAU" section of the README
+    for further details.
+  * Added libnvidia-gpucomp.so to the driver package. This is a helper
+    library used for GPU shader compilation.
+  * Removed libnvidia-vulkan-producer.so from the driver package. This
+    helper library is no longer needed by the Wayland WSI.
+  * Fixed a bug that intermittently caused the display to freeze when
+    resuming from suspend on some Ada GPUs.
+  * Fixed a bug that could cause monitors to flicker when the performance
+    state changes on Turing GPUs.
+  * Added support for HDR signaling via the HDR_OUTPUT_METADATA and
+    Colorspace per-connector DRM properties when nvidia-drm is loaded with
+    the `modeset=1` parameter.
+  * Added support for PRIME render offload to Vulkan Wayland WSI.
+  * Fixed a bug that could cause modes to fail validation when Option
+   "ModeValidation" "NoExtendedGpuCapabilitiesCheck" is specified in
+    xorg.conf.
+  * Fixed a bug which could cause some DisplayPort monitors to flicker.
+- added fbdev=1 option for nvidia-drm module, which gives us a proper
+  framebuffer console now ...
+- nosimplefb kernel option no longer needed with usage of nvidia-drm's
+  fbdev=1 option
+- removed dropped 64bit libnvidia-vulkan-producer from filelist
+- added new 32/64 bit libnvidia-gpucomp to; which is now needed
+  thru dlopen() by GL components like libnvidia-eglcore, 
+  libnvidia-glcore and libnvidia-rtcore)
+- libnvidia-egl-wayland.so.1.1.12 is now required
+
+-------------------------------------------------------------------
 Fri Nov  3 20:33:48 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
 
 - added pciutils and perl-Bootloader to BuildRequires/PreReq in the

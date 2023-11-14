@@ -166,10 +166,5 @@ if [ -f /etc/modprobe.d/50-nvidia-default.conf ]; then
 %endif
 fi
 
-# Workaround needed on TW for simpledrm (boo#1201392)
-%if 0%{?suse_version} >= 1550 || 0%{?sle_version} >= 150600
-pbl --add-option nosimplefb=1 --config
-%endif
-
 #needed to move this to specfile after running weak-modules2 (boo#1145316)
 #exit $RES
