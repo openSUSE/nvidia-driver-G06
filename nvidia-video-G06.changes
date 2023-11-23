@@ -1,4 +1,14 @@
 -------------------------------------------------------------------
+Thu Nov 23 02:53:24 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
+
+- Update to version 545.29.06
+  * Fixed a regression that prevented setting backlight brightness levels.
+  * Fixed a bug that could lead to UI corruption in nvidia-installer on
+    systems with more than one initramfs file per kernel.
+  * Fixed a bug that caused games built on the Source 2 engine to hang
+    when running under Xwayland.
+
+-------------------------------------------------------------------
 Mon Nov 13 13:52:48 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
 
 - Update to version 545.29.02
