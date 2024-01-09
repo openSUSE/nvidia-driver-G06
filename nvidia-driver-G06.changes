@@ -1,4 +1,12 @@
 -------------------------------------------------------------------
+Tue Jan  9 10:32:12 UTC 2024 - Stefan Dirsch <sndirsch@suse.com>
+
+- create /run/udev/static_node-tags/uaccess/nvidia${devid} symlinks
+  also during modprobing the nvidia module; this changes the issue
+  of not having access to /dev/nvidia${devid}, when gfxcard has
+  been replaced by a different gfx card after installing the driver
+
+-------------------------------------------------------------------
 Thu Nov 23 02:52:26 UTC 2023 - Stefan Dirsch <sndirsch@suse.com>
 
 - Update to version 545.29.06
