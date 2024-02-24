@@ -1,4 +1,50 @@
 -------------------------------------------------------------------
+Sat Feb 24 11:09:10 UTC 2024 - Stefan Dirsch <sndirsch@suse.com>
+
+- Update to version 550.54.14
+  * Fixed a bug that caused HDMI FRL displays to flicker or blank when
+    enabling VRR with 8 bits per color channel.
+  * Fixed a regression introduced with the 550.40.07 beta driver which
+    caused corrupted window decorations in some applications when running
+    on GNOME.
+  * Fixed a bug where vkAcquireNextImageKHR() was not returning
+    VK_ERROR_OUT_OF_DATE_KHR when it should with WSI X11 swapchains.
+  * Fixed a bug where fences passed to VkSwapchainPresentFenceInfoEXT could
+    signal earlier than expected when a WSI X11 swapchain becomes out of date.
+  * Fixed Xid errors on Hogwarts Legacy and Forza Horizon 4.
+  * Fixed an issue that sometimes caused Wayland applications to run at less
+    than one frame per second on Maxwell, Volta, and Pascal series GPUs.
+  * Added support for the VK_KHR_video_encode_queue,
+    VK_KHR_video_encode_h264, VK_KHR_video_encode_h265 and
+    VK_KHR_video_maintenance1 extensions.
+  * Fixed a bug that caused an intermittent drop in desktop framerate.
+  * Fixed a bug that caused "Flip event timeout" messages to be printed to the
+    system log when displays are hotplugged when nvidia-drm is loaded with the
+    `fbdev=1` kernel module parameter.
+  * Fixed intermittent Xid errors on Horizon Zero Dawn, Metro Exodus,
+    Forza Horizon 5, and Halo Infinite.
+  * Fixed a bug which prevented the "NoMaxPClkCheck" mode validation token
+    from working on single-link TMDS (e.g. DVI, HDMI) outputs.
+  * Fixed a bug that allowed VRR displays to be driven below their minimum
+    refresh rate, resulting in a blank or flickering image.
+  * Added an application profile to improve Kwin performance on hybrid GPU
+    systems by setting OGL_DEDICATED_HW_STATE_PER_CONTEXT=ENABLE_ROBUST.
+  * Updated the build process for NVIDIA kernel modules to honor the
+    INSTALL_MOD_DIR Kbuild environment variable.
+  * Added support for R8, GR88 and YCbCr GBM formats.
+  * Optimized the X driver headless framerate limiter to more closely mimic
+    upstream behavior and prevent it from activating in inconvenient
+    situations. Added a new X config option "LimitFrameRateWhenHeadless" to
+    disable the headless framerate limiter.
+  * Fixed a bug that prevented Gamescope from running when using the NVIDIA
+    Open GPU Kernel modules.
+  * Fixed a bug that prevented the installer package from being unpacked
+    on systems where zstd is not installed, when /tmp is mounted noexec.
+  * Use transparent huge pages for OpenGL/Vulkan when available for the .text
+    section. This is done through madvise() calls, and requires a Linux kernel
+    configured with CONFIG_READ_ONLY_THP_FOR_FS.
+
+-------------------------------------------------------------------
 Tue Jan  9 10:36:06 UTC 2024 - Stefan Dirsch <sndirsch@suse.com>
 
 - create /run/udev/static_node-tags/uaccess/nvidia${devid} symlinks

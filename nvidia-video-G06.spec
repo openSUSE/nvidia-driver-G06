@@ -19,10 +19,10 @@
 
 %define xmodulesdir %{xlibdir}/modules
 
-%define eglwaylandversion 1.1.12
+%define eglwaylandversion 1.1.13
 
 Name:           nvidia-video-G06
-Version:        545.29.06
+Version:        550.54.14
 Release:        0
 License:        SUSE-NonFree
 Summary:        NVIDIA graphics driver for GeForce 700 series and newer
