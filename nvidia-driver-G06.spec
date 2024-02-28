@@ -24,6 +24,13 @@
 #
 %global __requires_exclude kernel-uname-r*
 
+%define req_random_kernel_sources 0
+
+# switch back to default with SLE-15-SP6 GM
+%if (0%{?suse_version} > 1600 ||  0%{?sle_version} >= 150600)
+%define req_random_kernel_sources 1
+%endif
+
 Name:           nvidia-driver-G06
 Version:        550.54.14
 Release:        0
@@ -227,6 +234,13 @@ for flavor in %flavors_to_build; do
     #  %{buildroot}/lib/modules/*-$flavor/updates
     mkdir -p %{buildroot}/usr/src/kernel-modules/nvidia-%{version}-${flavor}
     cp -r source/%{version}/* %{buildroot}/usr/src/kernel-modules/nvidia-%{version}-${flavor}
+%if 0%{?req_random_kernel_sources} == 1
+    # save kernel version for later
+    if [ "$flavor" != "azure" ]; then
+      kver_build=$(make -j$(nproc) -sC /usr/src/linux-obj/%_target_cpu/$flavor kernelrelease)
+      echo $kver_build > %{buildroot}/usr/src/kernel-modules/nvidia-%{version}-${flavor}/kernel_version
+    fi
+%endif
 done
 %if 0%{?suse_version} >= 1550
 mkdir -p %{buildroot}/usr/lib/modprobe.d

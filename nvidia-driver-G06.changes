@@ -1,4 +1,13 @@
 -------------------------------------------------------------------
+Wed Feb 28 16:03:15 UTC 2024 - Stefan Dirsch <sndirsch@suse.com>
+
+- introduced %req_random_kernel_sources define; useful for sle1x-SPy Beta and nvidia
+  * save kernel version already during build; move just built modules
+    in %post to this location, so weak-modules2 script can easily find
+    these packaged in kmp as %ghost and create the required weak-updates
+    symlinks; run weak-modules2 script during %post to create these
+
+-------------------------------------------------------------------
 Wed Feb 28 13:48:30 UTC 2024 - Stefan Dirsch <sndirsch@suse.com>
 
 - cuda-cloud-opengpu

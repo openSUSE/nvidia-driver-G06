@@ -1,5 +1,4 @@
-# switch back with SLE-15-SP6 GM
-%if (0%{?sle_version} >= 150600 || 0%{?suse_version} >= 1550)
+%if 0%{?req_random_kernel_sources} == 1
 dir=linux-obj
 %else
 dir=linux-%{2}*-obj
@@ -36,6 +35,21 @@ rm -f /lib/modules/$kver/updates/nvidia*.ko
 install -m 755 -d /lib/modules/$kver/updates
 install -m 644 /usr/src/kernel-modules/nvidia-%{-v*}-$flavor/nvidia*.ko \
 	/lib/modules/$kver/updates
+
+%if 0%{?req_random_kernel_sources} == 1
+# move kernel modules where they belong and can be found by weak-modules2 script
+if [ "$flavor" != "azure" ]; then
+  kver_build=$(cat /usr/src/kernel-modules/nvidia-%{-v*}-$flavor/kernel_version)
+  if [ "$kver" != "$kver_build" ]; then
+    mkdir -p %{kernel_module_directory}/$kver_build/updates
+    mv %{kernel_module_directory}/$kver/updates/nvidia*.ko \
+       %{kernel_module_directory}/$kver_build/updates
+    # create weak-updates symlinks (and initrd)
+    /usr/lib/module-init-tools/weak-modules2 --add-kernel $kver
+  fi
+fi
+%endif
+
 depmod $kver
 
 # cleanup (boo#1200310)

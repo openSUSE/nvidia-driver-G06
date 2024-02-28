@@ -1,8 +1,7 @@
-# switch back to "kernel-%1-devel = %2" with SLE-15-SP6 GM
-%if (0%{?suse_version} < 1550 &&  0%{?sle_version} < 150600)
-PreReq: kernel-%1-devel = %2 make gcc
-%else
+%if 0%{?req_random_kernel_sources} == 1
 PreReq: kernel-%1-devel make gcc
+%else
+PreReq: kernel-%1-devel = %2 make gcc
 %endif
 Recommends: nvidia-video-G06 = %(echo %{-v*} | sed -e 's:_.*::')
 Recommends: nvidia-gl-G06 = %(echo %{-v*} | sed -e 's:_.*::')
