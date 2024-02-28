@@ -163,12 +163,12 @@ This is just a Meta package for compute only installations.
 %package -n cuda-cloud-opengpu
 Summary:        Meta package for CUDA minimal installation in the Cloud
 Group:          System/Utilities
-Requires:       cuda-libraries-devel-12-1
-Requires:       cuda-minimal-build-12-1
+Requires:       cuda-libraries-devel-12-3
+Requires:       cuda-minimal-build-12-3
 Requires:       nvidia-drivers-minimal-G06
 Requires:       nvidia-open-driver-G06-signed-kmp = %{version}
 %ifnarch aarch64
-Requires:       cuda-demo-suite-12-1
+Requires:       cuda-demo-suite-12-3
 %endif
 
 %description -n cuda-cloud-opengpu

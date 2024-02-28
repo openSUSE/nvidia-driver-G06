@@ -1,4 +1,13 @@
 -------------------------------------------------------------------
+Wed Feb 28 13:50:12 UTC 2024 - Stefan Dirsch <sndirsch@suse.com>
+
+-  cuda-cloud-opengpu
+  * require latest cuda meta packages: 
+    + cuda-libraries-devel-12-3
+    + cuda-minimal-build-12-3
+    + cuda-demo-suite-12-3
+
+-------------------------------------------------------------------
 Sat Feb 24 11:09:10 UTC 2024 - Stefan Dirsch <sndirsch@suse.com>
 
 - Update to version 550.54.14
