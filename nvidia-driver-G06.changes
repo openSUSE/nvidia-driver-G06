@@ -1,4 +1,18 @@
 -------------------------------------------------------------------
+Wed Mar 20 00:57:51 UTC 2024 - Stefan Dirsch <sndirsch@suse.com>
+
+- Update to version 550.54.14
+  * Fixed a bug that could cause the GPU driver to hang when running some
+    Vkd3d games, such as F1 2021,  
+  * Fixed a bug that caused eglExportDMABUFImageQueryMESA() to return
+    invalid DRM formats for the images that use the sRGB color space.
+  * Fixed a bug that caused wgpu applications to hang on Wayland.
+  * Fixed a bug that caused "Flip event timeout" messages to be printed to the
+    system log when the system is suspended without using
+    /usr/bin/nvidia-sleep.sh when nvidia-drm is loaded with the `fbdev=1`
+     kernel module parameter.
+
+-------------------------------------------------------------------
 Wed Feb 28 16:03:15 UTC 2024 - Stefan Dirsch <sndirsch@suse.com>
 
 - introduced %req_random_kernel_sources define; useful for sle1x-SPy Beta and nvidia
