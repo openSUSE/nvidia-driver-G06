@@ -97,9 +97,15 @@ if [ -x /usr/bin/mokutil ]; then
     mokutil --import $pubkey --root-pw
 
     # Sign the Nvidia modules (weak-updates appears to be broken)
+%if 0%{?req_random_kernel_sources} == 1
+    for i in /lib/modules/$kver_build/updates/nvidia*.ko; do
+      /lib/modules/$kver/build/scripts/sign-file sha256 $privkey $pubkey $i
+    done
+%else
     for i in /lib/modules/$kver/updates/nvidia*.ko; do
       /lib/modules/$kver/build/scripts/sign-file sha256 $privkey $pubkey $i
     done
+%endif
 
     # cleanup: private key no longer needed
     rm -f $privkey

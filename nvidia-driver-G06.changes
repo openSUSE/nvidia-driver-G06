@@ -1,7 +1,18 @@
 -------------------------------------------------------------------
+Fri Mar 22 15:08:04 UTC 2024 - Stefan Dirsch <sndirsch@suse.com>
+
+- fixed latest change for real (hopefully) 
+
+-------------------------------------------------------------------
+Fri Mar 22 14:49:05 UTC 2024 - Stefan Dirsch <sndirsch@suse.com>
+
+- kmp-post.sh: sign the modules in the correct location if
+  %req_random_kernel_sources is set (boo#1221776)
+
+-------------------------------------------------------------------
 Wed Mar 20 00:57:51 UTC 2024 - Stefan Dirsch <sndirsch@suse.com>
 
-- Update to version 550.54.14
+- Update to version 550.67
   * Fixed a bug that could cause the GPU driver to hang when running some
     Vkd3d games, such as F1 2021,  
   * Fixed a bug that caused eglExportDMABUFImageQueryMESA() to return
