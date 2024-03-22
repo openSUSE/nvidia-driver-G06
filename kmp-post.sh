@@ -98,9 +98,15 @@ if [ -x /usr/bin/mokutil ]; then
 
     # Sign the Nvidia modules (weak-updates appears to be broken)
 %if 0%{?req_random_kernel_sources} == 1
-    for i in /lib/modules/$kver_build/updates/nvidia*.ko; do
-      /lib/modules/$kver/build/scripts/sign-file sha256 $privkey $pubkey $i
-    done
+    if [ "$flavor" != "azure" ]; then
+      for i in /lib/modules/$kver_build/updates/nvidia*.ko; do
+        /lib/modules/$kver/build/scripts/sign-file sha256 $privkey $pubkey $i
+      done
+    else
+      for i in /lib/modules/$kver/updates/nvidia*.ko; do
+        /lib/modules/$kver/build/scripts/sign-file sha256 $privkey $pubkey $i
+      done
+    fi
 %else
     for i in /lib/modules/$kver/updates/nvidia*.ko; do
       /lib/modules/$kver/build/scripts/sign-file sha256 $privkey $pubkey $i
