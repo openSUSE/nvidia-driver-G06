@@ -1,4 +1,11 @@
 -------------------------------------------------------------------
+Mon Mar 25 13:19:53 UTC 2024 - Stefan Dirsch <sndirsch@suse.com>
+
+- introduce %nvidia_build variable for easier builds by nvidia
+  * nvidia still builds all packages on sle15sp0, but let's 
+    assume packages are used on sle15sp4 and later
+
+-------------------------------------------------------------------
 Mon Mar 25 12:18:34 UTC 2024 - Stefan Dirsch <sndirsch@suse.com>
 
 - cleanup: builds for sle15 < sp3 no longer supported

@@ -15,6 +15,9 @@
 # Please submit bugfixes or comments via http://bugs.opensuse.org/
 #
 
+# nvidia still builds all packages on sle15sp0, but let's assume packages are used on sle15sp4 and later
+%define nvidia_build 0
+
 %define xlibdir %{_libdir}/xorg
 
 %define xmodulesdir %{xlibdir}/modules
@@ -155,7 +158,7 @@ Requires:       (nvidia-driver-G06-kmp = %{version} or nvidia-open-driver-G06-km
 %description -n nvidia-drivers-minimal-G06
 This is just a Meta package for compute only installations.
 
-%if (0%{?sle_version} >= 150400 || 0%{?suse_version} >= 1550)
+%if (0%{?nvidia_build} || 0%{?sle_version} >= 150400 || 0%{?suse_version} >= 1550)
 %package -n cuda-cloud-opengpu
 Summary:        Meta package for CUDA minimal installation in the Cloud
 Group:          System/Utilities
@@ -707,7 +710,7 @@ fi
 %files -n nvidia-drivers-minimal-G06
 %defattr(-,root,root)
 
-%if (0%{?sle_version} >= 150400 || 0%{?suse_version} >= 1550)
+%if (0%{?nvidia_build} || 0%{?sle_version} >= 150400 || 0%{?suse_version} >= 1550)
 %files -n cuda-cloud-opengpu
 %defattr(-,root,root)
 %endif

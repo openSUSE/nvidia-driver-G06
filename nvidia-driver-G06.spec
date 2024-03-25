@@ -24,10 +24,13 @@
 #
 %global __requires_exclude kernel-uname-r*
 
+# nvidia still builds all packages on sle15sp0, but let's assume packages are used on sle15sp4 and later
+%define nvidia_build 0
+
 %define req_random_kernel_sources 0
 
 # switch back to default with SLE-15-SP6 GM
-%if (0%{?suse_version} > 1600 ||  0%{?sle_version} >= 150600)
+%if (0%{?nvidia_build} ||  0%{?suse_version} > 1600 ||  0%{?sle_version} >= 150600)
 %define req_random_kernel_sources 1
 %endif
 
@@ -147,7 +150,7 @@ exit $RES' %_builddir/nvidia-kmp-template)
 %kernel_module_package %kmp_template %_builddir/nvidia-kmp-template -p %_sourcedir/preamble -f %_sourcedir/%kmp_filelist -x %x_flavors
 
 # supplements no longer depend on the driver
-%if (0%{?sle_version} >= 150400 || 0%{?suse_version} >= 1550)
+%if (0%{?nvidia_build} || 0%{?sle_version} >= 150400 || 0%{?suse_version} >= 1550)
 %define pci_id_file %_sourcedir/pci_ids-%version
 %else
 %define pci_id_file %_sourcedir/pci_ids-%version.new
