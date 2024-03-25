@@ -1,4 +1,9 @@
 -------------------------------------------------------------------
+Mon Mar 25 12:18:34 UTC 2024 - Stefan Dirsch <sndirsch@suse.com>
+
+- cleanup: builds for sle15 < sp3 no longer supported
+
+-------------------------------------------------------------------
 Fri Mar 22 15:40:49 UTC 2024 - Stefan Dirsch <sndirsch@suse.com>
 
 - fix location of modules to be signed also for -azure

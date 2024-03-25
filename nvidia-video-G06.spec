@@ -94,11 +94,7 @@ Conflicts:      nvidia-computeG05
 Provides:       nvidia-computeG06 = %{version}
 Obsoletes:      nvidia-computeG06 < %{version}
 Recommends:     nvidia-compute-G06-32bit
-%if (0%{?sle_version} >= 150100 || 0%{?suse_version} >= 1550)
 Requires(pre):  update-alternatives
-%else
-Conflicts:      libOpenCL1
-%endif
 
 %description -n nvidia-compute-G06
 NVIDIA driver for computing with GPGPUs using CUDA or OpenCL.
@@ -449,14 +445,12 @@ rm %{buildroot}/etc/ld.so.conf.d/nvidia-driver-G06.conf \
          %{buildroot}/usr/X11R6
    mkdir -p %{buildroot}/%{_datadir}/glvnd/egl_vendor.d
    install -m 644 10_nvidia.json %{buildroot}/%{_datadir}/glvnd/egl_vendor.d
-%if (0%{?sle_version} >= 150100 || 0%{?suse_version} >= 1550)
 install -d %{buildroot}/%{_sysconfdir}/alternatives \
            %{buildroot}/%{_libdir}/nvidia
 mv %{buildroot}/%{_libdir}/libOpenCL.so.1* %{buildroot}/%{_libdir}/nvidia
 # dummy target for update-alternatives
 ln -s %{_sysconfdir}/alternatives/libOpenCL.so.1 %{buildroot}/%{_libdir}/libOpenCL.so.1
 ln -s %{_libdir}/nvidia/libOpenCL.so.1 %{buildroot}/%{_sysconfdir}/alternatives/libOpenCL.so.1
-%endif
 # GBM symlink for Mesa
 mkdir -p %{buildroot}%{_libdir}/gbm
 if [ -f %{buildroot}%{_libdir}/libnvidia-allocator.so.1 ]; then
@@ -514,8 +508,6 @@ if [ "$1" -eq 0 ]; then
 fi
 exit 0
 
-%if (0%{?sle_version} >= 150100 || 0%{?suse_version} >= 1550)
-
 %post -n nvidia-compute-G06
 # apparently needed when updating from a pre update-alternatives package ...
 rm -f %{_libdir}/libOpenCL.so.1.*
@@ -528,22 +520,14 @@ if [ "$1" = 0 ] ; then
    %{_sbindir}/update-alternatives --remove libOpenCL.so.1  %{_libdir}/nvidia/libOpenCL.so.1
 fi
 
-%else
-
-%post -n nvidia-compute-G06 -p /sbin/ldconfig
-
-%endif
-
 %postun -n nvidia-compute-G06 -p /sbin/ldconfig
 
-%if (0%{?sle_version} >= 150100 || 0%{?suse_version} >= 1550)
 %posttrans -n nvidia-compute-G06
 if [ "$1" = 0 ] ; then
   if ! [ -f %{_libdir}/libOpenCl.so.1 ] ; then
       "%{_sbindir}/update-alternatives" --auto libOpenCL.so.1
   fi
 fi
-%endif
 
 %post -n nvidia-gl-G06
 # Optimus systems 
@@ -673,14 +657,10 @@ fi
 %{_libdir}/libnvidia-nvvm.so*
 %{_libdir}/libnvidia-opencl.so*
 %{_libdir}/libnvidia-ptxjitcompiler.so*
-%if (0%{?sle_version} >= 150100 || 0%{?suse_version} >= 1550)
 %dir %{_libdir}/nvidia
 %{_libdir}/nvidia/libOpenCL.so*
 %ghost %{_libdir}/libOpenCL.so.1
 %ghost %{_sysconfdir}/alternatives/libOpenCL.so.1
-%else
-%{_libdir}/libOpenCL.so*
-%endif
 %dir %{_sysconfdir}/OpenCL
 %dir %{_sysconfdir}/OpenCL/vendors
 %config %{_sysconfdir}/OpenCL/vendors/nvidia.icd

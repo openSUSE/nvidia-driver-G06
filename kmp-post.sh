@@ -61,7 +61,6 @@ rm -f conftest*.c nv_compiler.h
 mv Makefile{.tmp,} || true
 popd || true
 
-%if (0%{?sle_version} >= 150200 || 0%{?suse_version} >= 1550)
 # Sign modules on secureboot systems
 if [ -x /usr/bin/mokutil ]; then
   mokutil --sb-state | grep -q "SecureBoot enabled"
@@ -117,7 +116,6 @@ if [ -x /usr/bin/mokutil ]; then
     rm -f $privkey
   fi
 fi
-%endif
 
 %{_sbindir}/update-alternatives --install /usr/lib/nvidia/alternate-install-present alternate-install-present /usr/lib/nvidia/alternate-install-present-$flavor 11
 
