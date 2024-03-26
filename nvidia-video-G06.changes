@@ -1,4 +1,11 @@
 -------------------------------------------------------------------
+Tue Mar 26 12:34:30 UTC 2024 - Stefan Dirsch <sndirsch@suse.com>
+
+- don't try to use %post/%postun of nvidia-compute-G06-utils for
+  enabling/disabling nvidia-powerd service on aarch64, since there
+  is no such tool available
+
+-------------------------------------------------------------------
 Tue Mar 26 11:59:29 UTC 2024 - Stefan Dirsch <sndirsch@suse.com>
 
 - install nvidia-dbus.conf and enable nvidia-powerd service

@@ -534,6 +534,7 @@ if [ "$1" = 0 ] ; then
   fi
 fi
 
+%ifnarch aarch64
 %post -n nvidia-compute-utils-G06
 # Dynamic Boost on Linux (README.txt: Chapter 23)
 %service_add_post nvidia-powerd.service
@@ -543,6 +544,7 @@ systemctl enable nvidia-powerd.service
 if [ "$1" -eq 0 ]; then
   %service_del_postun nvidia-powerd.service
 fi
+%endif
 
 %post -n nvidia-gl-G06
 # Optimus systems 
