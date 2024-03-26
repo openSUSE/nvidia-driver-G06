@@ -322,6 +322,8 @@ install nvidia-modprobe %{buildroot}%{_bindir}
 install nvidia-ngx-updater %{buildroot}%{_bindir}
 %ifnarch aarch64
 install nvidia-powerd %{buildroot}%{_bindir}
+mkdir -p %{buildroot}%{_datadir}/dbus-1/system.d
+install -m 0644 nvidia-dbus.conf %{buildroot}%{_datadir}/dbus-1/system.d
 %endif
 install libnvidia* %{buildroot}%{_libdir}
 install libcuda* %{buildroot}%{_libdir}
@@ -532,6 +534,16 @@ if [ "$1" = 0 ] ; then
   fi
 fi
 
+%post -n nvidia-compute-utils-G06
+# Dynamic Boost on Linux (README.txt: Chapter 23)
+%service_add_post nvidia-powerd.service
+systemctl enable nvidia-powerd.service
+
+%postun -n nvidia-compute-utils-G06
+if [ "$1" -eq 0 ]; then
+  %service_del_postun nvidia-powerd.service
+fi
+
 %post -n nvidia-gl-G06
 # Optimus systems 
 if lspci -n | grep -e '^..:..\.. 0300: ' | cut -d " "  -f3 | cut -d ":" -f1 | grep -q 8086; then
@@ -688,6 +700,7 @@ fi
 %{_bindir}/nvidia-persistenced.sh
 /usr/lib/systemd/system/nvidia-persistenced.service
 %ifnarch aarch64
+%{_datadir}/dbus-1/system.d/nvidia-dbus.conf
 %{_bindir}/nvidia-powerd
 /usr/lib/systemd/system/nvidia-powerd.service
 %endif
@@ -759,8 +772,6 @@ fi
 %endif
 %{_libdir}/libnvoptix.so*
 %{_datadir}/nvidia/nvoptix.bin
-### TODO
-### nvidia-dbus.conf
 %{xmodulesdir}/drivers/nvidia_drv.so
 %dir /etc/vulkan
 %dir /etc/vulkan/icd.d

@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Tue Mar 26 11:57:58 UTC 2024 - Stefan Dirsch <sndirsch@suse.com>
+
+- install nvidia-dbus.conf and enable nvidia-powerd service
+  (nvidia-compute-G06-utils subpackage)
+
+-------------------------------------------------------------------
 Mon Mar 25 13:18:28 UTC 2024 - Stefan Dirsch <sndirsch@suse.com>
 
 - introduce %nvidia_build variable for easier builds by nvidia
