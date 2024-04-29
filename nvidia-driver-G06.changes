@@ -1,4 +1,12 @@
 -------------------------------------------------------------------
+Mon Apr 29 08:36:11 UTC 2024 - Stefan Dirsch <sndirsch@suse.com>
+
+- Update to version 550.78 (boo#1223454)
+  * Fixed a regression that led to Xid errors when loading the
+    NVIDIA driver on some notebook systems with RTX 4xxx series
+    GPUs.
+
+-------------------------------------------------------------------
 Mon Apr 29 01:08:26 UTC 2024 - Stefan Dirsch <sndirsch@suse.com>
 
 - kmp-post.sh/kmp-trigger.sh
