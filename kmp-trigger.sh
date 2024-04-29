@@ -19,6 +19,8 @@ flavor=%1
 #export MAKEFLAGS="-j ${JOBS}"
 kver=$(make -j$(nproc) -sC /usr/src/linux-obj/$arch/$flavor kernelrelease)
 RES=0
+# mold is not supported (boo#1223344)
+export LD=ld.bfd
 make -j$(nproc) -C /usr/src/linux-obj/$arch/$flavor \
      modules \
      M=/usr/src/kernel-modules/nvidia-%{-v*}-$flavor \
