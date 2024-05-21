@@ -52,7 +52,7 @@ if [ -x /usr/bin/mokutil ]; then
   mokutil --sb-state | grep -q "SecureBoot enabled"
   if [ $? -eq 0 ]; then
     privkey=$(mktemp /tmp/MOK.priv.XXXXXX)
-    pubkeydir=/var/lib/nvidia-pubkeys
+    pubkeydir=/usr/share/nvidia-pubkeys
     pubkey=$pubkeydir/MOK-%{name}-%{-v*}-%{-r*}-$flavor.der
 
     # make sure creation of pubkey doesn't fail later

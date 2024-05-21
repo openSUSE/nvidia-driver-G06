@@ -1,7 +1,7 @@
 flavor=%1
 # remove MOK key
 if [ -x /usr/bin/mokutil ]; then
-  pubkeydir=/var/lib/nvidia-pubkeys
+  pubkeydir=/usr/share/nvidia-pubkeys
   pubkey=$pubkeydir/MOK-%{name}-%{-v*}-%{-r*}-$flavor.der
   if [ $1 -eq 1 ] && [ -f $pubkey.delete ]; then
       # Special case: reinstall of the same pkg version.

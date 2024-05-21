@@ -1,4 +1,12 @@
 -------------------------------------------------------------------
+Tue May 21 09:47:05 UTC 2024 - Stefan Dirsch <sndirsch@suse.com>
+
+- moved MOK public keys from /var/lib/nvidia-pubkeys to
+  /usr/share/nvidia-pubkeys since /var is not mounted on systems
+  working with transactional update like Micro OS or Aeon 
+  (boo#1224773)
+
+-------------------------------------------------------------------
 Mon Apr 29 08:36:11 UTC 2024 - Stefan Dirsch <sndirsch@suse.com>
 
 - Update to version 550.78 (boo#1223454)
