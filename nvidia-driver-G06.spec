@@ -35,7 +35,7 @@
 %endif
 
 Name:           nvidia-driver-G06
-Version:        550.78
+Version:        550.90.07
 Release:        0
 License:        SUSE-NonFree
 Summary:        NVIDIA graphics driver kernel module for GeForce 700 series and newer
@@ -61,6 +61,7 @@ Source22:       kmp-trigger.sh
 Source24:       kmp-triggerpostun.sh
 Source25:       %{name}.rpmlintrc
 Source26:       json-to-pci-id-list.py
+Patch0:         objtool-fix.patch
 NoSource:       0
 NoSource:       1
 NoSource:       6
@@ -193,6 +194,7 @@ echo "kver = %kver"
 %endif
 pushd NVIDIA-Linux-*-%{version}*/
 # apply patches here ...
+%patch -P 0 -p0
 popd
 #rm -rf NVIDIA-Linux-*-%{version}-*/usr/src/nv/precompiled
 mkdir -p source/%{version}

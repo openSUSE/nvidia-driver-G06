@@ -1,0 +1,11 @@
+--- kernel/conftest.sh~	2024-05-28 10:42:44.731931493 +0200
++++ kernel/conftest.sh	2024-05-28 10:41:06.434496796 +0200
+@@ -4962,7 +4962,7 @@
+         echo "static struct {
+                 const char *short_description;
+                 const char *description;
+-              } __nv_patches[] = {"
++              } const __nv_patches[] = {"
+             for i in $PATCHES; do
+                 echo "{ \"$i\", NV_PATCH_${i}_DESCRIPTION },"
+             done

@@ -1,4 +1,20 @@
 -------------------------------------------------------------------
+Tue Jun  4 12:59:25 UTC 2024 - Stefan Dirsch <sndirsch@suse.com>
+
+- Security Update 550.90.07 (boo#1223356)
+  * Temporarily disabled the GLX_EXT_buffer_age extension on Xwayland to
+    work around a bug that could cause corruption.
+  * Fixed a bug that could cause corruption when the GLX_EXT_buffer_age
+    extension is used on X.org with PRIME render offloading.
+  * adds official support for NVIDIA H200 GPUs
+
+-------------------------------------------------------------------
+Wed May 29 11:49:19 UTC 2024 - Stefan Dirsch <sndirsch@suse.com>
+
+- objtool-fix.patch
+  * avoid objtool warning (boo#1224402)
+
+-------------------------------------------------------------------
 Tue May 21 09:47:05 UTC 2024 - Stefan Dirsch <sndirsch@suse.com>
 
 - moved MOK public keys from /var/lib/nvidia-pubkeys to
