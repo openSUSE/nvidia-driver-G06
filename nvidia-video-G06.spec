@@ -129,6 +129,8 @@ NVIDIA driver tools for computing with GPGPUs using CUDA or OpenCL.
 Summary:        NVIDIA driver tools
 Group:          System/X11/Utilities
 Requires:       nvidia-compute-G06
+# /usr/bin/nvidia-settings needs libnvidia-gtk3.so
+Recommends:     nvidia-gl-G06
 Provides:       x11-video-nvidiaG06:/usr/bin/nvidia-settings
 
 %description -n nvidia-utils-G06
