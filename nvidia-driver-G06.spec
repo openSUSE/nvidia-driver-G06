@@ -29,8 +29,7 @@
 
 %define req_random_kernel_sources 0
 
-# switch back to default with SLE-15-SP6 GM
-%if (0%{?nvidia_build} ||  0%{?suse_version} > 1600 ||  0%{?sle_version} >= 150600)
+%if (0%{?nvidia_build} ||  0%{?suse_version} > 1600)
 %define req_random_kernel_sources 1
 %endif
 

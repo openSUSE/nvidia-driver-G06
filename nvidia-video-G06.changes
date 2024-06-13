@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Thu Jun 13 09:30:52 UTC 2024 - Stefan Dirsch <sndirsch@suse.com>
+
+- now with sle15-sp6 released require again GA kernel-devel package, 
+  i.e. no longer set %req_random_kernel_sources for sle15-sp6 build
+
+-------------------------------------------------------------------
 Fri Jun  7 13:11:43 UTC 2024 - Stefan Dirsch <sndirsch@suse.com>
 
 - let nvidia-utils-G06 recommend nvidia-gl-G06 (/usr/bin/nvidia-settings 
