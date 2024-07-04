@@ -63,7 +63,7 @@ Conflicts:      x11-video-nvidiaG05
 Provides:       x11-video-nvidiaG06 = %{version}
 Obsoletes:      x11-video-nvidiaG06 < %{version}
 Conflicts:      fglrx_driver
-Recommends:     nvidia-video-G06-32bit
+Recommends:     nvidia-video-G06-32bit = %{version}
 Requires:       libvdpau1
 ExclusiveArch:  %ix86 x86_64 aarch64
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
@@ -96,7 +96,7 @@ Conflicts:      nvidia-computeG04
 Conflicts:      nvidia-computeG05
 Provides:       nvidia-computeG06 = %{version}
 Obsoletes:      nvidia-computeG06 < %{version}
-Recommends:     nvidia-compute-G06-32bit
+Recommends:     nvidia-compute-G06-32bit = %{version}
 Requires(pre):  update-alternatives
 
 %description -n nvidia-compute-G06
@@ -117,7 +117,7 @@ Obsoletes:      nvidia-computeG06-32bit < %{version}
 %package -n nvidia-compute-utils-G06
 Summary:        NVIDIA driver tools for computing with GPGPU
 Group:          System/X11/Utilities
-Requires:       nvidia-compute-G06
+Requires:       nvidia-compute-G06 = %{version}
 Provides:       nvidia-computeG06:/usr/bin/nvidia-cuda-mps-control
 ### TODO: remove when whole Redesign, i.e. also cuda meta packages on nVidia side, is done
 Provides:       cuda-drivers = %{version}
@@ -128,9 +128,9 @@ NVIDIA driver tools for computing with GPGPUs using CUDA or OpenCL.
 %package -n nvidia-utils-G06
 Summary:        NVIDIA driver tools
 Group:          System/X11/Utilities
-Requires:       nvidia-compute-G06
+Requires:       nvidia-compute-G06 = %{version}
 # /usr/bin/nvidia-settings needs libnvidia-gtk3.so
-Recommends:     nvidia-gl-G06
+Recommends:     nvidia-gl-G06 = %{version}
 Provides:       x11-video-nvidiaG06:/usr/bin/nvidia-settings
 
 %description -n nvidia-utils-G06
@@ -139,12 +139,12 @@ NVIDIA driver tools.
 %package -n nvidia-drivers-G06
 Summary:        Meta package for full installations (X, GL, etc.)
 Group:          System/X11/Utilities
-Requires:       nvidia-gl-G06
+Requires:       nvidia-gl-G06 = %{version}
 Requires:       (nvidia-driver-G06-kmp = %{version} or nvidia-open-driver-G06-kmp = %{version} or nvidia-open-driver-G06-signed-kmp = %{version})
-Requires:       nvidia-utils-G06
-Requires:       nvidia-compute-utils-G06
-Requires:       nvidia-compute-G06
-Requires:       nvidia-video-G06
+Requires:       nvidia-utils-G06 = %{version}
+Requires:       nvidia-compute-utils-G06 = %{version}
+Requires:       nvidia-compute-G06 = %{version}
+Requires:       nvidia-video-G06 = %{version}
 
 %description -n nvidia-drivers-G06
 This is just a Meta package for full installations (X dependancies, GL libs,
@@ -153,8 +153,8 @@ etc.).
 %package -n nvidia-drivers-minimal-G06
 Summary:        Meta package for compute only installations
 Group:          System/X11/Utilities
-Requires:       nvidia-compute-utils-G06
-Requires:       nvidia-compute-G06
+Requires:       nvidia-compute-utils-G06 = %{version}
+Requires:       nvidia-compute-G06 = %{version}
 Requires:       (nvidia-driver-G06-kmp = %{version} or nvidia-open-driver-G06-kmp = %{version} or nvidia-open-driver-G06-signed-kmp = %{version})
 
 %description -n nvidia-drivers-minimal-G06
@@ -164,12 +164,12 @@ This is just a Meta package for compute only installations.
 %package -n cuda-cloud-opengpu
 Summary:        Meta package for CUDA minimal installation in the Cloud
 Group:          System/Utilities
-Requires:       cuda-libraries-devel-12-3
-Requires:       cuda-minimal-build-12-3
-Requires:       nvidia-drivers-minimal-G06
+Requires:       cuda-libraries-devel-12-4
+Requires:       cuda-minimal-build-12-4
+Requires:       nvidia-drivers-minimal-G06 = %{version}
 Requires:       nvidia-open-driver-G06-signed-kmp = %{version}
 %ifnarch aarch64
-Requires:       cuda-demo-suite-12-3
+Requires:       cuda-demo-suite-12-4
 %endif
 
 %description -n cuda-cloud-opengpu
@@ -203,7 +203,7 @@ Conflicts:      nvidia-glG04
 Conflicts:      nvidia-glG05
 Provides:       nvidia-glG06 = %{version}
 Obsoletes:      nvidia-glG06 < %{version}
-Recommends:     nvidia-gl-G06-32bit
+Recommends:     nvidia-gl-G06-32bit = %{version}
 # needed for Optimus systems once NVIDIA's libs get disabled (our default);
 # these packages won't get installed when adding NVIDIA's repository before
 # the installation, which e.g. happens on SLED (bsc#1111471)

@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Thu Jul  4 10:57:14 UTC 2024 - Stefan Dirsch <sndirsch@suse.com>
+
+- added missing version numbers to many requires/recommends so we
+  get a consistent userspace package selection 
+
+-------------------------------------------------------------------
 Thu Jun 13 09:28:00 UTC 2024 - Stefan Dirsch <sndirsch@suse.com>
 
 - now with sle15-sp6 released require again GA kernel-devel package, 
