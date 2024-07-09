@@ -1,4 +1,11 @@
 -------------------------------------------------------------------
+Tue Jul  9 13:13:27 UTC 2024 - Stefan Dirsch <sndirsch@suse.com>
+
+- Update to 550.100 (boo#1227575)
+  * Fixed a bug that caused OpenGL triple buffering to behave like 
+    double buffering.
+
+-------------------------------------------------------------------
 Thu Jul  4 10:58:27 UTC 2024 - Stefan Dirsch <sndirsch@suse.com>
 
 - added missing version numbers to many requires/recommends so we
