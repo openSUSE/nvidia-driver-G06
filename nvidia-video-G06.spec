@@ -76,6 +76,7 @@ for GeForce 700 series and newer GPUs.
 Summary:        32bit NVIDIA graphics driver for GeForce 700 series and newer
 Group:          System/Libraries
 Requires:       nvidia-video-G06 = %{version}
+Requires:       libvdpau1-32bit
 Conflicts:      x11-video-nvidiaG04-32bit
 Conflicts:      x11-video-nvidiaG05-32bit
 Provides:       x11-video-nvidiaG06-32bit = %{version}
@@ -230,40 +231,6 @@ AutoReq: no
 %description -n nvidia-gl-G06-32bit
 This package provides 32bit NVIDIA OpenGL libraries to allow OpenGL
 acceleration under the closed-source NVIDIA drivers.
-
-%package -n libvdpau1
-License:        X11/MIT
-Summary:        VDPAU wrapper and trace libraries
-Group:          System/Libraries
-
-%description -n libvdpau1
-This package contains the libvdpau wrapper library and the
-libvdpau_trace debugging library, along with the header files needed to
-build VDPAU applications.  To actually use a VDPAU device, you need a
-vendor-specific implementation library.  Currently, this is always
-libvdpau_nvidia.  You can override the driver name by setting the
-VDPAU_DRIVER environment variable.
-
-%package -n libvdpau-devel
-License:        X11/MIT
-Summary:        VDPAU wrapper development files
-Group:          Development/Libraries/X11
-Requires:       libvdpau1
-
-%description -n libvdpau-devel
-Note that this package only contains the VDPAU headers that are
-required to build applications. At runtime, the shared libraries are
-needed too and may be installed using the proprietary nVidia driver
-packages.
-
-%package -n libvdpau_trace1
-License:        X11/MIT
-Summary:        VDPAU trace library
-Group:          System/Libraries
-Requires:       libvdpau1
-
-%description -n libvdpau_trace1
-This package provides the library for tracing VDPAU function calls.
 
 %prep
 %setup -T -c %{name}-%{version}
@@ -594,10 +561,6 @@ if [ "$1" = 0 ] ; then
 	/usr/sbin/prime-select unset
   fi
 fi
-
-%post -n libvdpau1 -p /sbin/ldconfig
-
-%postun  -n libvdpau1 -p /sbin/ldconfig
 
 %files
 %defattr(-,root,root)
