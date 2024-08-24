@@ -1,4 +1,20 @@
 -------------------------------------------------------------------
+Mon Aug 12 11:51:48 UTC 2024 - Stefan Dirsch <sndirsch@suse.com>
+
+- Update to 550.107.02 (boo#1229716)
+  * Fixed a race condition involving modeset ownership which could lead
+    to flip event timeout errors when enabling the 'fbdev' kernel module
+    parameter in nvidia-drm.
+  * Fixed a regression that caused nvidia-powerd to exit when
+    nvidia-dbus.conf was not present in the /etc/dbus-1/system.d/
+    directory.
+  * Fixed a bug that could cause memory corruption while handling
+    ACPI events on some notebooks. 
+  * Fixed a bug that could cause external displays to become frozen until
+    the next modeset when using PRIME Display Offloading with the NVIDIA
+    dGPU acting as the display offload sink.
+
+-------------------------------------------------------------------
 Tue Jul  9 13:12:38 UTC 2024 - Stefan Dirsch <sndirsch@suse.com>
 
 - Update to 550.100 (boo#1227575)
