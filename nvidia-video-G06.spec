@@ -423,15 +423,20 @@ EOF
 %if 0%{?suse_version} >= 1550
 rm %{buildroot}/%{_libdir}/libnvidia-gtk2.so.%{version}
 %endif
-# Vulkan driver config (boo#1051988)
-mkdir -p %{buildroot}/etc/vulkan/icd.d/
-install -m 644 nvidia_icd.json %{buildroot}/etc/vulkan/icd.d/
 # EGL driver config
 mkdir -p %{buildroot}/%{_datadir}/egl/egl_external_platform.d
 install -m 644 10_nvidia_wayland.json 15_nvidia_gbm.json %{buildroot}/%{_datadir}/egl/egl_external_platform.d
-# Optimus layer config
-mkdir -p %{buildroot}/etc/vulkan/implicit_layer.d/
-install -m 644 nvidia_layers.json %{buildroot}/etc/vulkan/implicit_layer.d/
+
+# Vulkan driver config
+install -p -m 0644 -D nvidia_icd.json %{buildroot}%{_datadir}/vulkan/icd.d/nvidia_icd.%{_target_cpu}.json
+sed -i -e 's|libGLX_nvidia|%{_libdir}/libGLX_nvidia|g' %{buildroot}%{_datadir}/vulkan/icd.d/nvidia_icd.%{_target_cpu}.json
+install -p -m 0644 -D nvidia_layers.json %{buildroot}%{_datadir}/vulkan/implicit_layer.d/nvidia_layers.json
+
+%ifarch x86_64
+install -p -m 0644 -D nvidia_icd.json %{buildroot}%{_datadir}/vulkan/icd.d/nvidia_icd.i686.json
+sed -i -e 's|libGLX_nvidia|%{_prefix}/lib/libGLX_nvidia|g' %{buildroot}%{_datadir}/vulkan/icd.d/nvidia_icd.i686.json
+%endif
+
 # libglvnd is preinstalled on sle15/TW
 rm %{buildroot}/etc/ld.so.conf.d/nvidia-driver-G06.conf \
    %{buildroot}/usr/X11R6/lib*/libEGL.so.* \
@@ -732,11 +737,11 @@ fi
 %defattr(-,root,root)
 %dir %{_datadir}/glvnd
 %dir %{_datadir}/glvnd/egl_vendor.d
-%config %{_datadir}/glvnd/egl_vendor.d/10_nvidia.json
+%{_datadir}/glvnd/egl_vendor.d/10_nvidia.json
 %dir %{_datadir}/egl
 %dir %{_datadir}/egl/egl_external_platform.d
-%config %{_datadir}/egl/egl_external_platform.d/10_nvidia_wayland.json
-%config %{_datadir}/egl/egl_external_platform.d/15_nvidia_gbm.json
+%{_datadir}/egl/egl_external_platform.d/10_nvidia_wayland.json
+%{_datadir}/egl/egl_external_platform.d/15_nvidia_gbm.json
 %{_prefix}/%{_lib}/libEGL_nvidia.so*
 %{_prefix}/%{_lib}/libGLESv1_CM_nvidia.so*
 %{_prefix}/%{_lib}/libGLESv2_nvidia.so*
@@ -773,11 +778,11 @@ fi
 %{_libdir}/libnvoptix.so*
 %{_datadir}/nvidia/nvoptix.bin
 %{xmodulesdir}/drivers/nvidia_drv.so
-%dir /etc/vulkan
-%dir /etc/vulkan/icd.d
-%config /etc/vulkan/icd.d/nvidia_icd.json
-%dir /etc/vulkan/implicit_layer.d
-%config /etc/vulkan/implicit_layer.d/nvidia_layers.json
+%dir %{_datadir}/vulkan
+%dir %{_datadir}/vulkan/icd.d
+%{_datadir}/vulkan/icd.d/nvidia_icd.%{_target_cpu}.json
+%dir %{_datadir}/vulkan/implicit_layer.d
+%{_datadir}/vulkan/implicit_layer.d/nvidia_layers.json
 %{_bindir}/nvidia-sleep.sh
 /usr/lib/systemd/system/*.service
 %exclude /usr/lib/systemd/system/nvidia-persistenced.service
@@ -831,6 +836,7 @@ fi
 
 %files -n nvidia-gl-G06-32bit
 %defattr(-,root,root)
+%{_datadir}/vulkan/icd.d/nvidia_icd.i686.json
 %{_prefix}/lib/libEGL_nvidia.so*
 %{_prefix}/lib/libGLESv1_CM_nvidia.so*
 %{_prefix}/lib/libGLESv2_nvidia.so*
