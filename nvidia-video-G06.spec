@@ -459,13 +459,12 @@ mv %{buildroot}/%{_libdir}/libOpenCL.so.1* %{buildroot}/%{_libdir}/nvidia
 ln -s %{_sysconfdir}/alternatives/libOpenCL.so.1 %{buildroot}/%{_libdir}/libOpenCL.so.1
 ln -s %{_libdir}/nvidia/libOpenCL.so.1 %{buildroot}/%{_sysconfdir}/alternatives/libOpenCL.so.1
 # GBM symlink for Mesa
-mkdir -p %{buildroot}%{_libdir}/gbm
-if [ -f %{buildroot}%{_libdir}/libnvidia-allocator.so.1 ]; then
-  ln -snf ../libnvidia-allocator.so.1 \
-          %{buildroot}%{_libdir}/gbm/nvidia-drm_gbm.so
-else
-  exit 1
-fi
+mkdir -p %{buildroot}%{_libdir}/gbm/
+ln -snf ../libnvidia-allocator.so.1 %{buildroot}%{_libdir}/gbm/nvidia-drm_gbm.so
+%ifarch x86_64
+mkdir -p %{buildroot}%{_prefix}/lib/gbm/
+ln -snf ../libnvidia-allocator.so.1 %{buildroot}%{_prefix}/lib/gbm/nvidia-drm_gbm.so
+%endif
 tar xf $RPM_SOURCE_DIR/nvidia-persistenced.tar.bz2 -C %{buildroot}
 
 %post -p /bin/bash
@@ -803,6 +802,9 @@ fi
 %{_prefix}/lib/lib*
 %dir %{_prefix}/lib/vdpau
 %{_prefix}/lib/vdpau/*
+# symlink to libnvidia-allocator
+%dir %{_prefix}/lib/gbm
+%{_prefix}/lib/gbm/nvidia-drm_gbm.so
 %exclude %{_prefix}/lib/libGLX_nvidia.so*
 %exclude %{_prefix}/lib/libEGL_nvidia.so*
 %exclude %{_prefix}/lib/libGLESv1_CM_nvidia.so*
