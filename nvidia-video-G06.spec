@@ -415,11 +415,8 @@ install -m 644 nvidia.icd \
 mkdir -p %{buildroot}%{_sysconfdir}/ld.so.conf.d
 cat > %{buildroot}%{_sysconfdir}/ld.so.conf.d/nvidia-driver-G06.conf <<EOF
 %{_prefix}/X11R6/%{_lib}
-%ifarch s390x sparc64 x86_64 ppc64
+%ifarch x86_64
 %{_prefix}/X11R6/lib
-%endif
-%ifarch ppc
-%{_prefix}/X11R6/lib64
 %endif
 EOF
 # Get rid of gtk2 deps on Tumbleweeed
