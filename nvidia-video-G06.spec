@@ -272,9 +272,6 @@ install -d %{buildroot}%{_prefix}/X11R6/lib
 install -d %{buildroot}%{_prefix}/X11R6/%{_lib}
 install -d %{buildroot}%{_prefix}/lib/vdpau
 install -d %{buildroot}%{_libdir}/vdpau
-%ifarch x86_64
-install -d %{buildroot}%{_libdir}/nvidia/wine
-%endif
 install -d %{buildroot}%{xmodulesdir}/drivers
 install -d %{buildroot}%{xmodulesdir}/extensions
 install -d %{buildroot}%{_sysconfdir}/OpenCL/vendors/
@@ -289,11 +286,9 @@ install nvidia-cuda-mps-server %{buildroot}%{_bindir}
 install nvidia-persistenced %{buildroot}%{_bindir}
 install nvidia-modprobe %{buildroot}%{_bindir}
 install nvidia-ngx-updater %{buildroot}%{_bindir}
-%ifnarch aarch64
 install nvidia-powerd %{buildroot}%{_bindir}
 mkdir -p %{buildroot}%{_datadir}/dbus-1/system.d
 install -m 0644 nvidia-dbus.conf %{buildroot}%{_datadir}/dbus-1/system.d
-%endif
 install libnvidia* %{buildroot}%{_libdir}
 install libcuda* %{buildroot}%{_libdir}
 install libOpenCL* %{buildroot}%{_libdir}
@@ -302,6 +297,7 @@ install libnvidia-ml* %{buildroot}%{_libdir}
 install libnvoptix* %{buildroot}%{_libdir}
 install libvdpau_nvidia.so* %{buildroot}%{_libdir}/vdpau
 %ifarch x86_64
+install -d %{buildroot}%{_libdir}/nvidia/wine
 install _nvngx.dll nvngx.dll %{buildroot}%{_libdir}/nvidia/wine
 %endif
 # Bug #596481
@@ -504,7 +500,6 @@ if [ "$1" = 0 ] ; then
   fi
 fi
 
-%ifnarch aarch64
 %post -n nvidia-compute-utils-G06
 # Dynamic Boost on Linux (README.txt: Chapter 23)
 %service_add_post nvidia-powerd.service
@@ -514,7 +509,6 @@ systemctl enable nvidia-powerd.service
 if [ "$1" -eq 0 ]; then
   %service_del_postun nvidia-powerd.service
 fi
-%endif
 
 %post -n nvidia-gl-G06
 # Optimus systems 
@@ -667,11 +661,9 @@ fi
 %{_datadir}/doc/packages/%{name}/nvidia-persistenced-init.tar.bz2
 %{_bindir}/nvidia-persistenced.sh
 /usr/lib/systemd/system/nvidia-persistenced.service
-%ifnarch aarch64
 %{_datadir}/dbus-1/system.d/nvidia-dbus.conf
 %{_bindir}/nvidia-powerd
 /usr/lib/systemd/system/nvidia-powerd.service
-%endif
 %{_bindir}/nvidia-smi
 %{_mandir}/man1/nvidia-smi.1.gz
 
