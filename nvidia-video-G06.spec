@@ -91,6 +91,7 @@ for GeForce 700 series and newer GPUs.
 Summary:        NVIDIA driver for computing with GPGPU
 Group:          System/Libraries
 Requires:       (nvidia-driver-G06-kmp = %{version} or nvidia-open-driver-G06-kmp = %{version} or nvidia-open-driver-G06-signed-kmp = %{version})
+Requires:       libOpenCL1
 Conflicts:      nvidia-computeG02
 Conflicts:      nvidia-computeG03
 Conflicts:      nvidia-computeG04
@@ -98,7 +99,6 @@ Conflicts:      nvidia-computeG05
 Provides:       nvidia-computeG06 = %{version}
 Obsoletes:      nvidia-computeG06 < %{version}
 Recommends:     nvidia-compute-G06-32bit = %{version}
-Requires(pre):  update-alternatives
 
 %description -n nvidia-compute-G06
 NVIDIA driver for computing with GPGPUs using CUDA or OpenCL.
@@ -107,6 +107,7 @@ NVIDIA driver for computing with GPGPUs using CUDA or OpenCL.
 Summary:        32bit NVIDIA driver for computing with GPGPU
 Group:          System/Libraries
 Requires:       nvidia-compute-G06 = %{version}
+Requires:       libOpenCL1-32bit
 Conflicts:      nvidia-computeG04-32bit
 Conflicts:      nvidia-computeG05-32bit
 Provides:       nvidia-computeG06-32bit = %{version}
@@ -291,7 +292,6 @@ mkdir -p %{buildroot}%{_datadir}/dbus-1/system.d
 install -m 0644 nvidia-dbus.conf %{buildroot}%{_datadir}/dbus-1/system.d
 install libnvidia* %{buildroot}%{_libdir}
 install libcuda* %{buildroot}%{_libdir}
-install libOpenCL* %{buildroot}%{_libdir}
 install libnvcuvid* %{buildroot}%{_libdir}
 install libnvidia-ml* %{buildroot}%{_libdir}
 install libnvoptix* %{buildroot}%{_libdir}
@@ -306,8 +306,6 @@ ln -s vdpau/libvdpau_nvidia.so.1 %{buildroot}%{_libdir}/libvdpau_nvidia.so
 install libGL* %{buildroot}%{_prefix}/X11R6/%{_lib}
 # still a lot of applications make a dlopen to the .so file
 ln -snf libGL.so.1 %{buildroot}%{_prefix}/X11R6/%{_lib}/libGL.so
-# same for libOpenGL/libcuda/libnvcuvid
-ln -snf libOpenCL.so.1 %{buildroot}%{_libdir}/libOpenCL.so
 ln -snf libcuda.so.1   %{buildroot}%{_libdir}/libcuda.so
 ln -snf libnvcuvid.so.1 %{buildroot}%{_libdir}/libnvcuvid.so
 # NVML library for Tesla compute products (new since 270.xx)
@@ -325,7 +323,6 @@ ln -sf libglxserver_nvidia.so.%{version} %{buildroot}%{xmodulesdir}/extensions/l
 %ifarch x86_64
 install 32/libnvidia* %{buildroot}%{_prefix}/lib
 install 32/libcuda* %{buildroot}%{_prefix}/lib
-install 32/libOpenCL* %{buildroot}%{_prefix}/lib
 install 32/libnvcuvid* %{buildroot}%{_prefix}/lib
 install 32/libvdpau_nvidia.so* %{buildroot}%{_prefix}/lib/vdpau
 install 32/libGL* %{buildroot}%{_prefix}/X11R6/lib
@@ -338,8 +335,6 @@ install 32/libOpenGL* %{buildroot}%{_prefix}/X11R6/lib
 ln -s vdpau/libvdpau_nvidia.so.1 %{buildroot}%{_prefix}/lib/libvdpau_nvidia.so
 # still a lot of applications make a dlopen to the .so file
 ln -snf libGL.so.1 %{buildroot}%{_prefix}/X11R6/lib/libGL.so
-# same for libOpenCL/libcuda/libnvcuvid
-ln -snf libOpenCL.so.1 %{buildroot}%{_prefix}/lib/libOpenCL.so
 ln -snf libcuda.so.1   %{buildroot}%{_prefix}/lib/libcuda.so
 ln -snf libnvcuvid.so.1 %{buildroot}%{_prefix}/lib/libnvcuvid.so
 %endif
@@ -417,12 +412,6 @@ rm %{buildroot}/etc/ld.so.conf.d/nvidia-driver-G06.conf \
          %{buildroot}/usr/X11R6
    mkdir -p %{buildroot}/%{_datadir}/glvnd/egl_vendor.d
    install -m 644 10_nvidia.json %{buildroot}/%{_datadir}/glvnd/egl_vendor.d
-install -d %{buildroot}/%{_sysconfdir}/alternatives \
-           %{buildroot}/%{_libdir}/nvidia
-mv %{buildroot}/%{_libdir}/libOpenCL.so.1* %{buildroot}/%{_libdir}/nvidia
-# dummy target for update-alternatives
-ln -s %{_sysconfdir}/alternatives/libOpenCL.so.1 %{buildroot}/%{_libdir}/libOpenCL.so.1
-ln -s %{_libdir}/nvidia/libOpenCL.so.1 %{buildroot}/%{_sysconfdir}/alternatives/libOpenCL.so.1
 # GBM symlink for Mesa
 mkdir -p %{buildroot}%{_libdir}/gbm/
 ln -snf ../libnvidia-allocator.so.1 %{buildroot}%{_libdir}/gbm/nvidia-drm_gbm.so
@@ -479,26 +468,9 @@ if [ "$1" -eq 0 ]; then
 fi
 exit 0
 
-%post -n nvidia-compute-G06
-# apparently needed when updating from a pre update-alternatives package ...
-rm -f %{_libdir}/libOpenCL.so.1.*
-%{_sbindir}/update-alternatives --force --install \
-   %{_libdir}/libOpenCL.so.1 libOpenCL.so.1 %{_libdir}/nvidia/libOpenCL.so.1 100
-/sbin/ldconfig
-
-%preun -n nvidia-compute-G06
-if [ "$1" = 0 ] ; then
-   %{_sbindir}/update-alternatives --remove libOpenCL.so.1  %{_libdir}/nvidia/libOpenCL.so.1
-fi
+%post -n nvidia-compute-G06 -p /sbin/ldconfig
 
 %postun -n nvidia-compute-G06 -p /sbin/ldconfig
-
-%posttrans -n nvidia-compute-G06
-if [ "$1" = 0 ] ; then
-  if ! [ -f %{_libdir}/libOpenCl.so.1 ] ; then
-      "%{_sbindir}/update-alternatives" --auto libOpenCL.so.1
-  fi
-fi
 
 %post -n nvidia-compute-utils-G06
 # Dynamic Boost on Linux (README.txt: Chapter 23)
@@ -603,7 +575,6 @@ fi
 %exclude %{_libdir}/libnvidia-egl-wayland.so*
 %exclude %{_libdir}/libcuda.so*
 %exclude %{_libdir}/libcudadebugger.so*
-%exclude %{_libdir}/libOpenCL.so*
 %exclude %{_libdir}/libnvidia-ml.so*
 %exclude %{_libdir}/libnvidia-opencl.so*
 %exclude %{_libdir}/libnvidia-glsi.so*
@@ -634,10 +605,6 @@ fi
 %{_libdir}/libnvidia-nvvm.so*
 %{_libdir}/libnvidia-opencl.so*
 %{_libdir}/libnvidia-ptxjitcompiler.so*
-%dir %{_libdir}/nvidia
-%{_libdir}/nvidia/libOpenCL.so*
-%ghost %{_libdir}/libOpenCL.so.1
-%ghost %{_sysconfdir}/alternatives/libOpenCL.so.1
 %dir %{_sysconfdir}/OpenCL
 %dir %{_sysconfdir}/OpenCL/vendors
 %config %{_sysconfdir}/OpenCL/vendors/nvidia.icd
@@ -770,7 +737,6 @@ fi
 %exclude %{_prefix}/lib/libnvidia-eglcore.so*
 %exclude %{_prefix}/lib/libnvidia-glsi.so*
 %exclude %{_prefix}/lib/libcuda.so*
-%exclude %{_prefix}/lib/libOpenCL.so*
 %exclude %{_prefix}/lib/libnvidia-ml.so*
 %exclude %{_prefix}/lib/libnvidia-opencl.so*
 %exclude %{_prefix}/lib/libnvidia-ptxjitcompiler.so*
@@ -787,7 +753,6 @@ fi
 %{_prefix}/lib/libnvidia-nvvm.so*
 %{_prefix}/lib/libnvidia-opencl.so*
 %{_prefix}/lib/libnvidia-ptxjitcompiler.so*
-%{_prefix}/lib/libOpenCL.so*
 
 %files -n nvidia-gl-G06-32bit
 %defattr(-,root,root)
