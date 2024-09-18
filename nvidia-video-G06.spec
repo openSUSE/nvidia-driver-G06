@@ -564,6 +564,7 @@ fi
 %config %{_sysconfdir}/OpenCL/vendors/nvidia.icd
 %{_bindir}/nvidia-ngx-updater
 %ifarch x86_64
+%dir %{_libdir}/nvidia/
 %dir %{_libdir}/nvidia/wine/
 %{_libdir}/nvidia/wine/{_nvngx.dll,nvngx.dll}
 %endif
@@ -621,7 +622,6 @@ fi
 %{_libdir}/libGLESv2_nvidia.so*
 %{_libdir}/libGLX_nvidia.so*
 %dir %{xlibdir}
-%dir %{xlibdir}/modules
 %dir %{xmodulesdir}
 %dir %{xmodulesdir}/drivers
 %dir %{xmodulesdir}/extensions
@@ -640,9 +640,7 @@ fi
 %{_libdir}/libnvidia-glcore.so*
 %{_libdir}/libnvidia-glsi.so*
 %{_libdir}/libnvidia-glvkspirv.so*
-%ifnarch aarch64
 %{_libdir}/libnvidia-gtk3.so*
-%endif
 %{_libdir}/libnvidia-rtcore.so*
 %{_libdir}/libnvidia-tls.so*
 %{_libdir}/libnvidia-gpucomp.so*
