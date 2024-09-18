@@ -40,7 +40,7 @@ Source5:        README
 Source6:        Xwrapper
 Source7:        pci_ids-%{version}
 Source8:        nvidia-driver-G06.rpmlintrc
-Source9:        nvidia-persistenced.tar.bz2
+Source9:        nvidia-persistenced.service
 NoSource:       0
 NoSource:       1
 NoSource:       4
@@ -341,14 +341,14 @@ ln -snf libnvcuvid.so.1 %{buildroot}%{_prefix}/lib/libnvcuvid.so
 install -d %{buildroot}%{_datadir}/doc/packages/%{name}
 cp -a html %{buildroot}%{_datadir}/doc/packages/%{name}
 install -m 644 LICENSE %{buildroot}%{_datadir}/doc/packages/%{name}
-install -m 644 nvidia-persistenced-init.tar.bz2 \
-  %{buildroot}%{_datadir}/doc/packages/%{name}
 cp -r supported-gpus %{buildroot}%{_datadir}/doc/packages/%{name}
 # Power Management via systemd
 mkdir -p %{buildroot}/usr/lib/systemd/{system,system-sleep}
 install -m 755 systemd/nvidia-sleep.sh %{buildroot}%{_bindir}
 install -m 644 systemd/system/*.service %{buildroot}/usr/lib/systemd/system
+install -m 644 %{SOURCE9} %{buildroot}/usr/lib/systemd/system
 install -m 755 systemd/system-sleep/nvidia %{buildroot}/usr/lib/systemd/system-sleep
+rm -f nvidia-installer*
 install -d %{buildroot}/%{_mandir}/man1
 install -m 644 *.1.gz %{buildroot}/%{_mandir}/man1
 %suse_update_desktop_file -i nvidia-settings System SystemSetup
@@ -419,7 +419,6 @@ ln -snf ../libnvidia-allocator.so.1 %{buildroot}%{_libdir}/gbm/nvidia-drm_gbm.so
 mkdir -p %{buildroot}%{_prefix}/lib/gbm/
 ln -snf ../libnvidia-allocator.so.1 %{buildroot}%{_prefix}/lib/gbm/nvidia-drm_gbm.so
 %endif
-tar xf $RPM_SOURCE_DIR/nvidia-persistenced.tar.bz2 -C %{buildroot}
 
 %post -p /bin/bash
 /sbin/ldconfig
@@ -531,72 +530,27 @@ fi
 
 %files
 %defattr(-,root,root)
-%doc %{_mandir}/man1/*
-# nvidia-installer not packaged for obvious reasons
-%exclude %{_mandir}/man1/nvidia-installer.1.gz
-%exclude %{_mandir}/man1/nvidia-cuda-mps-control.1.gz
-%exclude %{_mandir}/man1/nvidia-modprobe.1.gz
-%exclude %{_mandir}/man1/nvidia-persistenced.1.gz
-%exclude %{_mandir}/man1/nvidia-smi.1.gz
-%exclude %{_mandir}/man1/nvidia-settings.1.gz
-%exclude %{_mandir}/man1/nvidia-xconfig.1.gz
-%{_bindir}/nvidia*
-%exclude %{_bindir}/nvidia-modprobe
-%exclude %{_bindir}/nvidia-smi
-%exclude %{_bindir}/nvidia-cuda-mps-control
-%exclude %{_bindir}/nvidia-cuda-mps-server
-%exclude %{_bindir}/nvidia-bug-report.sh
-%exclude %{_bindir}/nvidia-debugdump
-%exclude %{_bindir}/nvidia-persistenced
-%exclude %{_bindir}/nvidia-persistenced.sh
-%exclude %{_bindir}/nvidia-powerd
-%exclude %{_bindir}/nvidia-settings
-%exclude %{_bindir}/nvidia-ngx-updater
-%exclude %{_bindir}/nvidia-sleep.sh
-%exclude %{_bindir}/nvidia-xconfig
-# libnvcuvid
-# libnvidia-allocator
-# libnvidia-encode
-# libnvidia-opticalflow.
-# libvdpau_nvidia
-%{_libdir}/lib*
 %dir %{_libdir}/vdpau
-%{_libdir}/vdpau/*
+%{_libdir}/vdpau/libvdpau_nvidia.so*
 # symlink to libnvidia-allocator
 %dir %{_libdir}/gbm
 %{_libdir}/gbm/nvidia-drm_gbm.so
-%exclude %{_libdir}/libGLX_nvidia.so*
-%exclude %{_libdir}/libEGL_nvidia.so*
-%exclude %{_libdir}/libGLESv1_CM_nvidia.so*
-%exclude %{_libdir}/libGLESv2_nvidia.so*
-%exclude %{_libdir}/libnvidia-glcore.so*
-%exclude %{_libdir}/libnvidia-fbc.so*
-%exclude %{_libdir}/libnvidia-egl-gbm.so*
-%exclude %{_libdir}/libnvidia-egl-wayland.so*
-%exclude %{_libdir}/libcuda.so*
-%exclude %{_libdir}/libcudadebugger.so*
-%exclude %{_libdir}/libnvidia-ml.so*
-%exclude %{_libdir}/libnvidia-opencl.so*
-%exclude %{_libdir}/libnvidia-glsi.so*
-%exclude %{_libdir}/libnvidia-eglcore.so*
-%exclude %{_libdir}/libnvidia-ptxjitcompiler.so*
-%exclude %{_libdir}/libnvidia-api.so*
-%exclude %{_libdir}/libnvidia-ngx.so*
-%exclude %{_libdir}/libnvidia-nvvm.so*
-%exclude %{_libdir}/libnvidia-glvkspirv.so*
-%exclude %{_libdir}/libnvidia-glvkspirv.so*
-%exclude %{_libdir}/libnvidia-gtk3.so*
-%exclude %{_libdir}/libnvidia-rtcore.so*
-%exclude %{_libdir}/libnvidia-tls.so*
-%exclude %{_libdir}/libnvidia-wayland-client.so*
-%exclude %{_libdir}/libnvoptix.so*
-%exclude %{_libdir}/libnvidia-cfg.so.*
-%exclude %{_libdir}/libnvidia-gpucomp.so.*
+%{_libdir}/libnvcuvid.so*
+%{_libdir}/libnvidia-allocator.so*
+%{_libdir}/libnvidia-encode.so*
+%if 0%{?suse_version} < 1550
+%{_libdir}/libnvidia-gtk2.so*
+%endif
+%{_libdir}/libnvidia-opticalflow.so*
+%ifarch x86_64
+%{_libdir}/libnvidia-pkcs11-openssl3.so*
+%{_libdir}/libnvidia-pkcs11.so*
+%endif
+%{_libdir}/libvdpau_nvidia.so
 
 %files -n nvidia-compute-G06
 %defattr(-,root,root)
 %doc %{_datadir}/doc/packages/%{name}
-%exclude %{_datadir}/doc/packages/%{name}/nvidia-persistenced-init.tar.bz2
 %{_libdir}/libcudadebugger.so*
 %{_libdir}/libcuda.so*
 %{_libdir}/libnvidia-api.so*
@@ -625,8 +579,6 @@ fi
 %{_mandir}/man1/nvidia-modprobe.1.gz
 %{_bindir}/nvidia-persistenced
 %{_mandir}/man1/nvidia-persistenced.1.gz
-%{_datadir}/doc/packages/%{name}/nvidia-persistenced-init.tar.bz2
-%{_bindir}/nvidia-persistenced.sh
 /usr/lib/systemd/system/nvidia-persistenced.service
 %{_datadir}/dbus-1/system.d/nvidia-dbus.conf
 %{_bindir}/nvidia-powerd
@@ -664,10 +616,10 @@ fi
 %dir %{_datadir}/egl/egl_external_platform.d
 %{_datadir}/egl/egl_external_platform.d/10_nvidia_wayland.json
 %{_datadir}/egl/egl_external_platform.d/15_nvidia_gbm.json
-%{_prefix}/%{_lib}/libEGL_nvidia.so*
-%{_prefix}/%{_lib}/libGLESv1_CM_nvidia.so*
-%{_prefix}/%{_lib}/libGLESv2_nvidia.so*
-%{_prefix}/%{_lib}/libGLX_nvidia.so*
+%{_libdir}/libEGL_nvidia.so*
+%{_libdir}/libGLESv1_CM_nvidia.so*
+%{_libdir}/libGLESv2_nvidia.so*
+%{_libdir}/libGLX_nvidia.so*
 %dir %{xlibdir}
 %dir %{xlibdir}/modules
 %dir %{xmodulesdir}
@@ -706,9 +658,9 @@ fi
 %dir %{_datadir}/vulkan/implicit_layer.d
 %{_datadir}/vulkan/implicit_layer.d/nvidia_layers.json
 %{_bindir}/nvidia-sleep.sh
-/usr/lib/systemd/system/*.service
-%exclude /usr/lib/systemd/system/nvidia-persistenced.service
-%exclude /usr/lib/systemd/system/nvidia-powerd.service
+/usr/lib/systemd/system/nvidia-hibernate.service
+/usr/lib/systemd/system/nvidia-resume.service
+/usr/lib/systemd/system/nvidia-suspend.service
 %dir /usr/lib/systemd/system-sleep
 /usr/lib/systemd/system-sleep/nvidia
 %{_bindir}/nvidia-xconfig
@@ -718,33 +670,17 @@ fi
 
 %files -n nvidia-video-G06-32bit
 %defattr(-,root,root)
-# libnvcuvid
-# libnvidia-allocator
-# libnvidia-encode
-# libnvidia-opticalflow.
-# libvdpau_nvidia
-%{_prefix}/lib/lib*
 %dir %{_prefix}/lib/vdpau
-%{_prefix}/lib/vdpau/*
+%{_prefix}/lib/vdpau/libvdpau_nvidia.so*
 # symlink to libnvidia-allocator
 %dir %{_prefix}/lib/gbm
 %{_prefix}/lib/gbm/nvidia-drm_gbm.so
-%exclude %{_prefix}/lib/libGLX_nvidia.so*
-%exclude %{_prefix}/lib/libEGL_nvidia.so*
-%exclude %{_prefix}/lib/libGLESv1_CM_nvidia.so*
-%exclude %{_prefix}/lib/libGLESv2_nvidia.so*
-%exclude %{_prefix}/lib/libnvidia-glcore.so*
-%exclude %{_prefix}/lib/libnvidia-eglcore.so*
-%exclude %{_prefix}/lib/libnvidia-glsi.so*
-%exclude %{_prefix}/lib/libcuda.so*
-%exclude %{_prefix}/lib/libnvidia-ml.so*
-%exclude %{_prefix}/lib/libnvidia-opencl.so*
-%exclude %{_prefix}/lib/libnvidia-ptxjitcompiler.so*
-%exclude %{_prefix}/lib/libnvidia-nvvm.so*
-%exclude %{_prefix}/lib/libnvidia-fbc.so*
-%exclude %{_prefix}/lib/libnvidia-glvkspirv.so*
-%exclude %{_prefix}/lib/libnvidia-tls.so*
-%exclude %{_prefix}/lib/libnvidia-gpucomp.so*
+%{_prefix}/lib/vdpau/libvdpau_nvidia.so*
+%{_prefix}/lib/libnvcuvid.so*
+%{_prefix}/lib/libnvidia-allocator.so*
+%{_prefix}/lib/libnvidia-encode.so*
+%{_prefix}/lib/libnvidia-opticalflow.so*
+%{_prefix}/lib/libvdpau_nvidia.so
 
 %files -n nvidia-compute-G06-32bit
 %defattr(-,root,root)
