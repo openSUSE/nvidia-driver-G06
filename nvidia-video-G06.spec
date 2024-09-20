@@ -22,10 +22,13 @@
 
 %define xmodulesdir %{xlibdir}/modules
 
-%define eglwaylandversion 1.1.13
+# Minimum requirements for driver 560:
+%global version_egl_gbm 1.1.2
+%global version_egl_wayland 1.1.13.1
+%global version_egl_x11 0.1
 
 Name:           nvidia-video-G06
-Version:        550.120
+Version:        560.35.03
 Release:        0
 License:        SUSE-NonFree
 Summary:        NVIDIA graphics driver for GeForce 700 series and newer
@@ -121,8 +124,6 @@ Summary:        NVIDIA driver tools for computing with GPGPU
 Group:          System/X11/Utilities
 Requires:       nvidia-compute-G06 = %{version}
 Provides:       nvidia-computeG06:/usr/bin/nvidia-cuda-mps-control
-### TODO: remove when whole Redesign, i.e. also cuda meta packages on nVidia side, is done
-Provides:       cuda-drivers = %{version}
 
 %description -n nvidia-compute-utils-G06
 NVIDIA driver tools for computing with GPGPUs using CUDA or OpenCL.
@@ -197,7 +198,16 @@ Summary:        NVIDIA OpenGL libraries for OpenGL acceleration
 Group:          System/Libraries
 Requires:       (nvidia-driver-G06-kmp = %{version} or nvidia-open-driver-G06-kmp = %{version} or nvidia-open-driver-G06-signed-kmp = %{version})
 %if 0%{?suse_version} >= 1550
-Requires:       libnvidia-egl-wayland1 >= %{eglwaylandversion}
+Requires:       libnvidia-egl-gbm1 >= %{version_egl_gbm}
+Requires:       libnvidia-egl-wayland1 >= %{version_egl_wayland}
+Requires:       libnvidia-egl-x111 >= %{version_egl_x11}
+%else
+Provides:       libnvidia-egl-gbm1 = %{version_egl_gbm}
+Obsoletes:      libnvidia-egl-gbm1 <= %{version_egl_gbm}
+Provides:       libnvidia-egl-wayland1 = %{version_egl_wayland}
+Obsoletes:      libnvidia-egl-wayland1 <= %{version_egl_wayland}
+Provides:       libnvidia-egl-x111 = %{version_egl_x11}
+Obsoletes:      libnvidia-egl-x111 <= %{version_egl_x11}
 %endif
 Requires(post):   update-alternatives
 Conflicts:      nvidia-glG03
@@ -227,6 +237,18 @@ Conflicts:      nvidia-glG04-32bit
 Conflicts:      nvidia-glG05-32bit
 Provides:       nvidia-glG06-32bit = %{version}
 Obsoletes:      nvidia-glG06-32bit < %{version}
+%if 0%{?suse_version} >= 1550
+Requires:       libnvidia-egl-gbm1-32bit >= %{version_egl_gbm}
+Requires:       libnvidia-egl-wayland1-32bit >= %{version_egl_wayland}
+Requires:       libnvidia-egl-x111-32bit >= %{version_egl_x11}
+%else
+Provides:       libnvidia-egl-gbm1-32bit = %{version_egl_gbm}
+Obsoletes:      libnvidia-egl-gbm1-32bit <= %{version_egl_gbm}
+Provides:       libnvidia-egl-wayland1-32bit = %{version_egl_wayland}
+Obsoletes:      libnvidia-egl-wayland1-32bit <= %{version_egl_wayland}
+Provides:       libnvidia-egl-x111-32bit = %{version_egl_x11}
+Obsoletes:      libnvidia-egl-x111-32bit <= %{version_egl_x11}
+%endif
 AutoReq: no
 
 %description -n nvidia-gl-G06-32bit
@@ -324,6 +346,12 @@ ln -sf libglxserver_nvidia.so.%{version} %{buildroot}%{xmodulesdir}/extensions/l
 install 32/libnvidia* %{buildroot}%{_prefix}/lib
 install 32/libcuda* %{buildroot}%{_prefix}/lib
 install 32/libnvcuvid* %{buildroot}%{_prefix}/lib
+%if 0%{?suse_version} < 1550
+install 32/libnvidia-egl-gbm* %{buildroot}%{_prefix}/lib
+install 32/libnvidia-egl-wayland* %{buildroot}%{_prefix}/lib
+install 32/libnvidia-egl-xcb* %{buildroot}%{_prefix}/lib
+install 32/libnvidia-egl-xlib* %{buildroot}%{_prefix}/lib
+%endif
 install 32/libvdpau_nvidia.so* %{buildroot}%{_prefix}/lib/vdpau
 install 32/libGL* %{buildroot}%{_prefix}/X11R6/lib
 install 32/libEGL.so.* %{buildroot}%{_prefix}/X11R6/lib
@@ -381,9 +409,13 @@ EOF
 %if 0%{?suse_version} >= 1550
 rm %{buildroot}/%{_libdir}/libnvidia-gtk2.so.%{version}
 %endif
+
+%if 0%{?suse_version} < 1550
 # EGL driver config
-mkdir -p %{buildroot}/%{_datadir}/egl/egl_external_platform.d
-install -m 644 10_nvidia_wayland.json 15_nvidia_gbm.json %{buildroot}/%{_datadir}/egl/egl_external_platform.d
+mkdir -p %{buildroot}%{_datadir}/egl/egl_external_platform.d
+install -m 644 10_nvidia_wayland.json 15_nvidia_gbm.json 20_nvidia_xcb.json 20_nvidia_xlib.json \
+    %{buildroot}%{_datadir}/egl/egl_external_platform.d
+%endif
 
 # Vulkan driver config
 install -p -m 0644 -D nvidia_icd.json %{buildroot}%{_datadir}/vulkan/icd.d/nvidia_icd.%{_target_cpu}.json
@@ -391,8 +423,15 @@ sed -i -e 's|libGLX_nvidia|%{_libdir}/libGLX_nvidia|g' %{buildroot}%{_datadir}/v
 install -p -m 0644 -D nvidia_layers.json %{buildroot}%{_datadir}/vulkan/implicit_layer.d/nvidia_layers.json
 
 %ifarch x86_64
+
 install -p -m 0644 -D nvidia_icd.json %{buildroot}%{_datadir}/vulkan/icd.d/nvidia_icd.i686.json
 sed -i -e 's|libGLX_nvidia|%{_prefix}/lib/libGLX_nvidia|g' %{buildroot}%{_datadir}/vulkan/icd.d/nvidia_icd.i686.json
+
+# Vulkan SC loader and compiler
+install -p -m 0644 -D nvidia_icd_vksc.json %{buildroot}%{_datadir}/vulkansc/icd.d/nvidia_icd.%{_target_cpu}.json
+sed -i -e 's|libnvidia-vksc-core|%{_libdir}/libnvidia-vksc-core|g' %{buildroot}%{_datadir}/vulkansc/icd.d/nvidia_icd.%{_target_cpu}.json
+install -p -m 0755 -D nvidia-pcc %{buildroot}%{_bindir}/nvidia-pcc
+
 %endif
 
 # libglvnd is preinstalled on sle15/TW
@@ -615,8 +654,12 @@ fi
 %{_datadir}/glvnd/egl_vendor.d/10_nvidia.json
 %dir %{_datadir}/egl
 %dir %{_datadir}/egl/egl_external_platform.d
+%if 0%{?suse_version} < 1550
 %{_datadir}/egl/egl_external_platform.d/10_nvidia_wayland.json
 %{_datadir}/egl/egl_external_platform.d/15_nvidia_gbm.json
+%{_datadir}/egl/egl_external_platform.d/20_nvidia_xcb.json
+%{_datadir}/egl/egl_external_platform.d/20_nvidia_xlib.json
+%endif
 %{_libdir}/libEGL_nvidia.so*
 %{_libdir}/libGLESv1_CM_nvidia.so*
 %{_libdir}/libGLESv2_nvidia.so*
@@ -628,13 +671,11 @@ fi
 %{xmodulesdir}/extensions/libglxserver_nvidia.so*
 %{_libdir}/libnvidia-cfg.so.*
 %{_libdir}/libnvidia-eglcore.so*
-%{_libdir}/libnvidia-egl-gbm.so*
 %if 0%{?suse_version} < 1550
-%{_libdir}/libnvidia-egl-wayland.so.1
-%{_libdir}/libnvidia-egl-wayland.so.%{eglwaylandversion}
-%else
-%exclude %{_libdir}/libnvidia-egl-wayland.so.1
-%exclude %{_libdir}/libnvidia-egl-wayland.so.%{eglwaylandversion}
+%{_libdir}/libnvidia-egl-gbm.so*
+%{_libdir}/libnvidia-egl-wayland.so*
+%{_libdir}/libnvidia-egl-xcb.so*
+%{_libdir}/libnvidia-egl-xlib.so*
 %endif
 %{_libdir}/libnvidia-fbc.so*
 %{_libdir}/libnvidia-glcore.so*
@@ -663,6 +704,13 @@ fi
 /usr/lib/systemd/system-sleep/nvidia
 %{_bindir}/nvidia-xconfig
 %{_mandir}/man1/nvidia-xconfig.1.gz
+%ifarch x86_64
+%{_bindir}/nvidia-pcc
+%dir %{_datadir}/vulkansc
+%dir %{_datadir}/vulkansc/icd.d
+%{_datadir}/vulkansc/icd.d/nvidia_icd.%{_target_cpu}.json
+%{_libdir}/libnvidia-vksc-core.so*
+%endif
 
 %ifarch x86_64
 
@@ -676,6 +724,12 @@ fi
 %{_prefix}/lib/vdpau/libvdpau_nvidia.so*
 %{_prefix}/lib/libnvcuvid.so*
 %{_prefix}/lib/libnvidia-allocator.so*
+%if 0%{?suse_version} < 1550
+%{_prefix}/lib/libnvidia-egl-gbm.so*
+%{_prefix}/lib/libnvidia-egl-wayland.so*
+%{_prefix}/lib/libnvidia-egl-xcb.so*
+%{_prefix}/lib/libnvidia-egl-xlib.so*
+%endif
 %{_prefix}/lib/libnvidia-encode.so*
 %{_prefix}/lib/libnvidia-opticalflow.so*
 %{_prefix}/lib/libvdpau_nvidia.so
@@ -696,6 +750,10 @@ fi
 %{_prefix}/lib/libGLESv2_nvidia.so*
 %{_prefix}/lib/libGLX_nvidia.so*
 %{_prefix}/lib/libnvidia-eglcore.so*
+%{_prefix}/lib/libnvidia-egl-gbm.so*
+%{_prefix}/lib/libnvidia-egl-wayland.so*
+%{_prefix}/lib/libnvidia-egl-xcb.so*
+%{_prefix}/lib/libnvidia-egl-xlib.so*
 %{_prefix}/lib/libnvidia-fbc.so*
 %{_prefix}/lib/libnvidia-glcore.so*
 %{_prefix}/lib/libnvidia-glsi.so*
