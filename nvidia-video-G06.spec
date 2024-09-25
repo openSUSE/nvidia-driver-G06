@@ -312,6 +312,12 @@ install nvidia-ngx-updater %{buildroot}%{_bindir}
 install nvidia-powerd %{buildroot}%{_bindir}
 mkdir -p %{buildroot}%{_datadir}/dbus-1/system.d
 install -m 0644 nvidia-dbus.conf %{buildroot}%{_datadir}/dbus-1/system.d
+%if 0%{?suse_version} >= 1550
+rm libnvidia-egl-gbm*
+rm libnvidia-egl-wayland*
+rm libnvidia-egl-xcb*
+rm libnvidia-egl-xlib*
+%endif
 install libnvidia* %{buildroot}%{_libdir}
 install libcuda* %{buildroot}%{_libdir}
 install libnvcuvid* %{buildroot}%{_libdir}
@@ -343,15 +349,15 @@ install libglxserver_nvidia.so.%{version} \
   %{buildroot}%{xmodulesdir}/extensions/
 ln -sf libglxserver_nvidia.so.%{version} %{buildroot}%{xmodulesdir}/extensions/libglxserver_nvidia.so
 %ifarch x86_64
+%if 0%{?suse_version} >= 1550
+rm 32/libnvidia-egl-gbm*
+rm 32/libnvidia-egl-wayland*
+rm 32/libnvidia-egl-xcb*
+rm 32/libnvidia-egl-xlib*
+%endif
 install 32/libnvidia* %{buildroot}%{_prefix}/lib
 install 32/libcuda* %{buildroot}%{_prefix}/lib
 install 32/libnvcuvid* %{buildroot}%{_prefix}/lib
-%if 0%{?suse_version} < 1550
-install 32/libnvidia-egl-gbm* %{buildroot}%{_prefix}/lib
-install 32/libnvidia-egl-wayland* %{buildroot}%{_prefix}/lib
-install 32/libnvidia-egl-xcb* %{buildroot}%{_prefix}/lib
-install 32/libnvidia-egl-xlib* %{buildroot}%{_prefix}/lib
-%endif
 install 32/libvdpau_nvidia.so* %{buildroot}%{_prefix}/lib/vdpau
 install 32/libGL* %{buildroot}%{_prefix}/X11R6/lib
 install 32/libEGL.so.* %{buildroot}%{_prefix}/X11R6/lib
@@ -652,9 +658,9 @@ fi
 %dir %{_datadir}/glvnd
 %dir %{_datadir}/glvnd/egl_vendor.d
 %{_datadir}/glvnd/egl_vendor.d/10_nvidia.json
+%if 0%{?suse_version} < 1550
 %dir %{_datadir}/egl
 %dir %{_datadir}/egl/egl_external_platform.d
-%if 0%{?suse_version} < 1550
 %{_datadir}/egl/egl_external_platform.d/10_nvidia_wayland.json
 %{_datadir}/egl/egl_external_platform.d/15_nvidia_gbm.json
 %{_datadir}/egl/egl_external_platform.d/20_nvidia_xcb.json
@@ -724,12 +730,6 @@ fi
 %{_prefix}/lib/vdpau/libvdpau_nvidia.so*
 %{_prefix}/lib/libnvcuvid.so*
 %{_prefix}/lib/libnvidia-allocator.so*
-%if 0%{?suse_version} < 1550
-%{_prefix}/lib/libnvidia-egl-gbm.so*
-%{_prefix}/lib/libnvidia-egl-wayland.so*
-%{_prefix}/lib/libnvidia-egl-xcb.so*
-%{_prefix}/lib/libnvidia-egl-xlib.so*
-%endif
 %{_prefix}/lib/libnvidia-encode.so*
 %{_prefix}/lib/libnvidia-opticalflow.so*
 %{_prefix}/lib/libvdpau_nvidia.so
@@ -750,10 +750,12 @@ fi
 %{_prefix}/lib/libGLESv2_nvidia.so*
 %{_prefix}/lib/libGLX_nvidia.so*
 %{_prefix}/lib/libnvidia-eglcore.so*
+%if 0%{?suse_version} < 1550
 %{_prefix}/lib/libnvidia-egl-gbm.so*
 %{_prefix}/lib/libnvidia-egl-wayland.so*
 %{_prefix}/lib/libnvidia-egl-xcb.so*
 %{_prefix}/lib/libnvidia-egl-xlib.so*
+%endif
 %{_prefix}/lib/libnvidia-fbc.so*
 %{_prefix}/lib/libnvidia-glcore.so*
 %{_prefix}/lib/libnvidia-glsi.so*
