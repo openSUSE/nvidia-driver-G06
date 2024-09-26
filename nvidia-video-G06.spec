@@ -43,7 +43,6 @@ Source5:        README
 Source6:        Xwrapper
 Source7:        pci_ids-%{version}
 Source8:        nvidia-driver-G06.rpmlintrc
-Source9:        nvidia-persistenced.service
 NoSource:       0
 NoSource:       1
 NoSource:       4
@@ -124,9 +123,7 @@ Summary:        NVIDIA driver tools for computing with GPGPU
 Group:          System/X11/Utilities
 Requires:       nvidia-compute-G06 = %{version}
 Provides:       nvidia-computeG06:/usr/bin/nvidia-cuda-mps-control
-%if 0%{?suse_version} >= 1550
 Requires:       nvidia-persistenced >= %{version}
-%endif
 
 %description -n nvidia-compute-utils-G06
 NVIDIA driver tools for computing with GPGPUs using CUDA or OpenCL.
@@ -309,9 +306,6 @@ install nvidia-smi %{buildroot}%{_bindir}
 install nvidia-debugdump %{buildroot}%{_bindir}
 install nvidia-cuda-mps-control %{buildroot}%{_bindir}
 install nvidia-cuda-mps-server %{buildroot}%{_bindir}
-%if 0%{?suse_version} < 1550
-install nvidia-persistenced %{buildroot}%{_bindir}
-%endif
 install nvidia-modprobe %{buildroot}%{_bindir}
 install nvidia-ngx-updater %{buildroot}%{_bindir}
 install nvidia-powerd %{buildroot}%{_bindir}
@@ -385,9 +379,6 @@ cp -r supported-gpus %{buildroot}%{_datadir}/doc/packages/%{name}
 mkdir -p %{buildroot}/usr/lib/systemd/{system,system-sleep}
 install -m 755 systemd/nvidia-sleep.sh %{buildroot}%{_bindir}
 install -m 644 systemd/system/*.service %{buildroot}/usr/lib/systemd/system
-%if 0%{?suse_version} < 1550
-install -m 644 %{SOURCE9} %{buildroot}/usr/lib/systemd/system
-%endif
 install -m 755 systemd/system-sleep/nvidia %{buildroot}/usr/lib/systemd/system-sleep
 rm -f nvidia-installer*
 install -d %{buildroot}/%{_mandir}/man1
@@ -630,13 +621,7 @@ fi
 %{_bindir}/nvidia-debugdump
 %{_bindir}/nvidia-modprobe
 %{_mandir}/man1/nvidia-modprobe.1.gz
-%if 0%{?suse_version} < 1550
-%{_bindir}/nvidia-persistenced
-%{_mandir}/man1/nvidia-persistenced.1.gz
-/usr/lib/systemd/system/nvidia-persistenced.service
-%else
 %exclude %{_mandir}/man1/nvidia-persistenced.1.gz
-%endif
 %{_datadir}/dbus-1/system.d/nvidia-dbus.conf
 %{_bindir}/nvidia-powerd
 /usr/lib/systemd/system/nvidia-powerd.service
