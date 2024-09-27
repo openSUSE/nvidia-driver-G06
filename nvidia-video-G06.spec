@@ -37,7 +37,6 @@ Group:          System/Libraries
 Source0:        http://download.nvidia.com/XFree86/Linux-x86_64/%{version}/NVIDIA-Linux-x86_64-%{version}.run
 Source1:        http://download.nvidia.com/XFree86/Linux-aarch64/%{version}/NVIDIA-Linux-aarch64-%{version}.run
 Source2:        pci_ids-%{version}.new
-Source3:        nvidia-settings.desktop
 Source4:        generate-service-file.sh
 Source5:        README
 Source6:        Xwrapper
@@ -47,13 +46,11 @@ NoSource:       0
 NoSource:       1
 NoSource:       4
 NoSource:       5
-BuildRequires:  update-desktop-files
 BuildRequires:  pkgconfig(systemd)
 Requires:       nvidia-compute-G06 = %{version}
 Requires:       (nvidia-driver-G06-kmp = %{version} or nvidia-open-driver-G06-kmp = %{version} or nvidia-open-driver-G06-signed-kmp = %{version})
 Provides:       nvidia_driver = %{version}
 Provides:       nvidia-xconfig = %{version}
-Provides:       nvidia-settings = %{version}
 Obsoletes:      nvidia-modprobe <= 319.37
 Provides:       nvidia-modprobe = %{version}
 Conflicts:      x11-video-nvidia
@@ -132,9 +129,7 @@ NVIDIA driver tools for computing with GPGPUs using CUDA or OpenCL.
 Summary:        NVIDIA driver tools
 Group:          System/X11/Utilities
 Requires:       nvidia-compute-G06 = %{version}
-# /usr/bin/nvidia-settings needs libnvidia-gtk3.so
-Recommends:     nvidia-gl-G06 = %{version}
-Provides:       x11-video-nvidiaG06:/usr/bin/nvidia-settings
+Requires:       nvidia-settings >= %{version}
 
 %description -n nvidia-utils-G06
 NVIDIA driver tools.
@@ -299,7 +294,6 @@ install -d %{buildroot}%{xmodulesdir}/drivers
 install -d %{buildroot}%{xmodulesdir}/extensions
 install -d %{buildroot}%{_sysconfdir}/OpenCL/vendors/
 install -d %{buildroot}%{_datadir}/nvidia
-install nvidia-settings %{buildroot}%{_bindir}
 install nvidia-bug-report.sh %{buildroot}%{_bindir}
 install nvidia-xconfig %{buildroot}%{_bindir}
 install nvidia-smi %{buildroot}%{_bindir}
@@ -383,10 +377,7 @@ install -m 755 systemd/system-sleep/nvidia %{buildroot}/usr/lib/systemd/system-s
 rm -f nvidia-installer*
 install -d %{buildroot}/%{_mandir}/man1
 install -m 644 *.1.gz %{buildroot}/%{_mandir}/man1
-%suse_update_desktop_file -i nvidia-settings System SystemSetup
 install -d %{buildroot}%{_datadir}/pixmaps
-install -m 644 nvidia-settings.png \
-  %{buildroot}%{_datadir}/pixmaps
 install -m 644 nvidia-application-profiles-%{version}-{rc,key-documentation} \
   %{buildroot}%{_datadir}/nvidia
 install -m 644 nvoptix.bin %{buildroot}%{_datadir}/nvidia
@@ -633,10 +624,7 @@ fi
 %dir %{_datadir}/nvidia
 %{_datadir}/nvidia/nvidia-application-profiles-%{version}-rc
 %{_datadir}/nvidia/nvidia-application-profiles-%{version}-key-documentation
-%{_bindir}/nvidia-settings
-%{_mandir}/man1/nvidia-settings.1.gz
-%{_datadir}/applications/nvidia-settings.desktop
-%{_datadir}/pixmaps/nvidia-settings.png
+%exclude %{_mandir}/man1/nvidia-settings.1.gz
 
 %files -n nvidia-drivers-G06
 %defattr(-,root,root)
@@ -683,12 +671,12 @@ fi
 %{_libdir}/libnvidia-glcore.so*
 %{_libdir}/libnvidia-glsi.so*
 %{_libdir}/libnvidia-glvkspirv.so*
-%{_libdir}/libnvidia-gtk3.so*
+%exclude %{_libdir}/libnvidia-gtk3.so*
 %{_libdir}/libnvidia-rtcore.so*
 %{_libdir}/libnvidia-tls.so*
 %{_libdir}/libnvidia-gpucomp.so*
 %ifnarch aarch64
-%{_libdir}/libnvidia-wayland-client.so*
+%exclude %{_libdir}/libnvidia-wayland-client.so*
 %endif
 %{_libdir}/libnvoptix.so*
 %{_datadir}/nvidia/nvoptix.bin
