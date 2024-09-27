@@ -308,6 +308,11 @@ rm libnvidia-egl-wayland*
 rm libnvidia-egl-xcb*
 rm libnvidia-egl-xlib*
 %endif
+# now in external package nvidia-settings
+rm libnvidia-gtk3.so*
+%ifnarch aarch64
+rm libnvidia-wayland-client.so*
+%endif
 install libnvidia* %{buildroot}%{_libdir}
 install libcuda* %{buildroot}%{_libdir}
 install libnvcuvid* %{buildroot}%{_libdir}
@@ -373,7 +378,8 @@ install -m 644 systemd/system/*.service %{buildroot}/usr/lib/systemd/system
 install -m 755 systemd/system-sleep/nvidia %{buildroot}/usr/lib/systemd/system-sleep
 rm -f nvidia-installer*
 install -d %{buildroot}/%{_mandir}/man1
-install -m 644 *.1.gz %{buildroot}/%{_mandir}/man1
+install -m 644 {nvidia-cuda-mps-control,nvidia-smi}.1.gz \
+  %{buildroot}/%{_mandir}/man1
 install -d %{buildroot}%{_datadir}/pixmaps
 install -m 644 nvidia-application-profiles-%{version}-{rc,key-documentation} \
   %{buildroot}%{_datadir}/nvidia
@@ -607,8 +613,6 @@ fi
 %{_mandir}/man1/nvidia-cuda-mps-control.1.gz
 %{_bindir}/nvidia-cuda-mps-server
 %{_bindir}/nvidia-debugdump
-%exclude %{_mandir}/man1/nvidia-modprobe.1.gz
-%exclude %{_mandir}/man1/nvidia-persistenced.1.gz
 %{_datadir}/dbus-1/system.d/nvidia-dbus.conf
 %{_bindir}/nvidia-powerd
 /usr/lib/systemd/system/nvidia-powerd.service
@@ -620,7 +624,6 @@ fi
 %dir %{_datadir}/nvidia
 %{_datadir}/nvidia/nvidia-application-profiles-%{version}-rc
 %{_datadir}/nvidia/nvidia-application-profiles-%{version}-key-documentation
-%exclude %{_mandir}/man1/nvidia-settings.1.gz
 
 %files -n nvidia-drivers-G06
 %defattr(-,root,root)
@@ -667,13 +670,9 @@ fi
 %{_libdir}/libnvidia-glcore.so*
 %{_libdir}/libnvidia-glsi.so*
 %{_libdir}/libnvidia-glvkspirv.so*
-%exclude %{_libdir}/libnvidia-gtk3.so*
 %{_libdir}/libnvidia-rtcore.so*
 %{_libdir}/libnvidia-tls.so*
 %{_libdir}/libnvidia-gpucomp.so*
-%ifnarch aarch64
-%exclude %{_libdir}/libnvidia-wayland-client.so*
-%endif
 %{_libdir}/libnvoptix.so*
 %{_datadir}/nvidia/nvoptix.bin
 %{xmodulesdir}/drivers/nvidia_drv.so
@@ -688,7 +687,6 @@ fi
 /usr/lib/systemd/system/nvidia-suspend.service
 %dir /usr/lib/systemd/system-sleep
 /usr/lib/systemd/system-sleep/nvidia
-%exclude %{_mandir}/man1/nvidia-xconfig.1.gz
 %ifarch x86_64
 %{_bindir}/nvidia-pcc
 %dir %{_datadir}/vulkansc
