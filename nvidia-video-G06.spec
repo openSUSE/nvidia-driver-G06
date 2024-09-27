@@ -50,8 +50,6 @@ BuildRequires:  pkgconfig(systemd)
 Requires:       nvidia-compute-G06 = %{version}
 Requires:       (nvidia-driver-G06-kmp = %{version} or nvidia-open-driver-G06-kmp = %{version} or nvidia-open-driver-G06-signed-kmp = %{version})
 Provides:       nvidia_driver = %{version}
-Obsoletes:      nvidia-modprobe <= 319.37
-Provides:       nvidia-modprobe = %{version}
 Conflicts:      x11-video-nvidia
 Conflicts:      x11-video-nvidiaG01
 Conflicts:      x11-video-nvidiaG02
@@ -120,6 +118,7 @@ Group:          System/X11/Utilities
 Requires:       nvidia-compute-G06 = %{version}
 Provides:       nvidia-computeG06:/usr/bin/nvidia-cuda-mps-control
 Requires:       nvidia-persistenced >= %{version}
+Requires:       nvidia-modprobe >= %{version}
 
 %description -n nvidia-compute-utils-G06
 NVIDIA driver tools for computing with GPGPUs using CUDA or OpenCL.
@@ -299,7 +298,6 @@ install nvidia-smi %{buildroot}%{_bindir}
 install nvidia-debugdump %{buildroot}%{_bindir}
 install nvidia-cuda-mps-control %{buildroot}%{_bindir}
 install nvidia-cuda-mps-server %{buildroot}%{_bindir}
-install nvidia-modprobe %{buildroot}%{_bindir}
 install nvidia-ngx-updater %{buildroot}%{_bindir}
 install nvidia-powerd %{buildroot}%{_bindir}
 mkdir -p %{buildroot}%{_datadir}/dbus-1/system.d
@@ -609,8 +607,7 @@ fi
 %{_mandir}/man1/nvidia-cuda-mps-control.1.gz
 %{_bindir}/nvidia-cuda-mps-server
 %{_bindir}/nvidia-debugdump
-%{_bindir}/nvidia-modprobe
-%{_mandir}/man1/nvidia-modprobe.1.gz
+%exclude %{_mandir}/man1/nvidia-modprobe.1.gz
 %exclude %{_mandir}/man1/nvidia-persistenced.1.gz
 %{_datadir}/dbus-1/system.d/nvidia-dbus.conf
 %{_bindir}/nvidia-powerd
