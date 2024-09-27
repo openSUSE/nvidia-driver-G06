@@ -50,7 +50,6 @@ BuildRequires:  pkgconfig(systemd)
 Requires:       nvidia-compute-G06 = %{version}
 Requires:       (nvidia-driver-G06-kmp = %{version} or nvidia-open-driver-G06-kmp = %{version} or nvidia-open-driver-G06-signed-kmp = %{version})
 Provides:       nvidia_driver = %{version}
-Provides:       nvidia-xconfig = %{version}
 Obsoletes:      nvidia-modprobe <= 319.37
 Provides:       nvidia-modprobe = %{version}
 Conflicts:      x11-video-nvidia
@@ -218,6 +217,7 @@ Recommends:     Mesa-libGL1
 Recommends:     Mesa-libEGL1
 Recommends:     Mesa-libGLESv1_CM1
 Recommends:     Mesa-libGLESv2-2
+Requires(pre):  nvidia-xconfig
 AutoReq: no
 
 %description -n nvidia-gl-G06
@@ -295,7 +295,6 @@ install -d %{buildroot}%{xmodulesdir}/extensions
 install -d %{buildroot}%{_sysconfdir}/OpenCL/vendors/
 install -d %{buildroot}%{_datadir}/nvidia
 install nvidia-bug-report.sh %{buildroot}%{_bindir}
-install nvidia-xconfig %{buildroot}%{_bindir}
 install nvidia-smi %{buildroot}%{_bindir}
 install nvidia-debugdump %{buildroot}%{_bindir}
 install nvidia-cuda-mps-control %{buildroot}%{_bindir}
@@ -692,8 +691,7 @@ fi
 /usr/lib/systemd/system/nvidia-suspend.service
 %dir /usr/lib/systemd/system-sleep
 /usr/lib/systemd/system-sleep/nvidia
-%{_bindir}/nvidia-xconfig
-%{_mandir}/man1/nvidia-xconfig.1.gz
+%exclude %{_mandir}/man1/nvidia-xconfig.1.gz
 %ifarch x86_64
 %{_bindir}/nvidia-pcc
 %dir %{_datadir}/vulkansc
