@@ -37,26 +37,19 @@ Group:          System/Libraries
 Source0:        http://download.nvidia.com/XFree86/Linux-x86_64/%{version}/NVIDIA-Linux-x86_64-%{version}.run
 Source1:        http://download.nvidia.com/XFree86/Linux-aarch64/%{version}/NVIDIA-Linux-aarch64-%{version}.run
 Source2:        pci_ids-%{version}.new
-Source3:        nvidia-settings.desktop
 Source4:        generate-service-file.sh
 Source5:        README
 Source6:        Xwrapper
 Source7:        pci_ids-%{version}
 Source8:        nvidia-driver-G06.rpmlintrc
-Source9:        nvidia-persistenced.service
 NoSource:       0
 NoSource:       1
 NoSource:       4
 NoSource:       5
-BuildRequires:  update-desktop-files
 BuildRequires:  pkgconfig(systemd)
 Requires:       nvidia-compute-G06 = %{version}
 Requires:       (nvidia-driver-G06-kmp = %{version} or nvidia-open-driver-G06-kmp = %{version} or nvidia-open-driver-G06-signed-kmp = %{version})
 Provides:       nvidia_driver = %{version}
-Provides:       nvidia-xconfig = %{version}
-Provides:       nvidia-settings = %{version}
-Obsoletes:      nvidia-modprobe <= 319.37
-Provides:       nvidia-modprobe = %{version}
 Conflicts:      x11-video-nvidia
 Conflicts:      x11-video-nvidiaG01
 Conflicts:      x11-video-nvidiaG02
@@ -124,6 +117,8 @@ Summary:        NVIDIA driver tools for computing with GPGPU
 Group:          System/X11/Utilities
 Requires:       nvidia-compute-G06 = %{version}
 Provides:       nvidia-computeG06:/usr/bin/nvidia-cuda-mps-control
+Requires:       nvidia-persistenced >= %{version}
+Requires:       nvidia-modprobe >= %{version}
 
 %description -n nvidia-compute-utils-G06
 NVIDIA driver tools for computing with GPGPUs using CUDA or OpenCL.
@@ -132,9 +127,7 @@ NVIDIA driver tools for computing with GPGPUs using CUDA or OpenCL.
 Summary:        NVIDIA driver tools
 Group:          System/X11/Utilities
 Requires:       nvidia-compute-G06 = %{version}
-# /usr/bin/nvidia-settings needs libnvidia-gtk3.so
-Recommends:     nvidia-gl-G06 = %{version}
-Provides:       x11-video-nvidiaG06:/usr/bin/nvidia-settings
+Requires:       nvidia-settings >= %{version}
 
 %description -n nvidia-utils-G06
 NVIDIA driver tools.
@@ -223,6 +216,7 @@ Recommends:     Mesa-libGL1
 Recommends:     Mesa-libEGL1
 Recommends:     Mesa-libGLESv1_CM1
 Recommends:     Mesa-libGLESv2-2
+Requires(pre):  nvidia-xconfig
 AutoReq: no
 
 %description -n nvidia-gl-G06
@@ -299,15 +293,11 @@ install -d %{buildroot}%{xmodulesdir}/drivers
 install -d %{buildroot}%{xmodulesdir}/extensions
 install -d %{buildroot}%{_sysconfdir}/OpenCL/vendors/
 install -d %{buildroot}%{_datadir}/nvidia
-install nvidia-settings %{buildroot}%{_bindir}
 install nvidia-bug-report.sh %{buildroot}%{_bindir}
-install nvidia-xconfig %{buildroot}%{_bindir}
 install nvidia-smi %{buildroot}%{_bindir}
 install nvidia-debugdump %{buildroot}%{_bindir}
 install nvidia-cuda-mps-control %{buildroot}%{_bindir}
 install nvidia-cuda-mps-server %{buildroot}%{_bindir}
-install nvidia-persistenced %{buildroot}%{_bindir}
-install nvidia-modprobe %{buildroot}%{_bindir}
 install nvidia-ngx-updater %{buildroot}%{_bindir}
 install nvidia-powerd %{buildroot}%{_bindir}
 mkdir -p %{buildroot}%{_datadir}/dbus-1/system.d
@@ -317,6 +307,11 @@ rm libnvidia-egl-gbm*
 rm libnvidia-egl-wayland*
 rm libnvidia-egl-xcb*
 rm libnvidia-egl-xlib*
+%endif
+# now in external package nvidia-settings
+rm libnvidia-gtk3.so*
+%ifnarch aarch64
+rm libnvidia-wayland-client.so*
 %endif
 install libnvidia* %{buildroot}%{_libdir}
 install libcuda* %{buildroot}%{_libdir}
@@ -380,15 +375,12 @@ cp -r supported-gpus %{buildroot}%{_datadir}/doc/packages/%{name}
 mkdir -p %{buildroot}/usr/lib/systemd/{system,system-sleep}
 install -m 755 systemd/nvidia-sleep.sh %{buildroot}%{_bindir}
 install -m 644 systemd/system/*.service %{buildroot}/usr/lib/systemd/system
-install -m 644 %{SOURCE9} %{buildroot}/usr/lib/systemd/system
 install -m 755 systemd/system-sleep/nvidia %{buildroot}/usr/lib/systemd/system-sleep
 rm -f nvidia-installer*
 install -d %{buildroot}/%{_mandir}/man1
-install -m 644 *.1.gz %{buildroot}/%{_mandir}/man1
-%suse_update_desktop_file -i nvidia-settings System SystemSetup
+install -m 644 {nvidia-cuda-mps-control,nvidia-smi}.1.gz \
+  %{buildroot}/%{_mandir}/man1
 install -d %{buildroot}%{_datadir}/pixmaps
-install -m 644 nvidia-settings.png \
-  %{buildroot}%{_datadir}/pixmaps
 install -m 644 nvidia-application-profiles-%{version}-{rc,key-documentation} \
   %{buildroot}%{_datadir}/nvidia
 install -m 644 nvoptix.bin %{buildroot}%{_datadir}/nvidia
@@ -621,11 +613,6 @@ fi
 %{_mandir}/man1/nvidia-cuda-mps-control.1.gz
 %{_bindir}/nvidia-cuda-mps-server
 %{_bindir}/nvidia-debugdump
-%{_bindir}/nvidia-modprobe
-%{_mandir}/man1/nvidia-modprobe.1.gz
-%{_bindir}/nvidia-persistenced
-%{_mandir}/man1/nvidia-persistenced.1.gz
-/usr/lib/systemd/system/nvidia-persistenced.service
 %{_datadir}/dbus-1/system.d/nvidia-dbus.conf
 %{_bindir}/nvidia-powerd
 /usr/lib/systemd/system/nvidia-powerd.service
@@ -637,10 +624,6 @@ fi
 %dir %{_datadir}/nvidia
 %{_datadir}/nvidia/nvidia-application-profiles-%{version}-rc
 %{_datadir}/nvidia/nvidia-application-profiles-%{version}-key-documentation
-%{_bindir}/nvidia-settings
-%{_mandir}/man1/nvidia-settings.1.gz
-%{_datadir}/applications/nvidia-settings.desktop
-%{_datadir}/pixmaps/nvidia-settings.png
 
 %files -n nvidia-drivers-G06
 %defattr(-,root,root)
@@ -687,13 +670,9 @@ fi
 %{_libdir}/libnvidia-glcore.so*
 %{_libdir}/libnvidia-glsi.so*
 %{_libdir}/libnvidia-glvkspirv.so*
-%{_libdir}/libnvidia-gtk3.so*
 %{_libdir}/libnvidia-rtcore.so*
 %{_libdir}/libnvidia-tls.so*
 %{_libdir}/libnvidia-gpucomp.so*
-%ifnarch aarch64
-%{_libdir}/libnvidia-wayland-client.so*
-%endif
 %{_libdir}/libnvoptix.so*
 %{_datadir}/nvidia/nvoptix.bin
 %{xmodulesdir}/drivers/nvidia_drv.so
@@ -708,8 +687,6 @@ fi
 /usr/lib/systemd/system/nvidia-suspend.service
 %dir /usr/lib/systemd/system-sleep
 /usr/lib/systemd/system-sleep/nvidia
-%{_bindir}/nvidia-xconfig
-%{_mandir}/man1/nvidia-xconfig.1.gz
 %ifarch x86_64
 %{_bindir}/nvidia-pcc
 %dir %{_datadir}/vulkansc
