@@ -190,13 +190,16 @@ needs to be installed first by using the following zypper command:
 Summary:        NVIDIA OpenGL libraries for OpenGL acceleration
 Group:          System/Libraries
 Requires:       (nvidia-driver-G06-kmp = %{version} or nvidia-open-driver-G06-kmp = %{version} or nvidia-open-driver-G06-signed-kmp = %{version})
-%if 0%{?suse_version} >= 1550
+%if 0%{?suse_version} >= 1550 || 0%{?sle_version} >= 150500
 Requires:       libnvidia-egl-gbm1 >= %{version_egl_gbm}
-Requires:       libnvidia-egl-wayland1 >= %{version_egl_wayland}
-Requires:       libnvidia-egl-x111 >= %{version_egl_x11}
 %else
 Provides:       libnvidia-egl-gbm1 = %{version_egl_gbm}
 Obsoletes:      libnvidia-egl-gbm1 <= %{version_egl_gbm}
+%endif
+%if 0%{?suse_version} >= 1550 || 0%{?sle_version} >= 150700
+Requires:       libnvidia-egl-wayland1 >= %{version_egl_wayland}
+Requires:       libnvidia-egl-x111 >= %{version_egl_x11}
+%else
 Provides:       libnvidia-egl-wayland1 = %{version_egl_wayland}
 Obsoletes:      libnvidia-egl-wayland1 <= %{version_egl_wayland}
 Provides:       libnvidia-egl-x111 = %{version_egl_x11}
@@ -231,13 +234,16 @@ Conflicts:      nvidia-glG04-32bit
 Conflicts:      nvidia-glG05-32bit
 Provides:       nvidia-glG06-32bit = %{version}
 Obsoletes:      nvidia-glG06-32bit < %{version}
-%if 0%{?suse_version} >= 1550
+%if 0%{?suse_version} >= 1550 || 0%{?sle_version} >= 150500
 Requires:       libnvidia-egl-gbm1-32bit >= %{version_egl_gbm}
-Requires:       libnvidia-egl-wayland1-32bit >= %{version_egl_wayland}
-Requires:       libnvidia-egl-x111-32bit >= %{version_egl_x11}
 %else
 Provides:       libnvidia-egl-gbm1-32bit = %{version_egl_gbm}
 Obsoletes:      libnvidia-egl-gbm1-32bit <= %{version_egl_gbm}
+%endif
+%if 0%{?suse_version} >= 1550 || 0%{?sle_version} >= 150700
+Requires:       libnvidia-egl-wayland1-32bit >= %{version_egl_wayland}
+Requires:       libnvidia-egl-x111-32bit >= %{version_egl_x11}
+%else
 Provides:       libnvidia-egl-wayland1-32bit = %{version_egl_wayland}
 Obsoletes:      libnvidia-egl-wayland1-32bit <= %{version_egl_wayland}
 Provides:       libnvidia-egl-x111-32bit = %{version_egl_x11}
@@ -302,8 +308,10 @@ install nvidia-ngx-updater %{buildroot}%{_bindir}
 install nvidia-powerd %{buildroot}%{_bindir}
 mkdir -p %{buildroot}%{_datadir}/dbus-1/system.d
 install -m 0644 nvidia-dbus.conf %{buildroot}%{_datadir}/dbus-1/system.d
-%if 0%{?suse_version} >= 1550
+%if 0%{?suse_version} >= 1550 || 0%{?sle_version} >= 150500
 rm libnvidia-egl-gbm*
+%endif
+%if 0%{?suse_version} >= 1550 || 0%{?sle_version} >= 150700
 rm libnvidia-egl-wayland*
 rm libnvidia-egl-xcb*
 rm libnvidia-egl-xlib*
@@ -344,8 +352,10 @@ install libglxserver_nvidia.so.%{version} \
   %{buildroot}%{xmodulesdir}/extensions/
 ln -sf libglxserver_nvidia.so.%{version} %{buildroot}%{xmodulesdir}/extensions/libglxserver_nvidia.so
 %ifarch x86_64
-%if 0%{?suse_version} >= 1550
+%if 0%{?suse_version} >= 1550 || 0%{?sle_version} >= 150500
 rm 32/libnvidia-egl-gbm*
+%endif
+%if 0%{?suse_version} >= 1550 || 0%{?sle_version} >= 150700
 rm 32/libnvidia-egl-wayland*
 rm 32/libnvidia-egl-xcb*
 rm 32/libnvidia-egl-xlib*
@@ -660,8 +670,10 @@ fi
 %{xmodulesdir}/extensions/libglxserver_nvidia.so*
 %{_libdir}/libnvidia-cfg.so.*
 %{_libdir}/libnvidia-eglcore.so*
-%if 0%{?suse_version} < 1550
+%if 0%{?suse_version} < 1550 && 0%{?sle_version} < 150500
 %{_libdir}/libnvidia-egl-gbm.so*
+%endif
+%if 0%{?suse_version} < 1550 && 0%{?sle_version} < 150700
 %{_libdir}/libnvidia-egl-wayland.so*
 %{_libdir}/libnvidia-egl-xcb.so*
 %{_libdir}/libnvidia-egl-xlib.so*
@@ -727,8 +739,10 @@ fi
 %{_prefix}/lib/libGLESv2_nvidia.so*
 %{_prefix}/lib/libGLX_nvidia.so*
 %{_prefix}/lib/libnvidia-eglcore.so*
-%if 0%{?suse_version} < 1550
+%if 0%{?suse_version} < 1550 && 0%{?sle_version} < 150500
 %{_prefix}/lib/libnvidia-egl-gbm.so*
+%endif
+%if 0%{?suse_version} < 1550 && 0%{?sle_version} < 150700
 %{_prefix}/lib/libnvidia-egl-wayland.so*
 %{_prefix}/lib/libnvidia-egl-xcb.so*
 %{_prefix}/lib/libnvidia-egl-xlib.so*
