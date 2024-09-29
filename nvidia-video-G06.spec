@@ -601,20 +601,14 @@ fi
 %{_libdir}/libcudadebugger.so*
 %{_libdir}/libcuda.so*
 %{_libdir}/libnvidia-api.so*
+%{_libdir}/libnvidia-cfg.so.*
 %{_libdir}/libnvidia-ml.so*
-%{_libdir}/libnvidia-ngx.so*
 %{_libdir}/libnvidia-nvvm.so*
 %{_libdir}/libnvidia-opencl.so*
 %{_libdir}/libnvidia-ptxjitcompiler.so*
 %dir %{_sysconfdir}/OpenCL
 %dir %{_sysconfdir}/OpenCL/vendors
 %config %{_sysconfdir}/OpenCL/vendors/nvidia.icd
-%{_bindir}/nvidia-ngx-updater
-%ifarch x86_64
-%dir %{_libdir}/nvidia/
-%dir %{_libdir}/nvidia/wine/
-%{_libdir}/nvidia/wine/{_nvngx.dll,nvngx.dll}
-%endif
 
 %files -n nvidia-compute-utils-G06
 %defattr(-,root,root)
@@ -623,9 +617,6 @@ fi
 %{_mandir}/man1/nvidia-cuda-mps-control.1.gz
 %{_bindir}/nvidia-cuda-mps-server
 %{_bindir}/nvidia-debugdump
-%{_datadir}/dbus-1/system.d/nvidia-dbus.conf
-%{_bindir}/nvidia-powerd
-/usr/lib/systemd/system/nvidia-powerd.service
 %{_bindir}/nvidia-smi
 %{_mandir}/man1/nvidia-smi.1.gz
 
@@ -668,7 +659,6 @@ fi
 %dir %{xmodulesdir}/drivers
 %dir %{xmodulesdir}/extensions
 %{xmodulesdir}/extensions/libglxserver_nvidia.so*
-%{_libdir}/libnvidia-cfg.so.*
 %{_libdir}/libnvidia-eglcore.so*
 %if 0%{?suse_version} < 1550 && 0%{?sle_version} < 150500
 %{_libdir}/libnvidia-egl-gbm.so*
@@ -682,6 +672,7 @@ fi
 %{_libdir}/libnvidia-glcore.so*
 %{_libdir}/libnvidia-glsi.so*
 %{_libdir}/libnvidia-glvkspirv.so*
+%{_libdir}/libnvidia-ngx.so*
 %{_libdir}/libnvidia-rtcore.so*
 %{_libdir}/libnvidia-tls.so*
 %{_libdir}/libnvidia-gpucomp.so*
@@ -706,6 +697,15 @@ fi
 %{_datadir}/vulkansc/icd.d/nvidia_icd.%{_target_cpu}.json
 %{_libdir}/libnvidia-vksc-core.so*
 %endif
+%{_bindir}/nvidia-ngx-updater
+%ifarch x86_64
+%dir %{_libdir}/nvidia/
+%dir %{_libdir}/nvidia/wine/
+%{_libdir}/nvidia/wine/{_nvngx.dll,nvngx.dll}
+%endif
+%{_datadir}/dbus-1/system.d/nvidia-dbus.conf
+%{_bindir}/nvidia-powerd
+/usr/lib/systemd/system/nvidia-powerd.service
 
 %ifarch x86_64
 
