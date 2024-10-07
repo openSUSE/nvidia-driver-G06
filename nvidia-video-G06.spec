@@ -284,7 +284,7 @@ rm -f \
     libnvidia-egl-gbm.so.* \
     32/libnvidia-egl-gbm.so.* \
     15_nvidia_gbm.json \
-%if 0%{?sle_version} >= 150700
+%if 0%{?suse_version} >= 1550 || 0%{?sle_version} >= 150700
     libnvidia-egl-wayland.so.* libnvidia-egl-xcb.so.* libnvidia-egl-xlib.so.* \
     32/libnvidia-egl-wayland.so.* 32/libnvidia-egl-xcb.so.* 32/libnvidia-egl-xlib.so.* \
     10_nvidia_wayland.json 20_nvidia_xcb.json 20_nvidia_xlib.json
@@ -369,7 +369,7 @@ install -m 644 nvoptix.bin %{buildroot}%{_datadir}/nvidia
 install -m 644 nvidia.icd \
   %{buildroot}%{_sysconfdir}/OpenCL/vendors/
 
-%if 0%{?suse_version} < 1550 || 0%{?sle_version} < 150700
+%if 0%{?suse_version} < 1550 && 0%{?sle_version} < 150700
 # EGL driver config
 mkdir -p %{buildroot}%{_datadir}/egl/egl_external_platform.d
 install -m 644 \
@@ -591,7 +591,7 @@ fi
 %dir %{_datadir}/glvnd
 %dir %{_datadir}/glvnd/egl_vendor.d
 %{_datadir}/glvnd/egl_vendor.d/10_nvidia.json
-%if 0%{?suse_version} < 1550 || 0%{?sle_version} < 150700
+%if 0%{?suse_version} < 1550 && 0%{?sle_version} < 150700
 %dir %{_datadir}/egl
 %dir %{_datadir}/egl/egl_external_platform.d
 %{_datadir}/egl/egl_external_platform.d/10_nvidia_wayland.json
@@ -612,7 +612,7 @@ fi
 %{xmodulesdir}/extensions/libglxserver_nvidia.so*
 %{_libdir}/libnvidia-cfg.so.*
 %{_libdir}/libnvidia-eglcore.so*
-%if 0%{?suse_version} < 1550 || 0%{?sle_version} < 150700
+%if 0%{?suse_version} < 1550 && 0%{?sle_version} < 150700
 %{_libdir}/libnvidia-egl-wayland.so*
 %{_libdir}/libnvidia-egl-xcb.so*
 %{_libdir}/libnvidia-egl-xlib.so*
