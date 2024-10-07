@@ -321,43 +321,34 @@ install nvidia-ngx-updater %{buildroot}%{_bindir}
 install nvidia-powerd %{buildroot}%{_bindir}
 mkdir -p %{buildroot}%{_datadir}/dbus-1/system.d
 install -m 0644 nvidia-dbus.conf %{buildroot}%{_datadir}/dbus-1/system.d
-install libnvidia* %{buildroot}%{_libdir}
-install libcuda* %{buildroot}%{_libdir}
-install libnvcuvid* %{buildroot}%{_libdir}
-install libnvidia-ml* %{buildroot}%{_libdir}
-install libnvoptix* %{buildroot}%{_libdir}
+
+cp -a lib*GL*_nvidia.so* libcuda*.so* libnv*.so* %{buildroot}%{_libdir}/
+ln -snf libcuda.so.1 %{buildroot}%{_libdir}/libcuda.so
+ln -snf libnvcuvid.so.1 %{buildroot}%{_libdir}/libnvcuvid.so
+ln -s libnvidia-ml.so.1  %{buildroot}%{_libdir}/libnvidia-ml.so
+
 install libvdpau_nvidia.so* %{buildroot}%{_libdir}/vdpau
+# Bug #596481
+ln -s vdpau/libvdpau_nvidia.so.1 %{buildroot}%{_libdir}/libvdpau_nvidia.so
+
 %ifarch x86_64
+cp -a 32/lib*GL*_nvidia.so* 32/libcuda*.so* 32/libnv*.so* %{buildroot}%{_prefix}/lib/
+ln -snf libcuda.so.1 %{buildroot}%{_prefix}/lib/libcuda.so
+ln -snf libnvcuvid.so.1 %{buildroot}%{_prefix}/lib/libnvcuvid.so
+
+install 32/libvdpau_nvidia.so* %{buildroot}%{_prefix}/lib/vdpau
+# Bug #596481
+ln -s vdpau/libvdpau_nvidia.so.1 %{buildroot}%{_prefix}/lib/libvdpau_nvidia.so
+
 install -d %{buildroot}%{_libdir}/nvidia/wine
 install _nvngx.dll nvngx.dll %{buildroot}%{_libdir}/nvidia/wine
 %endif
-# Bug #596481
-ln -s vdpau/libvdpau_nvidia.so.1 %{buildroot}%{_libdir}/libvdpau_nvidia.so
-install libGL* %{buildroot}%{_libdir}/
-ln -snf libcuda.so.1   %{buildroot}%{_libdir}/libcuda.so
-ln -snf libnvcuvid.so.1 %{buildroot}%{_libdir}/libnvcuvid.so
-# NVML library for Tesla compute products (new since 270.xx)
-ln -s libnvidia-ml.so.1  %{buildroot}%{_libdir}/libnvidia-ml.so
-# EGL/GLES 64bit new since 340.xx
-install libEGL_nvidia.so.* %{buildroot}%{_libdir}
-install libGLESv1_CM* %{buildroot}%{_libdir}
-install libGLESv2* %{buildroot}%{_libdir}
+
 install nvidia_drv.so %{buildroot}%{xmodulesdir}/drivers
 install libglxserver_nvidia.so.%{version} \
   %{buildroot}%{xmodulesdir}/extensions/
 ln -sf libglxserver_nvidia.so.%{version} %{buildroot}%{xmodulesdir}/extensions/libglxserver_nvidia.so
-install 32/libnvidia* %{buildroot}%{_prefix}/lib
-install 32/libcuda* %{buildroot}%{_prefix}/lib
-install 32/libnvcuvid* %{buildroot}%{_prefix}/lib
-install 32/libvdpau_nvidia.so* %{buildroot}%{_prefix}/lib/vdpau
-install 32/libGL* %{buildroot}%{_prefix}/lib
-install 32/libEGL_nvidia.so.* %{buildroot}%{_prefix}/lib
-install 32/libGLESv1_CM* %{buildroot}%{_prefix}/lib
-install 32/libGLESv2* %{buildroot}%{_prefix}/lib
-# Bug #596481
-ln -s vdpau/libvdpau_nvidia.so.1 %{buildroot}%{_prefix}/lib/libvdpau_nvidia.so
-ln -snf libcuda.so.1   %{buildroot}%{_prefix}/lib/libcuda.so
-ln -snf libnvcuvid.so.1 %{buildroot}%{_prefix}/lib/libnvcuvid.so
+
 install -d %{buildroot}%{_datadir}/doc/packages/%{name}
 cp -a html %{buildroot}%{_datadir}/doc/packages/%{name}
 install -m 644 LICENSE %{buildroot}%{_datadir}/doc/packages/%{name}
