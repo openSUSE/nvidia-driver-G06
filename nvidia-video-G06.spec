@@ -306,8 +306,6 @@ export NO_BRP_STRIP_DEBUG=true
 cd NVIDIA-Linux
 
 install -d %{buildroot}%{_bindir}
-install -d %{buildroot}%{_prefix}/X11R6/lib
-install -d %{buildroot}%{_prefix}/X11R6/%{_lib}
 install -d %{buildroot}%{_prefix}/lib/vdpau
 install -d %{buildroot}%{_libdir}/vdpau
 install -d %{buildroot}%{xmodulesdir}/drivers
@@ -335,18 +333,15 @@ install _nvngx.dll nvngx.dll %{buildroot}%{_libdir}/nvidia/wine
 %endif
 # Bug #596481
 ln -s vdpau/libvdpau_nvidia.so.1 %{buildroot}%{_libdir}/libvdpau_nvidia.so
-# the GL lib from Mesa is in /usr/%{_lib} so we install in /usr/X11R6/%{_lib}
-install libGL* %{buildroot}%{_prefix}/X11R6/%{_lib}
-# still a lot of applications make a dlopen to the .so file
-ln -snf libGL.so.1 %{buildroot}%{_prefix}/X11R6/%{_lib}/libGL.so
+install libGL* %{buildroot}%{_libdir}/
 ln -snf libcuda.so.1   %{buildroot}%{_libdir}/libcuda.so
 ln -snf libnvcuvid.so.1 %{buildroot}%{_libdir}/libnvcuvid.so
 # NVML library for Tesla compute products (new since 270.xx)
 ln -s libnvidia-ml.so.1  %{buildroot}%{_libdir}/libnvidia-ml.so
 # EGL/GLES 64bit new since 340.xx
-install libEGL_nvidia.so.* %{buildroot}%{_prefix}/X11R6/%{_lib}
-install libGLESv1_CM* %{buildroot}%{_prefix}/X11R6/%{_lib}
-install libGLESv2* %{buildroot}%{_prefix}/X11R6/%{_lib}
+install libEGL_nvidia.so.* %{buildroot}%{_libdir}
+install libGLESv1_CM* %{buildroot}%{_libdir}
+install libGLESv2* %{buildroot}%{_libdir}
 install nvidia_drv.so %{buildroot}%{xmodulesdir}/drivers
 install libglxserver_nvidia.so.%{version} \
   %{buildroot}%{xmodulesdir}/extensions/
@@ -355,14 +350,12 @@ install 32/libnvidia* %{buildroot}%{_prefix}/lib
 install 32/libcuda* %{buildroot}%{_prefix}/lib
 install 32/libnvcuvid* %{buildroot}%{_prefix}/lib
 install 32/libvdpau_nvidia.so* %{buildroot}%{_prefix}/lib/vdpau
-install 32/libGL* %{buildroot}%{_prefix}/X11R6/lib
-install 32/libEGL_nvidia.so.* %{buildroot}%{_prefix}/X11R6/lib
-install 32/libGLESv1_CM* %{buildroot}%{_prefix}/X11R6/lib
-install 32/libGLESv2* %{buildroot}%{_prefix}/X11R6/lib
+install 32/libGL* %{buildroot}%{_prefix}/lib
+install 32/libEGL_nvidia.so.* %{buildroot}%{_prefix}/lib
+install 32/libGLESv1_CM* %{buildroot}%{_prefix}/lib
+install 32/libGLESv2* %{buildroot}%{_prefix}/lib
 # Bug #596481
 ln -s vdpau/libvdpau_nvidia.so.1 %{buildroot}%{_prefix}/lib/libvdpau_nvidia.so
-# still a lot of applications make a dlopen to the .so file
-ln -snf libGL.so.1 %{buildroot}%{_prefix}/X11R6/lib/libGL.so
 ln -snf libcuda.so.1   %{buildroot}%{_prefix}/lib/libcuda.so
 ln -snf libnvcuvid.so.1 %{buildroot}%{_prefix}/lib/libnvcuvid.so
 install -d %{buildroot}%{_datadir}/doc/packages/%{name}
@@ -384,14 +377,6 @@ install -m 644 nvoptix.bin %{buildroot}%{_datadir}/nvidia
 
 install -m 644 nvidia.icd \
   %{buildroot}%{_sysconfdir}/OpenCL/vendors/
-# Create /etc/ld.so.conf.d/nvidia-driver-G06
-mkdir -p %{buildroot}%{_sysconfdir}/ld.so.conf.d
-cat > %{buildroot}%{_sysconfdir}/ld.so.conf.d/nvidia-driver-G06.conf <<EOF
-%{_prefix}/X11R6/%{_lib}
-%ifarch x86_64
-%{_prefix}/X11R6/lib
-%endif
-EOF
 
 %if 0%{?suse_version} < 1550 || 0%{?sle_version} < 150700
 # EGL driver config
@@ -423,17 +408,9 @@ install -p -m 0755 -D nvidia-pcc %{buildroot}%{_bindir}/nvidia-pcc
 
 %endif
 
-# libglvnd is preinstalled on sle15/TW
-rm %{buildroot}/etc/ld.so.conf.d/nvidia-driver-G06.conf \
-   %{buildroot}/usr/X11R6/lib*/libGL.so*
-   mv %{buildroot}/usr/X11R6/%{_lib}/* %{buildroot}/%{_libdir}/
-%ifarch x86_64
-   mv %{buildroot}/usr/X11R6/lib/*   %{buildroot}/%{_prefix}/lib/
-%endif
-   rmdir %{buildroot}/usr/X11R6/lib* \
-         %{buildroot}/usr/X11R6
-   mkdir -p %{buildroot}/%{_datadir}/glvnd/egl_vendor.d
-   install -m 644 10_nvidia.json %{buildroot}/%{_datadir}/glvnd/egl_vendor.d
+mkdir -p %{buildroot}/%{_datadir}/glvnd/egl_vendor.d
+install -m 644 10_nvidia.json %{buildroot}/%{_datadir}/glvnd/egl_vendor.d
+
 # GBM symlink for Mesa
 mkdir -p %{buildroot}%{_libdir}/gbm/
 ln -snf ../libnvidia-allocator.so.1 %{buildroot}%{_libdir}/gbm/nvidia-drm_gbm.so
