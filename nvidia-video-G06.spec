@@ -258,10 +258,43 @@ acceleration under the closed-source NVIDIA drivers.
 %prep
 %setup -T -c %{name}-%{version}
 %ifarch x86_64
- sh %{SOURCE0} -x
+ sh %{SOURCE0} -x --target NVIDIA-Linux
 %endif
 %ifarch aarch64
- sh %{SOURCE1} -x
+ sh %{SOURCE1} -x --target NVIDIA-Linux
+%endif
+
+cd NVIDIA-Linux
+
+# Drop stuff that is built from source or not relevant to packaging:
+rm -fr \
+    nvidia-xconfig* \
+    nvidia-persistenced* \
+    nvidia-modprobe* \
+    libnvidia-gtk* libnvidia-wayland-client* nvidia-settings* \
+    libGLESv1_CM.so.* libGLESv2.so.* libGLdispatch.so.* libOpenGL.so.* libGLX.so.* libGL.so.1* libEGL.so.1* \
+    libOpenCL.so.1* \
+    libEGL.so.%{version} \
+    nvidia-installer* .manifest make* mk* tls_test* libglvnd_install_checker \
+    32/libGLESv1_CM.so.* 32/libGLESv2.so.* 32/libGLdispatch.so.* 32/libOpenGL.so.* 32/libGLX.so.* 32/libGL.so.1* 32/libEGL.so.1* \
+    32/libOpenCL.so.1*
+
+%if 0%{?suse_version} >= 1550 || 0%{?sle_version} >= 150500
+rm -f \
+    libnvidia-egl-gbm.so.* \
+    32/libnvidia-egl-gbm.so.* \
+    15_nvidia_gbm.json \
+%if 0%{?sle_version} >= 150700
+    libnvidia-egl-wayland.so.* libnvidia-egl-xcb.so.* libnvidia-egl-xlib.so.* \
+    32/libnvidia-egl-wayland.so.* 32/libnvidia-egl-xcb.so.* 32/libnvidia-egl-xlib.so.* \
+    10_nvidia_wayland.json 20_nvidia_xcb.json 20_nvidia_xlib.json
+%endif
+%endif
+
+# Create all the necessary symlinks:
+/sbin/ldconfig -vn .
+%ifarch x86_64
+/sbin/ldconfig -vn 32
 %endif
 
 %build
@@ -270,29 +303,9 @@ acceleration under the closed-source NVIDIA drivers.
 %install
 # no longer alter, i.e. strip NVIDIA's libraries
 export NO_BRP_STRIP_DEBUG=true
-cd NVIDIA-Linux-*-%{version}
-# would be nice if it worked ...
-#./nvidia-installer \
-#	--accept-license \
-#	--expert \
-#	--no-questions \
-#	--ui=none \
-#	--no-precompiled-interface \
-#	--no-runlevel-check \
-#	--no-rpms \
-#	--no-backup \
-#	--no-network \
-#	--no-recursion \
-#	--no-kernel-module \
-#	--log-file-name=$PWD/log \
-#	--x-prefix=%{buildroot}%{_prefix}/X11R6 \
-#	--opengl-prefix=%{buildroot}%{_prefix} \
-#	--utility-prefix=%{buildroot}%{_prefix}
-# only to be used by non-GLVND OpenGL libs
-rm -f libEGL.so.%{version} 32/libEGL.so.%{version}
+cd NVIDIA-Linux
+
 install -d %{buildroot}%{_bindir}
-install -d %{buildroot}%{_prefix}/X11R6/lib
-install -d %{buildroot}%{_prefix}/X11R6/%{_lib}
 install -d %{buildroot}%{_prefix}/lib/vdpau
 install -d %{buildroot}%{_libdir}/vdpau
 install -d %{buildroot}%{xmodulesdir}/drivers
@@ -308,75 +321,34 @@ install nvidia-ngx-updater %{buildroot}%{_bindir}
 install nvidia-powerd %{buildroot}%{_bindir}
 mkdir -p %{buildroot}%{_datadir}/dbus-1/system.d
 install -m 0644 nvidia-dbus.conf %{buildroot}%{_datadir}/dbus-1/system.d
-%if 0%{?suse_version} >= 1550 || 0%{?sle_version} >= 150500
-rm libnvidia-egl-gbm*
-%endif
-%if 0%{?suse_version} >= 1550 || 0%{?sle_version} >= 150700
-rm libnvidia-egl-wayland*
-rm libnvidia-egl-xcb*
-rm libnvidia-egl-xlib*
-%endif
-# now in external package nvidia-settings
-rm libnvidia-gtk3.so*
-%ifnarch aarch64
-rm libnvidia-wayland-client.so*
-%endif
-install libnvidia* %{buildroot}%{_libdir}
-install libcuda* %{buildroot}%{_libdir}
-install libnvcuvid* %{buildroot}%{_libdir}
-install libnvidia-ml* %{buildroot}%{_libdir}
-install libnvoptix* %{buildroot}%{_libdir}
+
+cp -a lib*GL*_nvidia.so* libcuda*.so* libnv*.so* %{buildroot}%{_libdir}/
+ln -snf libcuda.so.1 %{buildroot}%{_libdir}/libcuda.so
+ln -snf libnvcuvid.so.1 %{buildroot}%{_libdir}/libnvcuvid.so
+ln -s libnvidia-ml.so.1  %{buildroot}%{_libdir}/libnvidia-ml.so
+
 install libvdpau_nvidia.so* %{buildroot}%{_libdir}/vdpau
+# Bug #596481
+ln -s vdpau/libvdpau_nvidia.so.1 %{buildroot}%{_libdir}/libvdpau_nvidia.so
+
 %ifarch x86_64
+cp -a 32/lib*GL*_nvidia.so* 32/libcuda*.so* 32/libnv*.so* %{buildroot}%{_prefix}/lib/
+ln -snf libcuda.so.1 %{buildroot}%{_prefix}/lib/libcuda.so
+ln -snf libnvcuvid.so.1 %{buildroot}%{_prefix}/lib/libnvcuvid.so
+
+install 32/libvdpau_nvidia.so* %{buildroot}%{_prefix}/lib/vdpau
+# Bug #596481
+ln -s vdpau/libvdpau_nvidia.so.1 %{buildroot}%{_prefix}/lib/libvdpau_nvidia.so
+
 install -d %{buildroot}%{_libdir}/nvidia/wine
 install _nvngx.dll nvngx.dll %{buildroot}%{_libdir}/nvidia/wine
 %endif
-# Bug #596481
-ln -s vdpau/libvdpau_nvidia.so.1 %{buildroot}%{_libdir}/libvdpau_nvidia.so
-# the GL lib from Mesa is in /usr/%{_lib} so we install in /usr/X11R6/%{_lib}
-install libGL* %{buildroot}%{_prefix}/X11R6/%{_lib}
-# still a lot of applications make a dlopen to the .so file
-ln -snf libGL.so.1 %{buildroot}%{_prefix}/X11R6/%{_lib}/libGL.so
-ln -snf libcuda.so.1   %{buildroot}%{_libdir}/libcuda.so
-ln -snf libnvcuvid.so.1 %{buildroot}%{_libdir}/libnvcuvid.so
-# NVML library for Tesla compute products (new since 270.xx)
-ln -s libnvidia-ml.so.1  %{buildroot}%{_libdir}/libnvidia-ml.so
-# EGL/GLES 64bit new since 340.xx
-install libEGL.so.* %{buildroot}%{_prefix}/X11R6/%{_lib}
-install libEGL_nvidia.so.* %{buildroot}%{_prefix}/X11R6/%{_lib}
-install libGLESv1_CM* %{buildroot}%{_prefix}/X11R6/%{_lib}
-install libGLESv2* %{buildroot}%{_prefix}/X11R6/%{_lib}
-install libOpenGL* %{buildroot}%{_prefix}/X11R6/%{_lib}
+
 install nvidia_drv.so %{buildroot}%{xmodulesdir}/drivers
 install libglxserver_nvidia.so.%{version} \
   %{buildroot}%{xmodulesdir}/extensions/
 ln -sf libglxserver_nvidia.so.%{version} %{buildroot}%{xmodulesdir}/extensions/libglxserver_nvidia.so
-%ifarch x86_64
-%if 0%{?suse_version} >= 1550 || 0%{?sle_version} >= 150500
-rm 32/libnvidia-egl-gbm*
-%endif
-%if 0%{?suse_version} >= 1550 || 0%{?sle_version} >= 150700
-rm 32/libnvidia-egl-wayland*
-rm 32/libnvidia-egl-xcb*
-rm 32/libnvidia-egl-xlib*
-%endif
-install 32/libnvidia* %{buildroot}%{_prefix}/lib
-install 32/libcuda* %{buildroot}%{_prefix}/lib
-install 32/libnvcuvid* %{buildroot}%{_prefix}/lib
-install 32/libvdpau_nvidia.so* %{buildroot}%{_prefix}/lib/vdpau
-install 32/libGL* %{buildroot}%{_prefix}/X11R6/lib
-install 32/libEGL.so.* %{buildroot}%{_prefix}/X11R6/lib
-install 32/libEGL_nvidia.so.* %{buildroot}%{_prefix}/X11R6/lib
-install 32/libGLESv1_CM* %{buildroot}%{_prefix}/X11R6/lib
-install 32/libGLESv2* %{buildroot}%{_prefix}/X11R6/lib
-install 32/libOpenGL* %{buildroot}%{_prefix}/X11R6/lib
-# Bug #596481
-ln -s vdpau/libvdpau_nvidia.so.1 %{buildroot}%{_prefix}/lib/libvdpau_nvidia.so
-# still a lot of applications make a dlopen to the .so file
-ln -snf libGL.so.1 %{buildroot}%{_prefix}/X11R6/lib/libGL.so
-ln -snf libcuda.so.1   %{buildroot}%{_prefix}/lib/libcuda.so
-ln -snf libnvcuvid.so.1 %{buildroot}%{_prefix}/lib/libnvcuvid.so
-%endif
+
 install -d %{buildroot}%{_datadir}/doc/packages/%{name}
 cp -a html %{buildroot}%{_datadir}/doc/packages/%{name}
 install -m 644 LICENSE %{buildroot}%{_datadir}/doc/packages/%{name}
@@ -386,7 +358,6 @@ mkdir -p %{buildroot}/usr/lib/systemd/{system,system-sleep}
 install -m 755 systemd/nvidia-sleep.sh %{buildroot}%{_bindir}
 install -m 644 systemd/system/*.service %{buildroot}/usr/lib/systemd/system
 install -m 755 systemd/system-sleep/nvidia %{buildroot}/usr/lib/systemd/system-sleep
-rm -f nvidia-installer*
 install -d %{buildroot}/%{_mandir}/man1
 install -m 644 {nvidia-cuda-mps-control,nvidia-smi}.1.gz \
   %{buildroot}/%{_mandir}/man1
@@ -395,33 +366,19 @@ install -m 644 nvidia-application-profiles-%{version}-{rc,key-documentation} \
   %{buildroot}%{_datadir}/nvidia
 install -m 644 nvoptix.bin %{buildroot}%{_datadir}/nvidia
 
-/sbin/ldconfig -n %{buildroot}%{_libdir}
-/sbin/ldconfig -n %{buildroot}%{_libdir}/vdpau
-/sbin/ldconfig -n %{buildroot}%{_prefix}/X11R6/%{_lib}
-%ifarch x86_64
-/sbin/ldconfig -n %{buildroot}%{_prefix}/lib
-/sbin/ldconfig -n %{buildroot}%{_prefix}/lib/vdpau
-/sbin/ldconfig -n %{buildroot}%{_prefix}/X11R6/lib
-%endif
 install -m 644 nvidia.icd \
   %{buildroot}%{_sysconfdir}/OpenCL/vendors/
-# Create /etc/ld.so.conf.d/nvidia-driver-G06
-mkdir -p %{buildroot}%{_sysconfdir}/ld.so.conf.d
-cat > %{buildroot}%{_sysconfdir}/ld.so.conf.d/nvidia-driver-G06.conf <<EOF
-%{_prefix}/X11R6/%{_lib}
-%ifarch x86_64
-%{_prefix}/X11R6/lib
-%endif
-EOF
-# Get rid of gtk2 deps on Tumbleweeed
-%if 0%{?suse_version} >= 1550
-rm %{buildroot}/%{_libdir}/libnvidia-gtk2.so.%{version}
-%endif
 
-%if 0%{?suse_version} < 1550
+%if 0%{?suse_version} < 1550 || 0%{?sle_version} < 150700
 # EGL driver config
 mkdir -p %{buildroot}%{_datadir}/egl/egl_external_platform.d
-install -m 644 10_nvidia_wayland.json 15_nvidia_gbm.json 20_nvidia_xcb.json 20_nvidia_xlib.json \
+install -m 644 \
+%if 0%{?sle_version} < 150500
+    15_nvidia_gbm.json \
+%endif
+    10_nvidia_wayland.json \
+    20_nvidia_xcb.json \
+    20_nvidia_xlib.json \
     %{buildroot}%{_datadir}/egl/egl_external_platform.d
 %endif
 
@@ -442,23 +399,9 @@ install -p -m 0755 -D nvidia-pcc %{buildroot}%{_bindir}/nvidia-pcc
 
 %endif
 
-# libglvnd is preinstalled on sle15/TW
-rm %{buildroot}/etc/ld.so.conf.d/nvidia-driver-G06.conf \
-   %{buildroot}/usr/X11R6/lib*/libEGL.so.* \
-   %{buildroot}/usr/X11R6/lib*/libGL.so* \
-   %{buildroot}/usr/X11R6/lib*/libGLX.so* \
-   %{buildroot}/usr/X11R6/lib*/libGLESv1_CM.so.* \
-   %{buildroot}/usr/X11R6/lib*/libGLESv2.so.* \
-   %{buildroot}/usr/X11R6/lib*/libGLdispatch.so.* \
-   %{buildroot}/usr/X11R6/lib*/libOpenGL.so.*
-   mv %{buildroot}/usr/X11R6/%{_lib}/* %{buildroot}/%{_libdir}/
-%ifarch x86_64
-   mv %{buildroot}/usr/X11R6/lib/*   %{buildroot}/%{_prefix}/lib/
-%endif
-   rmdir %{buildroot}/usr/X11R6/lib* \
-         %{buildroot}/usr/X11R6
-   mkdir -p %{buildroot}/%{_datadir}/glvnd/egl_vendor.d
-   install -m 644 10_nvidia.json %{buildroot}/%{_datadir}/glvnd/egl_vendor.d
+mkdir -p %{buildroot}/%{_datadir}/glvnd/egl_vendor.d
+install -m 644 10_nvidia.json %{buildroot}/%{_datadir}/glvnd/egl_vendor.d
+
 # GBM symlink for Mesa
 mkdir -p %{buildroot}%{_libdir}/gbm/
 ln -snf ../libnvidia-allocator.so.1 %{buildroot}%{_libdir}/gbm/nvidia-drm_gbm.so
@@ -585,9 +528,6 @@ fi
 %{_libdir}/libnvcuvid.so*
 %{_libdir}/libnvidia-allocator.so*
 %{_libdir}/libnvidia-encode.so*
-%if 0%{?suse_version} < 1550
-%{_libdir}/libnvidia-gtk2.so*
-%endif
 %{_libdir}/libnvidia-opticalflow.so*
 %ifarch x86_64
 %{_libdir}/libnvidia-pkcs11-openssl3.so*
@@ -651,13 +591,15 @@ fi
 %dir %{_datadir}/glvnd
 %dir %{_datadir}/glvnd/egl_vendor.d
 %{_datadir}/glvnd/egl_vendor.d/10_nvidia.json
-%if 0%{?suse_version} < 1550
+%if 0%{?suse_version} < 1550 || 0%{?sle_version} < 150700
 %dir %{_datadir}/egl
 %dir %{_datadir}/egl/egl_external_platform.d
 %{_datadir}/egl/egl_external_platform.d/10_nvidia_wayland.json
-%{_datadir}/egl/egl_external_platform.d/15_nvidia_gbm.json
 %{_datadir}/egl/egl_external_platform.d/20_nvidia_xcb.json
 %{_datadir}/egl/egl_external_platform.d/20_nvidia_xlib.json
+%if 0%{?sle_version} < 150500
+%{_datadir}/egl/egl_external_platform.d/15_nvidia_gbm.json
+%endif
 %endif
 %{_libdir}/libEGL_nvidia.so*
 %{_libdir}/libGLESv1_CM_nvidia.so*
@@ -670,13 +612,13 @@ fi
 %{xmodulesdir}/extensions/libglxserver_nvidia.so*
 %{_libdir}/libnvidia-cfg.so.*
 %{_libdir}/libnvidia-eglcore.so*
-%if 0%{?suse_version} < 1550 && 0%{?sle_version} < 150500
-%{_libdir}/libnvidia-egl-gbm.so*
-%endif
-%if 0%{?suse_version} < 1550 && 0%{?sle_version} < 150700
+%if 0%{?suse_version} < 1550 || 0%{?sle_version} < 150700
 %{_libdir}/libnvidia-egl-wayland.so*
 %{_libdir}/libnvidia-egl-xcb.so*
 %{_libdir}/libnvidia-egl-xlib.so*
+%if 0%{?sle_version} < 150500
+%{_libdir}/libnvidia-egl-gbm.so*
+%endif
 %endif
 %{_libdir}/libnvidia-fbc.so*
 %{_libdir}/libnvidia-glcore.so*
