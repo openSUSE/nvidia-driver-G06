@@ -543,6 +543,7 @@ fi
 %{xmodulesdir}/drivers/nvidia_drv.so
 %dir %{xmodulesdir}/extensions
 %{xmodulesdir}/extensions/libglxserver_nvidia.so*
+%dir %{_systemd_util_dir}/system-sleep
 %{_systemd_util_dir}/system-sleep/nvidia
 %{_unitdir}/nvidia-hibernate.service
 %{_unitdir}/nvidia-powerd.service
