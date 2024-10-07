@@ -61,8 +61,12 @@ Obsoletes:      x11-video-nvidiaG06 < %{version}
 Conflicts:      fglrx_driver
 Recommends:     nvidia-video-G06-32bit = %{version}
 Requires:       libvdpau1
+Requires:       nvidia-modprobe >= %{version}
 ExclusiveArch:  %ix86 x86_64 aarch64
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
+
+Provides:       nvidia-utils-G06 = %{version}
+Obsoletes:      nvidia-utils-G06 < %{version}
 
 %description
 This package provides the closed-source NVIDIA graphics driver
@@ -123,21 +127,11 @@ Requires:       nvidia-modprobe >= %{version}
 %description -n nvidia-compute-utils-G06
 NVIDIA driver tools for computing with GPGPUs using CUDA or OpenCL.
 
-%package -n nvidia-utils-G06
-Summary:        NVIDIA driver tools
-Group:          System/X11/Utilities
-Requires:       nvidia-compute-G06 = %{version}
-Requires:       nvidia-settings >= %{version}
-
-%description -n nvidia-utils-G06
-NVIDIA driver tools.
-
 %package -n nvidia-drivers-G06
 Summary:        Meta package for full installations (X, GL, etc.)
 Group:          System/X11/Utilities
 Requires:       nvidia-gl-G06 = %{version}
 Requires:       (nvidia-driver-G06-kmp = %{version} or nvidia-open-driver-G06-kmp = %{version} or nvidia-open-driver-G06-signed-kmp = %{version})
-Requires:       nvidia-utils-G06 = %{version}
 Requires:       nvidia-compute-utils-G06 = %{version}
 Requires:       nvidia-compute-G06 = %{version}
 Requires:       nvidia-video-G06 = %{version}
@@ -324,6 +318,7 @@ install -m 0644 nvidia-dbus.conf %{buildroot}%{_datadir}/dbus-1/system.d
 
 cp -a lib*GL*_nvidia.so* libcuda*.so* libnv*.so* %{buildroot}%{_libdir}/
 ln -snf libcuda.so.1 %{buildroot}%{_libdir}/libcuda.so
+ln -snf libnvidia-encode.so.1 %{buildroot}%{_libdir}/libnvidia-encode.so
 ln -snf libnvcuvid.so.1 %{buildroot}%{_libdir}/libnvcuvid.so
 ln -s libnvidia-ml.so.1  %{buildroot}%{_libdir}/libnvidia-ml.so
 
@@ -334,6 +329,7 @@ ln -s vdpau/libvdpau_nvidia.so.1 %{buildroot}%{_libdir}/libvdpau_nvidia.so
 %ifarch x86_64
 cp -a 32/lib*GL*_nvidia.so* 32/libcuda*.so* 32/libnv*.so* %{buildroot}%{_prefix}/lib/
 ln -snf libcuda.so.1 %{buildroot}%{_prefix}/lib/libcuda.so
+ln -snf libnvidia-encode.so.1 %{buildroot}%{_prefix}/lib/libnvidia-encode.so
 ln -snf libnvcuvid.so.1 %{buildroot}%{_prefix}/lib/libnvcuvid.so
 
 install 32/libvdpau_nvidia.so* %{buildroot}%{_prefix}/lib/vdpau
@@ -520,60 +516,76 @@ fi
 
 %files
 %defattr(-,root,root)
-%dir %{_libdir}/vdpau
-%{_libdir}/vdpau/libvdpau_nvidia.so*
-# symlink to libnvidia-allocator
-%dir %{_libdir}/gbm
-%{_libdir}/gbm/nvidia-drm_gbm.so
-%{_libdir}/libnvcuvid.so*
-%{_libdir}/libnvidia-allocator.so*
-%{_libdir}/libnvidia-encode.so*
-%{_libdir}/libnvidia-opticalflow.so*
+%{_bindir}/nvidia-bug-report.sh
+%{_bindir}/nvidia-ngx-updater
 %ifarch x86_64
-%{_libdir}/libnvidia-pkcs11-openssl3.so*
-%{_libdir}/libnvidia-pkcs11.so*
+%{_bindir}/nvidia-pcc
 %endif
+%{_bindir}/nvidia-powerd
+%{_bindir}/nvidia-sleep.sh
+%{_datadir}/dbus-1/system.d/nvidia-dbus.conf
+%dir %{_datadir}/nvidia
+%{_datadir}/nvidia/nvidia-application-profiles-%{version}-rc
+%{_datadir}/nvidia/nvidia-application-profiles-%{version}-key-documentation
+%{_libdir}/libnvcuvid.so
+%{_libdir}/libnvcuvid.so.1
+%{_libdir}/libnvcuvid.so.%{version}
+%{_libdir}/libnvidia-encode.so
+%{_libdir}/libnvidia-encode.so.1
+%{_libdir}/libnvidia-encode.so.%{version}
 %{_libdir}/libvdpau_nvidia.so
+%dir %{_libdir}/vdpau
+%{_libdir}/vdpau/libvdpau_nvidia.so.1
+%{_libdir}/vdpau/libvdpau_nvidia.so.%{version}
+%dir %{xlibdir}
+%dir %{xmodulesdir}
+%dir %{xmodulesdir}/drivers
+%{xmodulesdir}/drivers/nvidia_drv.so
+%dir %{xmodulesdir}/extensions
+%{xmodulesdir}/extensions/libglxserver_nvidia.so*
+%{_systemd_util_dir}/system-sleep/nvidia
+%{_unitdir}/nvidia-hibernate.service
+%{_unitdir}/nvidia-powerd.service
+%{_unitdir}/nvidia-resume.service
+%{_unitdir}/nvidia-suspend.service
 
 %files -n nvidia-compute-G06
 %defattr(-,root,root)
 %doc %{_datadir}/doc/packages/%{name}
-%{_libdir}/libcudadebugger.so*
-%{_libdir}/libcuda.so*
-%{_libdir}/libnvidia-api.so*
-%{_libdir}/libnvidia-ml.so*
-%{_libdir}/libnvidia-ngx.so*
-%{_libdir}/libnvidia-nvvm.so*
-%{_libdir}/libnvidia-opencl.so*
-%{_libdir}/libnvidia-ptxjitcompiler.so*
+%{_libdir}/libcuda.so
+%{_libdir}/libcuda.so.1
+%{_libdir}/libcuda.so.%{version}
+%{_libdir}/libcudadebugger.so.1
+%{_libdir}/libcudadebugger.so.%{version}
+%{_libdir}/libnvidia-cfg.so.1
+%{_libdir}/libnvidia-cfg.so.%{version}
+%{_libdir}/libnvidia-ml.so
+%{_libdir}/libnvidia-ml.so.1
+%{_libdir}/libnvidia-ml.so.%{version}
+%{_libdir}/libnvidia-nvvm.so.4
+%{_libdir}/libnvidia-nvvm.so.%{version}
+%{_libdir}/libnvidia-opencl.so.1
+%{_libdir}/libnvidia-opencl.so.%{version}
+%{_libdir}/libnvidia-opticalflow.so.1
+%{_libdir}/libnvidia-opticalflow.so.%{version}
+%{_libdir}/libnvidia-ptxjitcompiler.so.1
+%{_libdir}/libnvidia-ptxjitcompiler.so.%{version}
+%ifarch x86_64
+%{_libdir}/libnvidia-pkcs11.so.%{version}
+%{_libdir}/libnvidia-pkcs11-openssl3.so.%{version}
+%endif
 %dir %{_sysconfdir}/OpenCL
 %dir %{_sysconfdir}/OpenCL/vendors
 %config %{_sysconfdir}/OpenCL/vendors/nvidia.icd
-%{_bindir}/nvidia-ngx-updater
-%ifarch x86_64
-%dir %{_libdir}/nvidia/
-%dir %{_libdir}/nvidia/wine/
-%{_libdir}/nvidia/wine/{_nvngx.dll,nvngx.dll}
-%endif
 
 %files -n nvidia-compute-utils-G06
 %defattr(-,root,root)
-%{_bindir}/nvidia-bug-report.sh
 %{_bindir}/nvidia-cuda-mps-control
-%{_mandir}/man1/nvidia-cuda-mps-control.1.gz
 %{_bindir}/nvidia-cuda-mps-server
 %{_bindir}/nvidia-debugdump
-%{_datadir}/dbus-1/system.d/nvidia-dbus.conf
-%{_bindir}/nvidia-powerd
-/usr/lib/systemd/system/nvidia-powerd.service
 %{_bindir}/nvidia-smi
-%{_mandir}/man1/nvidia-smi.1.gz
-
-%files -n nvidia-utils-G06
-%defattr(-,root,root)
-%dir %{_datadir}/nvidia
-%{_datadir}/nvidia/nvidia-application-profiles-%{version}-rc
-%{_datadir}/nvidia/nvidia-application-profiles-%{version}-key-documentation
+%{_mandir}/man1/nvidia-cuda-mps-control.1.*
+%{_mandir}/man1/nvidia-smi.1.*
 
 %files -n nvidia-drivers-G06
 %defattr(-,root,root)
@@ -601,100 +613,119 @@ fi
 %{_datadir}/egl/egl_external_platform.d/15_nvidia_gbm.json
 %endif
 %endif
-%{_libdir}/libEGL_nvidia.so*
-%{_libdir}/libGLESv1_CM_nvidia.so*
-%{_libdir}/libGLESv2_nvidia.so*
-%{_libdir}/libGLX_nvidia.so*
-%dir %{xlibdir}
-%dir %{xmodulesdir}
-%dir %{xmodulesdir}/drivers
-%dir %{xmodulesdir}/extensions
-%{xmodulesdir}/extensions/libglxserver_nvidia.so*
-%{_libdir}/libnvidia-cfg.so.*
-%{_libdir}/libnvidia-eglcore.so*
+%dir %{_libdir}/gbm
+%{_libdir}/gbm/nvidia-drm_gbm.so
+%{_libdir}/libEGL_nvidia.so.0
+%{_libdir}/libEGL_nvidia.so.%{version}
+%{_libdir}/libGLESv1_CM_nvidia.so.1
+%{_libdir}/libGLESv1_CM_nvidia.so.%{version}
+%{_libdir}/libGLESv2_nvidia.so.2
+%{_libdir}/libGLESv2_nvidia.so.%{version}
+%{_libdir}/libGLX_nvidia.so.0
+%{_libdir}/libGLX_nvidia.so.%{version}
+%{_libdir}/libnvidia-allocator.so.1
+%{_libdir}/libnvidia-allocator.so.%{version}
+%{_libdir}/libnvidia-api.so.1
+%{_libdir}/libnvidia-eglcore.so.%{version}
 %if 0%{?suse_version} < 1550 && 0%{?sle_version} < 150700
-%{_libdir}/libnvidia-egl-wayland.so*
-%{_libdir}/libnvidia-egl-xcb.so*
-%{_libdir}/libnvidia-egl-xlib.so*
+%{_libdir}/libnvidia-egl-wayland.so.1*
+%{_libdir}/libnvidia-egl-xcb.so.1*
+%{_libdir}/libnvidia-egl-xlib.so.1*
 %if 0%{?sle_version} < 150500
-%{_libdir}/libnvidia-egl-gbm.so*
+%{_libdir}/libnvidia-egl-gbm.so.1*
 %endif
 %endif
-%{_libdir}/libnvidia-fbc.so*
-%{_libdir}/libnvidia-glcore.so*
-%{_libdir}/libnvidia-glsi.so*
-%{_libdir}/libnvidia-glvkspirv.so*
-%{_libdir}/libnvidia-rtcore.so*
-%{_libdir}/libnvidia-tls.so*
-%{_libdir}/libnvidia-gpucomp.so*
-%{_libdir}/libnvoptix.so*
-%{_datadir}/nvidia/nvoptix.bin
-%{xmodulesdir}/drivers/nvidia_drv.so
+%{_libdir}/libnvidia-fbc.so.1
+%{_libdir}/libnvidia-fbc.so.%{version}
+%{_libdir}/libnvidia-glcore.so.%{version}
+%{_libdir}/libnvidia-glsi.so.%{version}
+%{_libdir}/libnvidia-glvkspirv.so.%{version}
+%{_libdir}/libnvidia-gpucomp.so.%{version}
+%{_libdir}/libnvidia-ngx.so.1
+%{_libdir}/libnvidia-ngx.so.%{version}
+%{_libdir}/libnvidia-rtcore.so.%{version}
+%{_libdir}/libnvidia-tls.so.%{version}
+%{_libdir}/libnvoptix.so.1
+%{_libdir}/libnvoptix.so.%{version}
 %dir %{_datadir}/vulkan
 %dir %{_datadir}/vulkan/icd.d
 %{_datadir}/vulkan/icd.d/nvidia_icd.%{_target_cpu}.json
 %dir %{_datadir}/vulkan/implicit_layer.d
 %{_datadir}/vulkan/implicit_layer.d/nvidia_layers.json
-%{_bindir}/nvidia-sleep.sh
-/usr/lib/systemd/system/nvidia-hibernate.service
-/usr/lib/systemd/system/nvidia-resume.service
-/usr/lib/systemd/system/nvidia-suspend.service
-%dir /usr/lib/systemd/system-sleep
-/usr/lib/systemd/system-sleep/nvidia
 %ifarch x86_64
-%{_bindir}/nvidia-pcc
 %dir %{_datadir}/vulkansc
 %dir %{_datadir}/vulkansc/icd.d
+%{_datadir}/nvidia/nvoptix.bin
 %{_datadir}/vulkansc/icd.d/nvidia_icd.%{_target_cpu}.json
 %{_libdir}/libnvidia-vksc-core.so*
+%dir %{_libdir}/nvidia
+%dir %{_libdir}/nvidia/wine
+%{_libdir}/nvidia/wine/*.dll
 %endif
 
 %ifarch x86_64
 
 %files -n nvidia-video-G06-32bit
 %defattr(-,root,root)
-%dir %{_prefix}/lib/vdpau
-%{_prefix}/lib/vdpau/libvdpau_nvidia.so*
-# symlink to libnvidia-allocator
-%dir %{_prefix}/lib/gbm
-%{_prefix}/lib/gbm/nvidia-drm_gbm.so
-%{_prefix}/lib/vdpau/libvdpau_nvidia.so*
-%{_prefix}/lib/libnvcuvid.so*
-%{_prefix}/lib/libnvidia-allocator.so*
-%{_prefix}/lib/libnvidia-encode.so*
-%{_prefix}/lib/libnvidia-opticalflow.so*
+%{_prefix}/lib/libnvcuvid.so
+%{_prefix}/lib/libnvcuvid.so.1
+%{_prefix}/lib/libnvcuvid.so.%{version}
+%{_prefix}/lib/libnvidia-encode.so
+%{_prefix}/lib/libnvidia-encode.so.1
+%{_prefix}/lib/libnvidia-encode.so.%{version}
 %{_prefix}/lib/libvdpau_nvidia.so
+%dir %{_prefix}/lib/vdpau
+%{_prefix}/lib/vdpau/libvdpau_nvidia.so.1
+%{_prefix}/lib/vdpau/libvdpau_nvidia.so.%{version}
 
 %files -n nvidia-compute-G06-32bit
 %defattr(-,root,root)
-%{_prefix}/lib/libcuda.so*
-%{_prefix}/lib/libnvidia-ml.so*
-%{_prefix}/lib/libnvidia-nvvm.so*
-%{_prefix}/lib/libnvidia-opencl.so*
-%{_prefix}/lib/libnvidia-ptxjitcompiler.so*
+%{_prefix}/lib/libcuda.so
+%{_prefix}/lib/libcuda.so.1
+%{_prefix}/lib/libcuda.so.%{version}
+%{_prefix}/lib/libnvidia-ml.so.1
+%{_prefix}/lib/libnvidia-ml.so.%{version}
+%{_prefix}/lib/libnvidia-nvvm.so.4
+%{_prefix}/lib/libnvidia-nvvm.so.%{version}
+%{_prefix}/lib/libnvidia-opencl.so.1
+%{_prefix}/lib/libnvidia-opencl.so.%{version}
+%{_prefix}/lib/libnvidia-opticalflow.so.1
+%{_prefix}/lib/libnvidia-opticalflow.so.%{version}
+%{_prefix}/lib/libnvidia-ptxjitcompiler.so.1
+%{_prefix}/lib/libnvidia-ptxjitcompiler.so.%{version}
 
 %files -n nvidia-gl-G06-32bit
 %defattr(-,root,root)
 %{_datadir}/vulkan/icd.d/nvidia_icd.i686.json
-%{_prefix}/lib/libEGL_nvidia.so*
-%{_prefix}/lib/libGLESv1_CM_nvidia.so*
-%{_prefix}/lib/libGLESv2_nvidia.so*
-%{_prefix}/lib/libGLX_nvidia.so*
-%{_prefix}/lib/libnvidia-eglcore.so*
-%if 0%{?suse_version} < 1550 && 0%{?sle_version} < 150500
-%{_prefix}/lib/libnvidia-egl-gbm.so*
-%endif
+%dir %{_prefix}/lib/gbm
+%{_prefix}/lib/gbm/nvidia-drm_gbm.so
+%{_prefix}/lib/libEGL_nvidia.so.0
+%{_prefix}/lib/libEGL_nvidia.so.%{version}
+%{_prefix}/lib/libGLESv1_CM_nvidia.so.1
+%{_prefix}/lib/libGLESv1_CM_nvidia.so.%{version}
+%{_prefix}/lib/libGLESv2_nvidia.so.2
+%{_prefix}/lib/libGLESv2_nvidia.so.%{version}
+%{_prefix}/lib/libGLX_nvidia.so.0
+%{_prefix}/lib/libGLX_nvidia.so.%{version}
+%{_prefix}/lib/libnvidia-allocator.so.1
+%{_prefix}/lib/libnvidia-allocator.so.%{version}
+%{_prefix}/lib/libnvidia-eglcore.so.%{version}
 %if 0%{?suse_version} < 1550 && 0%{?sle_version} < 150700
-%{_prefix}/lib/libnvidia-egl-wayland.so*
-%{_prefix}/lib/libnvidia-egl-xcb.so*
-%{_prefix}/lib/libnvidia-egl-xlib.so*
+%{_prefix}/lib/libnvidia-egl-wayland.so.1*
+%{_prefix}/lib/libnvidia-egl-xcb.so.1*
+%{_prefix}/lib/libnvidia-egl-xlib.so.1*
+%if 0%{?sle_version} < 150500
+%{_prefix}/lib/libnvidia-egl-gbm.so.1*
 %endif
-%{_prefix}/lib/libnvidia-fbc.so*
-%{_prefix}/lib/libnvidia-glcore.so*
-%{_prefix}/lib/libnvidia-glsi.so*
-%{_prefix}/lib/libnvidia-glvkspirv.so*
-%{_prefix}/lib/libnvidia-tls.so*
-%{_prefix}/lib/libnvidia-gpucomp.so*
+%endif
+%{_prefix}/lib/libnvidia-fbc.so.1
+%{_prefix}/lib/libnvidia-fbc.so.%{version}
+%{_prefix}/lib/libnvidia-glcore.so.%{version}
+%{_prefix}/lib/libnvidia-glsi.so.%{version}
+%{_prefix}/lib/libnvidia-glvkspirv.so.%{version}
+%{_prefix}/lib/libnvidia-gpucomp.so.%{version}
+%{_prefix}/lib/libnvidia-tls.so.%{version}
+
 %endif
 
 %changelog
