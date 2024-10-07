@@ -408,12 +408,7 @@ ln -snf ../libnvidia-allocator.so.1 %{buildroot}%{_prefix}/lib/gbm/nvidia-drm_gb
 
 %post -p /bin/bash
 /sbin/ldconfig
-# xorg.conf no longer been used since sle12
 # Bug #345125
-test -f %{xlibdir}/modules/drivers/nvidia_drv.so && \
-  touch %{xlibdir}/modules/drivers/nvidia_drv.so
-test -f %{xmodulesdir}/drivers/nvidia_drv.so && \
-  touch %{xmodulesdir}/drivers/nvidia_drv.so
 if ls var/lib/hardware/ids/* &> /dev/null; then
   >  var/lib/hardware/hd.ids
   for i in var/lib/hardware/ids/*; do
@@ -421,12 +416,12 @@ if ls var/lib/hardware/ids/* &> /dev/null; then
   done
 fi
 # needed for GNOME Wayland
-%service_add_post nvidia-suspend.service
 %service_add_post nvidia-hibernate.service
 %service_add_post nvidia-resume.service
-systemctl enable nvidia-suspend.service
+%service_add_post nvidia-suspend.service
 systemctl enable nvidia-hibernate.service
 systemctl enable nvidia-resume.service
+systemctl enable nvidia-suspend.service
 exit 0
 
 %postun -p /bin/bash
@@ -447,25 +442,15 @@ if [ "$1" -eq 0 ]; then
     /usr/bin/xgl-switch --disable-xgl
   fi
 # needed for GNOME Wayland
-%service_del_postun nvidia-suspend.service
 %service_del_postun nvidia-hibernate.service
 %service_del_postun nvidia-resume.service
+%service_del_postun nvidia-suspend.service
 fi
 exit 0
 
 %post -n nvidia-compute-G06 -p /sbin/ldconfig
 
 %postun -n nvidia-compute-G06 -p /sbin/ldconfig
-
-%post -n nvidia-compute-utils-G06
-# Dynamic Boost on Linux (README.txt: Chapter 23)
-%service_add_post nvidia-powerd.service
-systemctl enable nvidia-powerd.service
-
-%postun -n nvidia-compute-utils-G06
-if [ "$1" -eq 0 ]; then
-  %service_del_postun nvidia-powerd.service
-fi
 
 %post -n nvidia-gl-G06
 # Optimus systems 
@@ -658,7 +643,8 @@ fi
 %dir %{_datadir}/vulkansc/icd.d
 %{_datadir}/nvidia/nvoptix.bin
 %{_datadir}/vulkansc/icd.d/nvidia_icd.%{_target_cpu}.json
-%{_libdir}/libnvidia-vksc-core.so*
+%{_libdir}/libnvidia-vksc-core.so.1
+%{_libdir}/libnvidia-vksc-core.so.%{version}
 %dir %{_libdir}/nvidia
 %dir %{_libdir}/nvidia/wine
 %{_libdir}/nvidia/wine/*.dll
