@@ -132,6 +132,9 @@ Summary:        Meta package for full installations (X, GL, etc.)
 Group:          System/X11/Utilities
 Requires:       nvidia-gl-G06 = %{version}
 Requires:       (nvidia-driver-G06-kmp = %{version} or nvidia-open-driver-G06-kmp = %{version} or nvidia-open-driver-G06-signed-kmp = %{version})
+# prefer the opengpu driver; resolver works alphabetically and would suggest
+# proprietary driver instead ...
+Recommends:     nvidia-open-driver-G06-signed-kmp = %{version}
 Requires:       nvidia-compute-utils-G06 = %{version}
 Requires:       nvidia-compute-G06 = %{version}
 Requires:       nvidia-video-G06 = %{version}
@@ -146,6 +149,9 @@ Group:          System/X11/Utilities
 Requires:       nvidia-compute-utils-G06 = %{version}
 Requires:       nvidia-compute-G06 = %{version}
 Requires:       (nvidia-driver-G06-kmp = %{version} or nvidia-open-driver-G06-kmp = %{version} or nvidia-open-driver-G06-signed-kmp = %{version})
+# prefer the opengpu driver; resolver works alphabetically and would suggest
+# proprietary driver instead ...
+Recommends:     nvidia-open-driver-G06-signed-kmp = %{version}
 
 %description -n nvidia-drivers-minimal-G06
 This is just a Meta package for compute only installations.
