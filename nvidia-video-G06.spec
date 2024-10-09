@@ -42,13 +42,17 @@ Source5:        README
 Source6:        Xwrapper
 Source7:        pci_ids-%{version}
 Source8:        nvidia-driver-G06.rpmlintrc
+Source9:        60-nvidia.rules
+Source10:       50-nvidia.conf.modprobe
+Source11:       60-nvidia.conf.dracut
+Source16:       alternate-install-present
 NoSource:       0
 NoSource:       1
 NoSource:       4
 NoSource:       5
 BuildRequires:  pkgconfig(systemd)
-Requires:       nvidia-compute-G06 = %{version}
-Requires:       (nvidia-driver-G06-kmp = %{version} or nvidia-open-driver-G06-kmp = %{version} or nvidia-open-driver-G06-signed-kmp = %{version})
+Requires:       nvidia-common-G06 = %{version}
+Requires:       nvidia-gl-G06 = %{version}
 Provides:       nvidia_driver = %{version}
 Conflicts:      x11-video-nvidia
 Conflicts:      x11-video-nvidiaG01
@@ -61,7 +65,6 @@ Obsoletes:      x11-video-nvidiaG06 < %{version}
 Conflicts:      fglrx_driver
 Recommends:     nvidia-video-G06-32bit = %{version}
 Requires:       libvdpau1
-Requires:       nvidia-modprobe >= %{version}
 ExclusiveArch:  %ix86 x86_64 aarch64
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 
@@ -76,6 +79,7 @@ for GeForce 700 series and newer GPUs.
 Summary:        32bit NVIDIA graphics driver for GeForce 700 series and newer
 Group:          System/Libraries
 Requires:       nvidia-video-G06 = %{version}
+Requires:       nvidia-gl-G06-32bit = %{version}
 Requires:       libvdpau1-32bit
 Conflicts:      x11-video-nvidiaG04-32bit
 Conflicts:      x11-video-nvidiaG05-32bit
@@ -90,7 +94,7 @@ for GeForce 700 series and newer GPUs.
 %package -n nvidia-compute-G06
 Summary:        NVIDIA driver for computing with GPGPU
 Group:          System/Libraries
-Requires:       (nvidia-driver-G06-kmp = %{version} or nvidia-open-driver-G06-kmp = %{version} or nvidia-open-driver-G06-signed-kmp = %{version})
+Requires:       nvidia-common-G06 = %{version}
 Requires:       libOpenCL1
 Conflicts:      nvidia-computeG02
 Conflicts:      nvidia-computeG03
@@ -122,19 +126,25 @@ Group:          System/X11/Utilities
 Requires:       nvidia-compute-G06 = %{version}
 Provides:       nvidia-computeG06:/usr/bin/nvidia-cuda-mps-control
 Requires:       nvidia-persistenced >= %{version}
-Requires:       nvidia-modprobe >= %{version}
 
 %description -n nvidia-compute-utils-G06
 NVIDIA driver tools for computing with GPGPUs using CUDA or OpenCL.
 
-%package -n nvidia-drivers-G06
-Summary:        Meta package for full installations (X, GL, etc.)
-Group:          System/X11/Utilities
-Requires:       nvidia-gl-G06 = %{version}
+%package -n nvidia-common-G06
+Summary:        Common files for the NVIDIA driver packages
+Group:          System/Libraries
+Requires:       nvidia-modprobe >= %{version}
 Requires:       (nvidia-driver-G06-kmp = %{version} or nvidia-open-driver-G06-kmp = %{version} or nvidia-open-driver-G06-signed-kmp = %{version})
 # prefer the opengpu driver; resolver works alphabetically and would suggest
 # proprietary driver instead ...
 Recommends:     nvidia-open-driver-G06-signed-kmp = %{version}
+
+%description -n nvidia-common-G06
+Common files for NVIDIA driver installations.
+
+%package -n nvidia-drivers-G06
+Summary:        Meta package for full installations (X, GL, etc.)
+Group:          System/X11/Utilities
 Requires:       nvidia-compute-utils-G06 = %{version}
 Requires:       nvidia-compute-G06 = %{version}
 Requires:       nvidia-video-G06 = %{version}
@@ -148,10 +158,6 @@ Summary:        Meta package for compute only installations
 Group:          System/X11/Utilities
 Requires:       nvidia-compute-utils-G06 = %{version}
 Requires:       nvidia-compute-G06 = %{version}
-Requires:       (nvidia-driver-G06-kmp = %{version} or nvidia-open-driver-G06-kmp = %{version} or nvidia-open-driver-G06-signed-kmp = %{version})
-# prefer the opengpu driver; resolver works alphabetically and would suggest
-# proprietary driver instead ...
-Recommends:     nvidia-open-driver-G06-signed-kmp = %{version}
 
 %description -n nvidia-drivers-minimal-G06
 This is just a Meta package for compute only installations.
@@ -189,7 +195,6 @@ needs to be installed first by using the following zypper command:
 %package -n nvidia-gl-G06
 Summary:        NVIDIA OpenGL libraries for OpenGL acceleration
 Group:          System/Libraries
-Requires:       (nvidia-driver-G06-kmp = %{version} or nvidia-open-driver-G06-kmp = %{version} or nvidia-open-driver-G06-signed-kmp = %{version})
 %if 0%{?suse_version} >= 1550 || 0%{?sle_version} >= 150500
 Requires:       libnvidia-egl-gbm1 >= %{version_egl_gbm}
 %else
@@ -412,6 +417,19 @@ mkdir -p %{buildroot}%{_prefix}/lib/gbm/
 ln -snf ../libnvidia-allocator.so.1 %{buildroot}%{_prefix}/lib/gbm/nvidia-drm_gbm.so
 %endif
 
+# Common files
+
+install -p -m 644 -D %{SOURCE9} %{buildroot}%{_udevrulesdir}/60-nvidia.rules
+install -p -m 644 -D %{SOURCE16} %{buildroot}%{_prefix}/lib/nvidia/alternate-install-present
+
+%if 0%{?suse_version} >= 1550
+install -m 0644 -p -D %{SOURCE10} %{buildroot}%{_prefix}/lib/modprobe.d/50-nvidia.conf
+install -m 0644 -p -D %{SOURCE11} %{buildroot}%{_prefix}/lib/dracut/dracut.conf.d/60-nvidia.conf
+%else
+install -m 0644 -p -D %{SOURCE10} %{buildroot}%{_sysconfdir}/modprobe.d/50-nvidia.conf
+install -m 0644 -p -D %{SOURCE11} %{buildroot}%{_sysconfdir}/dracut.conf.d/60-nvidia.conf
+%endif
+
 %post -p /bin/bash
 /sbin/ldconfig
 # Bug #345125
@@ -569,6 +587,24 @@ fi
 %dir %{_sysconfdir}/OpenCL
 %dir %{_sysconfdir}/OpenCL/vendors
 %config %{_sysconfdir}/OpenCL/vendors/nvidia.icd
+
+%files -n nvidia-common-G06
+%defattr(-,root,root)
+%dir %{_prefix}/lib/nvidia
+%{_prefix}/lib/nvidia/alternate-install-present
+%{_udevrulesdir}/60-nvidia.rules
+%if 0%{?suse_version} >= 1550
+%dir %{_prefix}/lib/dracut
+%dir %{_prefix}/lib/dracut/dracut.conf.d
+%config %{_prefix}/lib/dracut/dracut.conf.d/60-nvidia.conf
+%dir %{_prefix}/lib/modprobe.d
+%config %{_prefix}/lib/modprobe.d/50-nvidia.conf
+%else
+%dir %{_sysconfdir}/dracut.conf.d
+%config %{_sysconfdir}/dracut.conf.d/60-nvidia.conf
+%dir %{_sysconfdir}/modprobe.d
+%config %{_sysconfdir}/modprobe.d/50-nvidia.conf
+%endif
 
 %files -n nvidia-compute-utils-G06
 %defattr(-,root,root)

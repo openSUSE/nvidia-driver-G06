@@ -16,3 +16,4 @@ BuildRequires: kernel-syms
 BuildRequires: modutils
 Requires: openssl
 Requires: mokutil
+Requires: nvidia-common-G06 = %{version}
