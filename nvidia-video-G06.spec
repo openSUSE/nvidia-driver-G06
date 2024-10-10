@@ -45,6 +45,8 @@ Source8:        nvidia-driver-G06.rpmlintrc
 Source9:        60-nvidia.rules
 Source10:       50-nvidia.conf.modprobe
 Source11:       60-nvidia.conf.dracut
+Source12:       70-nvidia-video-G06.preset
+Source13:       70-nvidia-compute-G06.preset
 Source16:       alternate-install-present
 NoSource:       0
 NoSource:       1
@@ -360,11 +362,15 @@ install -d %{buildroot}%{_datadir}/doc/packages/%{name}
 cp -a html %{buildroot}%{_datadir}/doc/packages/%{name}
 install -m 644 LICENSE %{buildroot}%{_datadir}/doc/packages/%{name}
 cp -r supported-gpus %{buildroot}%{_datadir}/doc/packages/%{name}
+
 # Power Management via systemd
+mkdir -p %{buildroot}%{_systemd_util_dir}/system-preset
+install -p -m 0644 %{SOURCE12} %{SOURCE13} %{buildroot}%{_systemd_util_dir}/system-preset
 mkdir -p %{buildroot}/usr/lib/systemd/{system,system-sleep}
 install -m 755 systemd/nvidia-sleep.sh %{buildroot}%{_bindir}
 install -m 644 systemd/system/*.service %{buildroot}/usr/lib/systemd/system
 install -m 755 systemd/system-sleep/nvidia %{buildroot}/usr/lib/systemd/system-sleep
+
 install -d %{buildroot}/%{_mandir}/man1
 install -m 644 {nvidia-cuda-mps-control,nvidia-smi}.1.gz \
   %{buildroot}/%{_mandir}/man1
@@ -439,13 +445,6 @@ if ls var/lib/hardware/ids/* &> /dev/null; then
     cat $i >> var/lib/hardware/hd.ids
   done
 fi
-# needed for GNOME Wayland
-%service_add_post nvidia-hibernate.service
-%service_add_post nvidia-resume.service
-%service_add_post nvidia-suspend.service
-systemctl enable nvidia-hibernate.service
-systemctl enable nvidia-resume.service
-systemctl enable nvidia-suspend.service
 exit 0
 
 %postun -p /bin/bash
@@ -465,11 +464,6 @@ if [ "$1" -eq 0 ]; then
   elif test -x /usr/bin/xgl-switch; then
     /usr/bin/xgl-switch --disable-xgl
   fi
-# needed for GNOME Wayland
-%service_del_postun nvidia-hibernate.service
-%service_del_postun nvidia-resume.service
-%service_del_postun nvidia-suspend.service
-fi
 exit 0
 
 %post -n nvidia-compute-G06 -p /sbin/ldconfig
@@ -567,6 +561,8 @@ fi
 %{xmodulesdir}/drivers/nvidia_drv.so
 %dir %{xmodulesdir}/extensions
 %{xmodulesdir}/extensions/libglxserver_nvidia.so*
+%dir %{_systemd_util_dir}/system-preset
+%{_systemd_util_dir}/system-preset/70-nvidia-video-G06.preset
 %dir %{_systemd_util_dir}/system-sleep
 %{_systemd_util_dir}/system-sleep/nvidia
 %{_unitdir}/nvidia-hibernate.service
@@ -576,7 +572,6 @@ fi
 
 %files -n nvidia-compute-G06
 %defattr(-,root,root)
-%doc %{_datadir}/doc/packages/%{name}
 %{_libdir}/libcuda.so
 %{_libdir}/libcuda.so.1
 %{_libdir}/libcuda.so.%{version}
@@ -602,9 +597,12 @@ fi
 %dir %{_sysconfdir}/OpenCL
 %dir %{_sysconfdir}/OpenCL/vendors
 %config %{_sysconfdir}/OpenCL/vendors/nvidia.icd
+%dir %{_systemd_util_dir}/system-preset
+%{_systemd_util_dir}/system-preset/70-nvidia-compute-G06.preset
 
 %files -n nvidia-common-G06
 %defattr(-,root,root)
+%doc %{_datadir}/doc/packages/%{name}
 %dir %{_prefix}/lib/nvidia
 %{_prefix}/lib/nvidia/alternate-install-present
 %{_udevrulesdir}/60-nvidia.rules
