@@ -464,6 +464,7 @@ if [ "$1" -eq 0 ]; then
   elif test -x /usr/bin/xgl-switch; then
     /usr/bin/xgl-switch --disable-xgl
   fi
+fi
 exit 0
 
 %post -n nvidia-compute-G06 -p /sbin/ldconfig
