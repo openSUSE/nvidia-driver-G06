@@ -23,7 +23,7 @@ options nvidia NVreg_DeviceFileGID=33
 options nvidia NVreg_DeviceFileMode=0660
 
 # Enable complete power management. From:
-# file:///usr/share/doc/nvidia-driver/html/powermanagement.html
+# file:///usr/share/doc/packages/nvidia-common-G06/html/powermanagement.html
 
 options nvidia NVreg_DynamicPowerManagement=0x02
 options nvidia NVreg_EnableS0ixPowerManagement=1
