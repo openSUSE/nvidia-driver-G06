@@ -149,19 +149,5 @@ if lsinitrd | grep -q nvidia.ko;  then
   touch /run/regenerate-initrd/all
 fi
 
-# groups are now dynamic
-%if 0%{?suse_version} >= 1550
-if [ -f /usr/lib/modprobe.d/50-nvidia-default.conf ]; then
-%else
-if [ -f /etc/modprobe.d/50-nvidia-default.conf ]; then
-%endif
-  VIDEOGID=`getent group video | cut -d: -f3`
-%if 0%{?suse_version} >= 1550
-  sed -i "s/33/$VIDEOGID/" /usr/lib/modprobe.d/50-nvidia-default.conf
-%else
-  sed -i "s/33/$VIDEOGID/" /etc/modprobe.d/50-nvidia-default.conf
-%endif
-fi
-
 #needed to move this to specfile after running weak-modules2 (boo#1145316)
 #exit $RES
