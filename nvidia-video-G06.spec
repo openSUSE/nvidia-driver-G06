@@ -546,12 +546,6 @@ fi
 %dir %{_datadir}/nvidia
 %{_datadir}/nvidia/nvidia-application-profiles-%{version}-rc
 %{_datadir}/nvidia/nvidia-application-profiles-%{version}-key-documentation
-%{_libdir}/libnvcuvid.so
-%{_libdir}/libnvcuvid.so.1
-%{_libdir}/libnvcuvid.so.%{version}
-%{_libdir}/libnvidia-encode.so
-%{_libdir}/libnvidia-encode.so.1
-%{_libdir}/libnvidia-encode.so.%{version}
 %{_libdir}/libvdpau_nvidia.so
 %dir %{_libdir}/vdpau
 %{_libdir}/vdpau/libvdpau_nvidia.so.1
@@ -578,8 +572,14 @@ fi
 %{_libdir}/libcuda.so.%{version}
 %{_libdir}/libcudadebugger.so.1
 %{_libdir}/libcudadebugger.so.%{version}
+%{_libdir}/libnvcuvid.so
+%{_libdir}/libnvcuvid.so.1
+%{_libdir}/libnvcuvid.so.%{version}
 %{_libdir}/libnvidia-cfg.so.1
 %{_libdir}/libnvidia-cfg.so.%{version}
+%{_libdir}/libnvidia-encode.so
+%{_libdir}/libnvidia-encode.so.1
+%{_libdir}/libnvidia-encode.so.%{version}
 %{_libdir}/libnvidia-ml.so
 %{_libdir}/libnvidia-ml.so.1
 %{_libdir}/libnvidia-ml.so.%{version}
