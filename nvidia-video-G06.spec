@@ -15,9 +15,6 @@
 # Please submit bugfixes or comments via http://bugs.opensuse.org/
 #
 
-# nvidia still builds all packages on sle15sp0, but let's assume packages are used on sle15sp4 and later
-%define nvidia_build 0
-
 %define xlibdir %{_libdir}/xorg
 
 %define xmodulesdir %{xlibdir}/modules
@@ -147,6 +144,7 @@ Common files for NVIDIA driver installations.
 %package -n nvidia-drivers-G06
 Summary:        Meta package for full installations (X, GL, etc.)
 Group:          System/X11/Utilities
+BuildArch:      noarch
 Requires:       nvidia-compute-utils-G06 = %{version}
 Requires:       nvidia-compute-G06 = %{version}
 Requires:       nvidia-video-G06 = %{version}
@@ -164,7 +162,7 @@ Requires:       nvidia-compute-G06 = %{version}
 %description -n nvidia-drivers-minimal-G06
 This is just a Meta package for compute only installations.
 
-%if (0%{?nvidia_build} || 0%{?sle_version} >= 150400 || 0%{?suse_version} >= 1550)
+%if (0%{?sle_version} >= 150400 || 0%{?suse_version} >= 1550)
 %package -n cuda-cloud-opengpu
 Summary:        Meta package for CUDA minimal installation in the Cloud
 Group:          System/Utilities
@@ -313,22 +311,15 @@ export NO_BRP_STRIP_DEBUG=true
 cd NVIDIA-Linux
 
 install -d %{buildroot}%{_bindir}
-install -d %{buildroot}%{_prefix}/lib/vdpau
-install -d %{buildroot}%{_libdir}/vdpau
-install -d %{buildroot}%{xmodulesdir}/drivers
-install -d %{buildroot}%{xmodulesdir}/extensions
-install -d %{buildroot}%{_sysconfdir}/OpenCL/vendors/
-install -d %{buildroot}%{_datadir}/nvidia
-install nvidia-bug-report.sh %{buildroot}%{_bindir}
-install nvidia-smi %{buildroot}%{_bindir}
-install nvidia-debugdump %{buildroot}%{_bindir}
-install nvidia-cuda-mps-control %{buildroot}%{_bindir}
-install nvidia-cuda-mps-server %{buildroot}%{_bindir}
-install nvidia-ngx-updater %{buildroot}%{_bindir}
-install nvidia-powerd %{buildroot}%{_bindir}
-mkdir -p %{buildroot}%{_datadir}/dbus-1/system.d
-install -m 0644 nvidia-dbus.conf %{buildroot}%{_datadir}/dbus-1/system.d
+install -m 0755 nvidia-bug-report.sh \
+    nvidia-debugdump \
+    nvidia-cuda-mps-control \
+    nvidia-cuda-mps-server \
+    nvidia-ngx-updater \
+    nvidia-smi \
+    %{buildroot}%{_bindir}/
 
+install -d %{buildroot}%{_libdir}/vdpau
 cp -a lib*GL*_nvidia.so* libcuda*.so* libnv*.so* %{buildroot}%{_libdir}/
 ln -snf libcuda.so.1 %{buildroot}%{_libdir}/libcuda.so
 ln -snf libnvidia-encode.so.1 %{buildroot}%{_libdir}/libnvidia-encode.so
@@ -340,6 +331,7 @@ install libvdpau_nvidia.so* %{buildroot}%{_libdir}/vdpau
 ln -s vdpau/libvdpau_nvidia.so.1 %{buildroot}%{_libdir}/libvdpau_nvidia.so
 
 %ifarch x86_64
+install -d %{buildroot}%{_prefix}/lib/vdpau
 cp -a 32/lib*GL*_nvidia.so* 32/libcuda*.so* 32/libnv*.so* %{buildroot}%{_prefix}/lib/
 ln -snf libcuda.so.1 %{buildroot}%{_prefix}/lib/libcuda.so
 ln -snf libnvidia-encode.so.1 %{buildroot}%{_prefix}/lib/libnvidia-encode.so
@@ -353,17 +345,20 @@ install -d %{buildroot}%{_libdir}/nvidia/wine
 install _nvngx.dll nvngx.dll %{buildroot}%{_libdir}/nvidia/wine
 %endif
 
-install nvidia_drv.so %{buildroot}%{xmodulesdir}/drivers
-install libglxserver_nvidia.so.%{version} \
-  %{buildroot}%{xmodulesdir}/extensions/
+# X.org components
+install -m 0755 -D nvidia_drv.so %{buildroot}%{xmodulesdir}/drivers/nvidia_drv.so
+install -m 0755 -D libglxserver_nvidia.so.%{version} %{buildroot}%{xmodulesdir}/extensions/libglxserver_nvidia.so.%{version}
 ln -sf libglxserver_nvidia.so.%{version} %{buildroot}%{xmodulesdir}/extensions/libglxserver_nvidia.so
 
+# Documentation
 install -d %{buildroot}%{_datadir}/doc/packages/%{name}
 cp -a html %{buildroot}%{_datadir}/doc/packages/%{name}
 install -m 644 LICENSE %{buildroot}%{_datadir}/doc/packages/%{name}
 cp -r supported-gpus %{buildroot}%{_datadir}/doc/packages/%{name}
 
-# Power Management via systemd
+# Power Management
+install nvidia-powerd %{buildroot}%{_bindir}
+install -m 0644 -D nvidia-dbus.conf %{buildroot}%{_datadir}/dbus-1/system.d/nvidia-dbus.conf
 mkdir -p %{buildroot}%{_systemd_util_dir}/system-preset
 install -p -m 0644 %{SOURCE12} %{SOURCE13} %{buildroot}%{_systemd_util_dir}/system-preset
 mkdir -p %{buildroot}/usr/lib/systemd/{system,system-sleep}
@@ -371,16 +366,19 @@ install -m 755 systemd/nvidia-sleep.sh %{buildroot}%{_bindir}
 install -m 644 systemd/system/*.service %{buildroot}/usr/lib/systemd/system
 install -m 755 systemd/system-sleep/nvidia %{buildroot}/usr/lib/systemd/system-sleep
 
+# man pages
 install -d %{buildroot}/%{_mandir}/man1
 install -m 644 {nvidia-cuda-mps-control,nvidia-smi}.1.gz \
   %{buildroot}/%{_mandir}/man1
-install -d %{buildroot}%{_datadir}/pixmaps
+
+# Application data
+install -d %{buildroot}%{_datadir}/nvidia
 install -m 644 nvidia-application-profiles-%{version}-{rc,key-documentation} \
   %{buildroot}%{_datadir}/nvidia
 install -m 644 nvoptix.bin %{buildroot}%{_datadir}/nvidia
 
-install -m 644 nvidia.icd \
-  %{buildroot}%{_sysconfdir}/OpenCL/vendors/
+# OpenCL ICD loader
+install -m 644 -D nvidia.icd %{buildroot}%{_sysconfdir}/OpenCL/vendors/nvidia.icd
 
 %if 0%{?suse_version} < 1550 && 0%{?sle_version} < 150700
 # EGL driver config
@@ -424,7 +422,6 @@ ln -snf ../libnvidia-allocator.so.1 %{buildroot}%{_prefix}/lib/gbm/nvidia-drm_gb
 %endif
 
 # Common files
-
 install -p -m 644 -D %{SOURCE9} %{buildroot}%{_udevrulesdir}/60-nvidia.rules
 install -p -m 644 -D %{SOURCE16} %{buildroot}%{_prefix}/lib/nvidia/alternate-install-present
 
@@ -635,7 +632,7 @@ fi
 %files -n nvidia-drivers-minimal-G06
 %defattr(-,root,root)
 
-%if (0%{?nvidia_build} || 0%{?sle_version} >= 150400 || 0%{?suse_version} >= 1550)
+%if (0%{?sle_version} >= 150400 || 0%{?suse_version} >= 1550)
 %files -n cuda-cloud-opengpu
 %defattr(-,root,root)
 %endif
