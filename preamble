@@ -16,4 +16,7 @@ BuildRequires: kernel-syms
 BuildRequires: modutils
 Requires: openssl
 Requires: mokutil
-Requires: nvidia-common-G06 = %{version}
+# Dracut, modprobe configuration, etc. are actually required at run time, but
+# they are not required for manipulating the modules once built (ex. signing
+# after building):
+Recommends: nvidia-common-G06 = %{version}
