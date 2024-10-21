@@ -15,9 +15,6 @@
 # Please submit bugfixes or comments via http://bugs.opensuse.org/
 #
 
-# nvidia still builds all packages on sle15sp0, but let's assume packages are used on sle15sp4 and later
-%define nvidia_build 0
-
 %define xlibdir %{_libdir}/xorg
 
 %define xmodulesdir %{xlibdir}/modules
@@ -26,6 +23,10 @@
 %global version_egl_gbm 1.1.2
 %global version_egl_wayland 1.1.13.1
 %global version_egl_x11 0.1
+
+%if %{undefined _firmwaredir}
+%define _firmwaredir /lib/firmware
+%endif
 
 Name:           nvidia-video-G06
 Version:        560.35.03
@@ -135,6 +136,8 @@ NVIDIA driver tools for computing with GPGPUs using CUDA or OpenCL.
 %package -n nvidia-common-G06
 Summary:        Common files for the NVIDIA driver packages
 Group:          System/Libraries
+Provides:       kernel-firmware-nvidia-gspx-G06 = %{version}
+Obsoletes:      kernel-firmware-nvidia-gspx-G06 < %{version}
 Requires:       nvidia-modprobe >= %{version}
 Requires:       (nvidia-driver-G06-kmp = %{version} or nvidia-open-driver-G06-kmp = %{version} or nvidia-open-driver-G06-signed-kmp = %{version})
 # prefer the opengpu driver; resolver works alphabetically and would suggest
@@ -147,6 +150,7 @@ Common files for NVIDIA driver installations.
 %package -n nvidia-drivers-G06
 Summary:        Meta package for full installations (X, GL, etc.)
 Group:          System/X11/Utilities
+BuildArch:      noarch
 Requires:       nvidia-compute-utils-G06 = %{version}
 Requires:       nvidia-compute-G06 = %{version}
 Requires:       nvidia-video-G06 = %{version}
@@ -164,7 +168,7 @@ Requires:       nvidia-compute-G06 = %{version}
 %description -n nvidia-drivers-minimal-G06
 This is just a Meta package for compute only installations.
 
-%if (0%{?nvidia_build} || 0%{?sle_version} >= 150400 || 0%{?suse_version} >= 1550)
+%if (0%{?sle_version} >= 150400 || 0%{?suse_version} >= 1550)
 %package -n cuda-cloud-opengpu
 Summary:        Meta package for CUDA minimal installation in the Cloud
 Group:          System/Utilities
@@ -426,6 +430,8 @@ ln -snf ../libnvidia-allocator.so.1 %{buildroot}%{_prefix}/lib/gbm/nvidia-drm_gb
 # Common files
 install -p -m 644 -D %{SOURCE9} %{buildroot}%{_udevrulesdir}/60-nvidia.rules
 install -p -m 644 -D %{SOURCE16} %{buildroot}%{_prefix}/lib/nvidia/alternate-install-present
+install -d %{buildroot}%{_firmwaredir}/nvidia/%{version}
+install -m 644 firmware/* %{buildroot}%{_firmwaredir}/nvidia/%{version}/
 
 %if 0%{?suse_version} >= 1550
 install -m 0644 -p -D %{SOURCE10} %{buildroot}%{_prefix}/lib/modprobe.d/50-nvidia.conf
@@ -603,6 +609,10 @@ fi
 %files -n nvidia-common-G06
 %defattr(-,root,root)
 %doc %{_datadir}/doc/packages/%{name}
+%dir %{_firmwaredir}/nvidia
+%dir %{_firmwaredir}/nvidia/%{version}
+%{_firmwaredir}/nvidia/%{version}/gsp_ga10x.bin
+%{_firmwaredir}/nvidia/%{version}/gsp_tu10x.bin
 %dir %{_prefix}/lib/nvidia
 %{_prefix}/lib/nvidia/alternate-install-present
 %{_udevrulesdir}/60-nvidia.rules
@@ -634,7 +644,7 @@ fi
 %files -n nvidia-drivers-minimal-G06
 %defattr(-,root,root)
 
-%if (0%{?nvidia_build} || 0%{?sle_version} >= 150400 || 0%{?suse_version} >= 1550)
+%if (0%{?sle_version} >= 150400 || 0%{?suse_version} >= 1550)
 %files -n cuda-cloud-opengpu
 %defattr(-,root,root)
 %endif
