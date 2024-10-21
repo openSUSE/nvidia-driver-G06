@@ -1,9 +1,2 @@
-The package that is already installed is called nvidia-driver-G06-kmp.
-
-You can upgrade the driver by running:
-`zypper update nvidia-driver-G06-kmp`
-
-You can remove nvidia-driver-G06-kmp by running:
-`zypper remove nvidia-driver-G06-kmp`
-
-This package is maintained by SUSE.
+The NVIDIA proprietary driver is already installed in this system.
+It was installed through packages and not with the self extracting executable.
