@@ -119,8 +119,6 @@ if [ -x /usr/bin/mokutil ]; then
   fi
 fi
 
-%{_sbindir}/update-alternatives --install /usr/lib/nvidia/alternate-install-present alternate-install-present /usr/lib/nvidia/alternate-install-present-$flavor 11
-
 echo
 %if 0%{?suse_version} >= 1550
 echo "Modprobe blacklist files have been created at /usr/lib/modprobe.d to \
