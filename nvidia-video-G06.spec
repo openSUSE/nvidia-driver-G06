@@ -29,7 +29,7 @@
 %endif
 
 Name:           nvidia-video-G06
-Version:        560.35.03
+Version:        565.57.01
 Release:        0
 License:        SUSE-NonFree
 Summary:        NVIDIA graphics driver for GeForce 700 series and newer
@@ -708,6 +708,8 @@ fi
 %dir %{_datadir}/vulkansc/icd.d
 %{_datadir}/nvidia/nvoptix.bin
 %{_datadir}/vulkansc/icd.d/nvidia_icd.%{_target_cpu}.json
+%{_libdir}/libnvidia-sandboxutils.so.1
+%{_libdir}/libnvidia-sandboxutils.so.%{version}
 %{_libdir}/libnvidia-vksc-core.so.1
 %{_libdir}/libnvidia-vksc-core.so.%{version}
 %dir %{_libdir}/nvidia
