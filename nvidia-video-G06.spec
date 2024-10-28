@@ -463,12 +463,6 @@ if [ "$1" -eq 0 ]; then
   else
     rm -f var/lib/hardware/hd.ids
   fi
-# xorg.conf no longer been used since sle12
-  if test -x /opt/gnome/bin/gnome-xgl-switch; then
-    /opt/gnome/bin/gnome-xgl-switch --disable-xgl
-  elif test -x /usr/bin/xgl-switch; then
-    /usr/bin/xgl-switch --disable-xgl
-  fi
 fi
 exit 0
 
