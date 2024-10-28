@@ -1,4 +1,9 @@
 -------------------------------------------------------------------
+Mon 28 Oct 15:08:04 CET 2024 - Simone Caronni <scaronni@nvidia.com>
+
+- Update to 565.57.01
+
+-------------------------------------------------------------------
 Thu Sep 19 12:31:01 UTC 2024 - Stefan Dirsch <sndirsch@suse.com>
 
 - aarch64-TW-buildfix.patch

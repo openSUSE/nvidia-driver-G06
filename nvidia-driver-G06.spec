@@ -31,7 +31,7 @@
 %endif
 
 Name:           nvidia-driver-G06
-Version:        560.35.03
+Version:        565.57.01
 Release:        0
 License:        SUSE-NonFree
 Summary:        NVIDIA graphics driver kernel module for GeForce 700 series and newer
