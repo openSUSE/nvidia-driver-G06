@@ -37,11 +37,9 @@ URL:            https://www.nvidia.com/object/unix.html
 Group:          System/Libraries
 Source0:        http://download.nvidia.com/XFree86/Linux-x86_64/%{version}/NVIDIA-Linux-x86_64-%{version}.run
 Source1:        http://download.nvidia.com/XFree86/Linux-aarch64/%{version}/NVIDIA-Linux-aarch64-%{version}.run
-Source2:        pci_ids-%{version}.new
 Source4:        generate-service-file.sh
 Source5:        README
 Source6:        Xwrapper
-Source7:        pci_ids-%{version}
 Source8:        nvidia-driver-G06.rpmlintrc
 Source9:        60-nvidia.rules
 Source10:       50-nvidia.conf.modprobe
