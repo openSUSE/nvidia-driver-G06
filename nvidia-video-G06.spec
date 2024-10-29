@@ -39,7 +39,6 @@ Source0:        http://download.nvidia.com/XFree86/Linux-x86_64/%{version}/NVIDI
 Source1:        http://download.nvidia.com/XFree86/Linux-aarch64/%{version}/NVIDIA-Linux-aarch64-%{version}.run
 Source4:        generate-service-file.sh
 Source5:        README
-Source6:        Xwrapper
 Source8:        nvidia-driver-G06.rpmlintrc
 Source9:        60-nvidia.rules
 Source10:       50-nvidia.conf.modprobe
