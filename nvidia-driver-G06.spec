@@ -40,8 +40,6 @@ Group:          System/Kernel
 Source0:        http://download.nvidia.com/XFree86/Linux-x86_64/%{version}/NVIDIA-Linux-x86_64-%{version}.run
 Source1:        http://download.nvidia.com/XFree86/Linux-aarch64/%{version}/NVIDIA-Linux-aarch64-%{version}.run
 Source3:        preamble
-Source4:        pci_ids-%{version}
-Source5:        pci_ids-%{version}.new
 Source6:        generate-service-file.sh
 Source7:        README
 Source8:        kmp-filelist
@@ -70,6 +68,7 @@ BuildRequires:  %kernel_module_package_buildreqs
 BuildRequires:  module-init-tools
 BuildRequires:  pciutils
 BuildRequires:  perl-Bootloader
+BuildRequires:  python3
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 ExclusiveArch:  x86_64 aarch64
 # patch the kmp template
@@ -139,11 +138,13 @@ exit $RES' %_builddir/nvidia-kmp-template)
 %endif
 %kernel_module_package %kmp_template %_builddir/nvidia-kmp-template -p %_sourcedir/preamble -f %_sourcedir/%kmp_filelist -x %x_flavors
 
+%{SOURCE26} %{version} supported-gpus/supported-gpus.json
+
 # supplements no longer depend on the driver
 %if (0%{?sle_version} >= 150400 || 0%{?suse_version} >= 1550)
-%define pci_id_file %_sourcedir/pci_ids-%version
+%define pci_id_file pci_ids-%version.full
 %else
-%define pci_id_file %_sourcedir/pci_ids-%version.new
+%define pci_id_file pci_ids-%version.closed
 %endif
 # rpm 4.14.1 changed again (boo#1087460)
 %define __kmp_supplements %_sourcedir/my-find-supplements %pci_id_file

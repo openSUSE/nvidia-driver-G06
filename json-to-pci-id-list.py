@@ -1,53 +1,65 @@
-#!/usr/bin/env python3
- # Copyright (c) 2022 Tamara Schmitz <tamara.schmitz@suse.com>.
- # 
- # This program is free software: you can redistribute it and/or modify  
- # it under the terms of the GNU General Public License as published by  
- # the Free Software Foundation, version 3.
- #
- # This program is distributed in the hope that it will be useful, but 
- # WITHOUT ANY WARRANTY; without even the implied warranty of 
- # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
- # General Public License for more details.
- #
- # You should have received a copy of the GNU General Public License 
- # along with this program. If not, see <http://www.gnu.org/licenses/>.
- #
+#!/usr/bin/python3
+# -*- coding: utf-8 -*-
+#
+# Copyright (C) 2021 Simone Caronni <negativo17@gmail.com>
+# Licensed under the GNU General Public License Version or later
 
-import argparse
 import json
+import sys
 
-# arg parsing
-parser = argparse.ArgumentParser(description="Parse an NVIDIA supported devices\
-        JSON and convert it to a pci id list.")
-parser.add_argument("INPUT_JSON",
-        help="The JSON file to be parsed",
-        type=argparse.FileType('r')
-        )
-parser.add_argument("OUTPUT_PCI_ID_LIST",
-        help="The output file to save to",
-        type=argparse.FileType('w')
-        )
-parser.add_argument("--skiplegacy", help="Skip GPUs that are in a legacy branch",
-                    action="store_true")
-parser.add_argument("--kernelopen", help="Only select GPUs that are supported by\
-        the Open GPU kernel modules",
-                    action="store_true")
-args = parser.parse_args()
+def main():
+    if len(sys.argv) != 3:
+        print("usage: %s <driver version> supported-gpus.json" % sys.argv[0])
+        return 1
 
-# json parsing
-json = json.load(args.INPUT_JSON)
-pci_id_list = {}
-for chip in json["chips"]:
-    if args.skiplegacy and "legacybranch" in chip:
-        continue
-    if args.kernelopen and \
-            ("features" not in chip or "kernelopen" not in chip["features"]):
-        continue
-    if "devid" in chip and "name" in chip:
-        pci_id_list[chip["devid"]] = chip["name"]
+    version = sys.argv[1]
 
-# write to file
-for devid, name in sorted(pci_id_list.items(), key=lambda i: i[0]):
-    # there are no duplicates since a dictionary's key is unique
-    args.OUTPUT_PCI_ID_LIST.write("%s %s\n" % (devid, name))
+    f = open(sys.argv[2])
+    gpus_raw = json.load(f)
+
+
+    devids_full = []
+    devids_closed = []
+    devids_open = []
+
+    pci_ids_full = "pci_ids-" + version + ".full"
+    pci_ids_closed = "pci_ids-" + version + ".closed"
+    pci_ids_open = "pci_ids-" + version + ".open"
+
+    for product in gpus_raw["chips"]:
+
+        if "legacybranch" not in product.keys():
+
+            gpu = product["devid"] + " " + product["name"]
+            if not gpu in devids_full:
+                devids_full.append(gpu)
+
+        if "legacybranch" not in product.keys() and "kernelopen" not in product["features"]:
+
+            gpu = product["devid"] + " " + product["name"]
+            if not gpu in devids_closed:
+                devids_closed.append(gpu)
+
+        if "kernelopen" in product["features"]:
+
+            gpu = product["devid"] + " " + product["name"]
+            if not gpu in devids_open:
+                devids_open.append(gpu)
+
+    with open(pci_ids_full, "w") as file:
+        for gpu in devids_full:
+            file.write(gpu + '\n')
+    print("Generated " + pci_ids_full + " (non-legacy)")
+
+    with open(pci_ids_closed, "w") as file:
+        for gpu in devids_closed:
+            file.write(gpu + '\n')
+    print("Generated " + pci_ids_closed + " (non-legacy, supported by closed modules only)")
+
+    with open(pci_ids_open, "w") as file:
+        for gpu in devids_open:
+            file.write(gpu + '\n')
+    print("Generated " + pci_ids_open + " (non-legacy, supported by open modules only)")
+
+if __name__ == "__main__":
+    main()
