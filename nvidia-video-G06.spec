@@ -40,7 +40,6 @@ Source1:        http://download.nvidia.com/XFree86/Linux-aarch64/%{version}/NVID
 Source2:        pci_ids-%{version}.new
 Source4:        generate-service-file.sh
 Source5:        README
-Source6:        Xwrapper
 Source7:        pci_ids-%{version}
 Source8:        nvidia-driver-G06.rpmlintrc
 Source9:        60-nvidia.rules
