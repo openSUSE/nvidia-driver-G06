@@ -72,6 +72,8 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 
 Provides:       nvidia-utils-G06 = %{version}
 Obsoletes:      nvidia-utils-G06 < %{version}
+Provides:       nvidia-drivers-G06 = %{version}
+Obsoletes:      nvidia-drivers-G06 < %{version}
 
 %description
 This package provides the closed-source NVIDIA graphics driver
@@ -128,6 +130,8 @@ Group:          System/X11/Utilities
 Requires:       nvidia-compute-G06 = %{version}
 Provides:       nvidia-computeG06:/usr/bin/nvidia-cuda-mps-control
 Requires:       nvidia-persistenced >= %{version}
+Provides:       nvidia-drivers-minimal-G06 = %{version}
+Obsoletes:      nvidia-drivers-minimal-G06 < %{version}
 
 %description -n nvidia-compute-utils-G06
 NVIDIA driver tools for computing with GPGPUs using CUDA or OpenCL.
@@ -146,37 +150,17 @@ Recommends:     nvidia-open-driver-G06-signed-kmp = %{version}
 %description -n nvidia-common-G06
 Common files for NVIDIA driver installations.
 
-%package -n nvidia-drivers-G06
-Summary:        Meta package for full installations (X, GL, etc.)
-Group:          System/X11/Utilities
-BuildArch:      noarch
-Requires:       nvidia-compute-utils-G06 = %{version}
-Requires:       nvidia-compute-G06 = %{version}
-Requires:       nvidia-video-G06 = %{version}
-
-%description -n nvidia-drivers-G06
-This is just a Meta package for full installations (X dependancies, GL libs,
-etc.).						    
-
-%package -n nvidia-drivers-minimal-G06
-Summary:        Meta package for compute only installations
-Group:          System/X11/Utilities
-Requires:       nvidia-compute-utils-G06 = %{version}
-Requires:       nvidia-compute-G06 = %{version}
-
-%description -n nvidia-drivers-minimal-G06
-This is just a Meta package for compute only installations.
-
 %if (0%{?sle_version} >= 150400 || 0%{?suse_version} >= 1550)
 %package -n cuda-cloud-opengpu
 Summary:        Meta package for CUDA minimal installation in the Cloud
 Group:          System/Utilities
-Requires:       cuda-libraries-devel-12-4
-Requires:       cuda-minimal-build-12-4
-Requires:       nvidia-drivers-minimal-G06 = %{version}
+Requires:       cuda-libraries-devel-12-6
+Requires:       cuda-minimal-build-12-6
+Requires:       nvidia-compute-utils-G06 = %{version}
+Requires:       nvidia-compute-G06 = %{version}
 Requires:       nvidia-open-driver-G06-signed-kmp = %{version}
 %ifnarch aarch64
-Requires:       cuda-demo-suite-12-4
+Requires:       cuda-demo-suite-12-6
 %endif
 
 %description -n cuda-cloud-opengpu
@@ -630,12 +614,6 @@ fi
 %{_bindir}/nvidia-smi
 %{_mandir}/man1/nvidia-cuda-mps-control.1.*
 %{_mandir}/man1/nvidia-smi.1.*
-
-%files -n nvidia-drivers-G06
-%defattr(-,root,root)
-
-%files -n nvidia-drivers-minimal-G06
-%defattr(-,root,root)
 
 %if (0%{?sle_version} >= 150400 || 0%{?suse_version} >= 1550)
 %files -n cuda-cloud-opengpu
