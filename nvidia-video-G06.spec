@@ -669,6 +669,8 @@ fi
 %{_libdir}/libnvidia-tls.so.%{version}
 %{_libdir}/libnvoptix.so.1
 %{_libdir}/libnvoptix.so.%{version}
+%dir %{_datadir}/nvidia
+%{_datadir}/nvidia/nvoptix.bin
 %dir %{_datadir}/vulkan
 %dir %{_datadir}/vulkan/icd.d
 %{_datadir}/vulkan/icd.d/nvidia_icd.%{_target_cpu}.json
@@ -677,7 +679,6 @@ fi
 %ifarch x86_64
 %dir %{_datadir}/vulkansc
 %dir %{_datadir}/vulkansc/icd.d
-%{_datadir}/nvidia/nvoptix.bin
 %{_datadir}/vulkansc/icd.d/nvidia_icd.%{_target_cpu}.json
 %{_libdir}/libnvidia-sandboxutils.so.1
 %{_libdir}/libnvidia-sandboxutils.so.%{version}
