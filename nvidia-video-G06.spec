@@ -46,7 +46,6 @@ Source9:        60-nvidia.rules
 Source10:       50-nvidia.conf.modprobe
 Source11:       60-nvidia.conf.dracut
 Source12:       70-nvidia-video-G06.preset
-Source13:       70-nvidia-compute-G06.preset
 Source16:       alternate-install-present
 NoSource:       0
 NoSource:       1
@@ -349,7 +348,7 @@ cp -r supported-gpus %{buildroot}%{_datadir}/doc/packages/%{name}
 install nvidia-powerd %{buildroot}%{_bindir}
 install -m 0644 -D nvidia-dbus.conf %{buildroot}%{_datadir}/dbus-1/system.d/nvidia-dbus.conf
 mkdir -p %{buildroot}%{_systemd_util_dir}/system-preset
-install -p -m 0644 %{SOURCE12} %{SOURCE13} %{buildroot}%{_systemd_util_dir}/system-preset
+install -p -m 0644 %{SOURCE12} %{buildroot}%{_systemd_util_dir}/system-preset
 mkdir -p %{buildroot}/usr/lib/systemd/{system,system-sleep}
 install -m 755 systemd/nvidia-sleep.sh %{buildroot}%{_bindir}
 install -m 644 systemd/system/*.service %{buildroot}/usr/lib/systemd/system
@@ -580,8 +579,6 @@ fi
 %dir %{_sysconfdir}/OpenCL
 %dir %{_sysconfdir}/OpenCL/vendors
 %config %{_sysconfdir}/OpenCL/vendors/nvidia.icd
-%dir %{_systemd_util_dir}/system-preset
-%{_systemd_util_dir}/system-preset/70-nvidia-compute-G06.preset
 
 %files -n nvidia-common-G06
 %defattr(-,root,root)

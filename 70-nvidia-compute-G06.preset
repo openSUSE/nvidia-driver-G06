@@ -1,4 +1,0 @@
-# Enable persistence state. From:
-# file:///usr/share/doc/packages/nvidia-common-G06/html/nvidia-persistenced.html
-
-enable nvidia-persistenced.service
