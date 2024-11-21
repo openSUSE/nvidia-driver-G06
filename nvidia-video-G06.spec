@@ -432,7 +432,24 @@ if ls var/lib/hardware/ids/* &> /dev/null; then
     cat $i >> var/lib/hardware/hd.ids
   done
 fi
+# Preset the services to follow the system's policy
+%systemd_post nvidia-hibernate.service
+%systemd_post nvidia-powerd.service
+%systemd_post nvidia-resume.service
+%systemd_post nvidia-suspend.service
+# the official way above doesn't seem to work ;-(
+/usr/bin/systemctl preset nvidia-hibernate.service
+/usr/bin/systemctl preset nvidia-powerd.service
+/usr/bin/systemctl preset nvidia-resume.service
+/usr/bin/systemctl preset nvidia-suspend.service
 exit 0
+
+%preun
+# Stop and disable the services before removal
+%systemd_preun nvidia-hibernate.service
+%systemd_preun nvidia-powerd.service
+%systemd_preun nvidia-resume.service
+%systemd_preun nvidia-suspend.service
 
 %postun -p /bin/bash
 /sbin/ldconfig
@@ -446,6 +463,11 @@ if [ "$1" -eq 0 ]; then
     rm -f var/lib/hardware/hd.ids
   fi
 fi
+# Cleanup after uninstallation
+%systemd_postun_with_restart nvidia-hibernate.service
+%systemd_postun_with_restart nvidia-powerd.service
+%systemd_postun_with_restart nvidia-resume.service
+%systemd_postun_with_restart nvidia-suspend.service
 exit 0
 
 %post -n nvidia-compute-G06 -p /sbin/ldconfig
