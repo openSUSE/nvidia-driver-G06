@@ -472,8 +472,18 @@ fi
 exit 0
 
 %post -n nvidia-compute-G06 -p /sbin/ldconfig
+# Preset the service to follow the system's policy
+%systemd_post nvidia-persistenced.service
+# the official way above doesn't seem to work ;-(
+/usr/bin/systemctl preset nvidia-persistenced.service
+
+%preun
+# Stop and disable the service before removal
+%systemd_preun nvidia-persistenced.service
 
 %postun -n nvidia-compute-G06 -p /sbin/ldconfig
+# Cleanup after uninstallation
+%systemd_postun_with_restart nvidia-persistenced.service
 
 %post -n nvidia-common-G06
 # groups are now dynamic
