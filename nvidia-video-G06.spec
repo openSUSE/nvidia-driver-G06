@@ -477,7 +477,7 @@ exit 0
 # the official way above doesn't seem to work ;-(
 /usr/bin/systemctl preset nvidia-persistenced.service
 
-%preun
+%preun -n nvidia-compute-G06 -p /sbin/ldconfig
 # Stop and disable the service before removal
 %systemd_preun nvidia-persistenced.service
 
