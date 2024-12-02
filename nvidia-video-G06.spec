@@ -129,7 +129,7 @@ Summary:        NVIDIA driver tools for computing with GPGPU
 Group:          System/X11/Utilities
 Requires:       nvidia-compute-G06 = %{version}
 Provides:       nvidia-computeG06:/usr/bin/nvidia-cuda-mps-control
-Requires:       nvidia-persistenced >= %{version}
+Requires(pre):  nvidia-persistenced >= %{version}
 Provides:       nvidia-drivers-minimal-G06 = %{version}
 Obsoletes:      nvidia-drivers-minimal-G06 < %{version}
 
@@ -478,7 +478,8 @@ exit 0
 # Preset the service to follow the system's policy
 %systemd_post nvidia-persistenced.service
 # the official way above doesn't seem to work ;-(
-/usr/bin/systemctl preset nvidia-persistenced.service
+/usr/bin/systemctl preset nvidia-persistenced.service || true
+exit 0
 
 %preun -n nvidia-compute-G06 -p /bin/bash
 /sbin/ldconfig
