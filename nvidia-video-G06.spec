@@ -129,7 +129,7 @@ Summary:        NVIDIA driver tools for computing with GPGPU
 Group:          System/X11/Utilities
 Requires:       nvidia-compute-G06 = %{version}
 Provides:       nvidia-computeG06:/usr/bin/nvidia-cuda-mps-control
-Requires:       nvidia-persistenced >= %{version}
+Requires(pre):  nvidia-persistenced >= %{version}
 Provides:       nvidia-drivers-minimal-G06 = %{version}
 Obsoletes:      nvidia-drivers-minimal-G06 < %{version}
 
@@ -205,6 +205,8 @@ Conflicts:      nvidia-glG04
 Conflicts:      nvidia-glG05
 Provides:       nvidia-glG06 = %{version}
 Obsoletes:      nvidia-glG06 < %{version}
+Provides:       suse-prime = 0.8.18 
+Obsoletes:      suse-prime < 0.8.18
 Recommends:     nvidia-gl-G06-32bit = %{version}
 # needed for Optimus systems once NVIDIA's libs get disabled (our default);
 # these packages won't get installed when adding NVIDIA's repository before
@@ -476,7 +478,8 @@ exit 0
 # Preset the service to follow the system's policy
 %systemd_post nvidia-persistenced.service
 # the official way above doesn't seem to work ;-(
-/usr/bin/systemctl preset nvidia-persistenced.service
+/usr/bin/systemctl preset nvidia-persistenced.service || true
+exit 0
 
 %preun -n nvidia-compute-G06 -p /bin/bash
 /sbin/ldconfig
@@ -503,52 +506,8 @@ if [ -f /etc/modprobe.d/50-nvidia.conf ]; then
 %endif
 fi
 
-%post -n nvidia-gl-G06
-# Optimus systems 
-if lspci -n | grep -e '^..:..\.. 0300: ' | cut -d " "  -f3 | cut -d ":" -f1 | grep -q 8086; then
-  # Support is available since sle15-sp1/Leap 15.1
-  if [ -x /usr/sbin/prime-select ]; then
-    # Use current setting or enable it by default if not configured yet (boo#1121246)
-    # Don't try to run it during driver update or in secureboot since it will fail anyway when
-    # executing 'nvidia-xconfig --query-gpu-info'. This tool is driver version specific and
-    # needs the appropriate driver kernel modules loaded, which is not possible during driver update
-    # (old modules still loaded) and in secureboot mode (modules can't be loaded without the signing
-    # key registered). (boo#1205642)
-    result=$(/usr/sbin/prime-select get-current|grep "Driver configured:"|cut -d ":" -f2|sed 's/ //g')
-    case "$result" in
-      nvidia|offload)
-        if [ "$1" = 2 ] ; then
-          true
-        else
-          mokutil --sb-state | grep -q "SecureBoot enabled" || \
-            /usr/sbin/prime-select $result
-        fi
-        ;;
-      intel|intel2)
-        /usr/sbin/prime-select $result
-        ;;
-      *)
-        mokutil --sb-state | grep -q "SecureBoot enabled" || \
-          /usr/sbin/prime-select nvidia
-        ;;
-    esac
-  fi
-elif  [ -x /usr/sbin/prime-select ]; then
-  # suse-prime package mistakenly (still) installed; make sure nvidia
-  # kernel modules are not blacklisted
-  /usr/sbin/prime-select nvidia
-fi
-/sbin/ldconfig
-
-%postun -n nvidia-gl-G06
-/sbin/ldconfig
-if [ "$1" = 0 ] ; then
-  # Support is available since sle15-sp1/Leap 15.1
-  if [ -x /usr/sbin/prime-select ]; then
-        #cleanup
-	/usr/sbin/prime-select unset
-  fi
-fi
+%post   -n nvidia-gl-G06 -p /sbin/ldconfig
+%postun -n nvidia-gl-G06 -p /sbin/ldconfig
 
 %files
 %defattr(-,root,root)
