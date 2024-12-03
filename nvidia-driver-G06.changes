@@ -1,4 +1,9 @@
 -------------------------------------------------------------------
+Tue Dec  3 20:55:36 UTC 2024 - Stefan Dirsch <sndirsch@suse.com>
+
+- Ignore powerd binary exiting if hardware is not present (bsc#1234062)
+
+-------------------------------------------------------------------
 Sat Nov 23 05:39:55 UTC 2024 - Stefan Dirsch <sndirsch@suse.com>
 
 - Update to 550.135 (boo#1233673)

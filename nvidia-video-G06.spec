@@ -346,6 +346,9 @@ cp -r supported-gpus %{buildroot}%{_datadir}/doc/packages/%{name}
 mkdir -p %{buildroot}/usr/lib/systemd/{system,system-sleep}
 install -m 755 systemd/nvidia-sleep.sh %{buildroot}%{_bindir}
 install -m 644 systemd/system/*.service %{buildroot}/usr/lib/systemd/system
+# Ignore powerd binary exiting if hardware is not present
+# Ideally we should check for information in the DMI table
+sed -i -e 's/ExecStart=/ExecStart=-/g' %{buildroot}/usr/lib/systemd/system/nvidia-powerd.service
 install -m 644 %{SOURCE9} %{buildroot}/usr/lib/systemd/system
 install -m 755 systemd/system-sleep/nvidia %{buildroot}/usr/lib/systemd/system-sleep
 rm -f nvidia-installer*
