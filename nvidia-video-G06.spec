@@ -55,7 +55,6 @@ NoSource:       5
 BuildRequires:  pkgconfig(systemd)
 Requires:       nvidia-common-G06 = %{version}
 Requires:       nvidia-gl-G06 = %{version}
-Requires:       nvidia-xconfig = %{version}
 Provides:       nvidia_driver = %{version}
 Conflicts:      x11-video-nvidia
 Conflicts:      x11-video-nvidiaG01
