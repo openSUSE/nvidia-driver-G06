@@ -55,6 +55,7 @@ NoSource:       5
 BuildRequires:  pkgconfig(systemd)
 Requires:       nvidia-common-G06 = %{version}
 Requires:       nvidia-gl-G06 = %{version}
+Requires:       nvidia-xconfig = %{version}
 Provides:       nvidia_driver = %{version}
 Conflicts:      x11-video-nvidia
 Conflicts:      x11-video-nvidiaG01
@@ -66,6 +67,7 @@ Provides:       x11-video-nvidiaG06 = %{version}
 Obsoletes:      x11-video-nvidiaG06 < %{version}
 Conflicts:      fglrx_driver
 Recommends:     nvidia-video-G06-32bit = %{version}
+Recommends:     switcheroo-control
 Requires:       libvdpau1
 ExclusiveArch:  %ix86 x86_64 aarch64
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
@@ -100,6 +102,7 @@ Summary:        NVIDIA driver for computing with GPGPU
 Group:          System/Libraries
 Requires:       nvidia-common-G06 = %{version}
 Requires:       libOpenCL1
+Requires(pre):  nvidia-persistenced >= %{version}
 Conflicts:      nvidia-computeG02
 Conflicts:      nvidia-computeG03
 Conflicts:      nvidia-computeG04
@@ -129,7 +132,6 @@ Summary:        NVIDIA driver tools for computing with GPGPU
 Group:          System/X11/Utilities
 Requires:       nvidia-compute-G06 = %{version}
 Provides:       nvidia-computeG06:/usr/bin/nvidia-cuda-mps-control
-Requires(pre):  nvidia-persistenced >= %{version}
 Provides:       nvidia-drivers-minimal-G06 = %{version}
 Obsoletes:      nvidia-drivers-minimal-G06 < %{version}
 
@@ -215,7 +217,6 @@ Recommends:     Mesa-libGL1
 Recommends:     Mesa-libEGL1
 Recommends:     Mesa-libGLESv1_CM1
 Recommends:     Mesa-libGLESv2-2
-Requires(pre):  nvidia-xconfig
 AutoReq: no
 
 %description -n nvidia-gl-G06
