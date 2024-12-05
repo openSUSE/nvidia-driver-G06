@@ -357,6 +357,10 @@ install -m 755 systemd/nvidia-sleep.sh %{buildroot}%{_bindir}
 install -m 644 systemd/system/*.service %{buildroot}/usr/lib/systemd/system
 install -m 755 systemd/system-sleep/nvidia %{buildroot}/usr/lib/systemd/system-sleep
 
+# Ignore powerd binary exiting if hardware is not present
+# Ideally we should check for information in the DMI table
+sed -i -e 's/ExecStart=/ExecStart=-/g' %{buildroot}/usr/lib/systemd/system/nvidia-powerd.service
+
 # man pages
 install -d %{buildroot}/%{_mandir}/man1
 install -m 644 {nvidia-cuda-mps-control,nvidia-smi}.1.gz \
