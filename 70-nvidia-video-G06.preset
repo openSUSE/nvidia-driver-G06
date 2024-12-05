@@ -5,7 +5,7 @@ enable nvidia-hibernate.service
 enable nvidia-resume.service
 enable nvidia-suspend.service
 
-# Disable Dynamic Boost. From:
+# Enable Dynamic Boost. From:
 # file:///usr/share/doc/packages/nvidia-common-G06/html/dynamicboost.html
 
-disable nvidia-powerd.service
+enable nvidia-powerd.service
