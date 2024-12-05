@@ -498,19 +498,6 @@ exit 0
 
 %post -n nvidia-common-G06
 /sbin/pbl --add-option rd.driver.blacklist=nouveau --config
-# groups are now dynamic
-%if 0%{?suse_version} >= 1550
-if [ -f /usr/lib/modprobe.d/50-nvidia.conf ]; then
-%else
-if [ -f /etc/modprobe.d/50-nvidia.conf ]; then
-%endif
-  VIDEOGID=`getent group video | cut -d: -f3`
-%if 0%{?suse_version} >= 1550
-  sed -i "s/33/$VIDEOGID/" /usr/lib/modprobe.d/50-nvidia.conf
-%else
-  sed -i "s/33/$VIDEOGID/" /etc/modprobe.d/50-nvidia.conf
-%endif
-fi
 
 %postun -n nvidia-common-G06
 /sbin/pbl --del-option rd.driver.blacklist=nouveau --config
