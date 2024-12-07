@@ -146,6 +146,7 @@ Requires:       nvidia-modprobe >= %{version}
 Requires:       (nvidia-driver-G06-kmp = %{version} or nvidia-open-driver-G06-kmp = %{version} or nvidia-open-driver-G06-signed-kmp = %{version})
 # prefer the opengpu driver; resolver works alphabetically and would suggest
 # proprietary driver instead ...
+Requires(post): perl-Bootloader
 Recommends:     nvidia-open-driver-G06-signed-kmp = %{version}
 
 %description -n nvidia-common-G06
