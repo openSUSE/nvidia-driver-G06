@@ -1,6 +1,4 @@
-# Nouveau must be blacklisted here as well beside from the initrd to avoid a
-# delayed loading (for example on Optimus laptops where the Nvidia card is not
-# driving the main display).
+# Nouveau must be disabled to load the nvidia kernel module:
 
 blacklist nouveau
 
@@ -26,6 +24,7 @@ options nvidia NVreg_DeviceFileMode=0660
 # file:///usr/share/doc/packages/nvidia-common-G06/html/powermanagement.html
 
 options nvidia NVreg_TemporaryFilePath=/var/tmp
+options nvidia NVreg_EnableS0ixPowerManagement=1
 options nvidia NVreg_PreserveVideoMemoryAllocations=1
 
 # Needed for Wayland and a nice Linux console
