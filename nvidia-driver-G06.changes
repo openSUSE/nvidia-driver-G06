@@ -1,4 +1,9 @@
 -------------------------------------------------------------------
+Fri Dec 13 14:32:44 UTC 2024 - Stefan Dirsch <sndirsch@suse.com>
+
+- fix lsinitrd run on Aeon >= RC2 (boo#1224773c#95)
+
+-------------------------------------------------------------------
 Tue Dec  3 20:55:36 UTC 2024 - Stefan Dirsch <sndirsch@suse.com>
 
 - Ignore powerd binary exiting if hardware is not present (bsc#1234062)
