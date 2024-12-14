@@ -54,7 +54,6 @@ Source22:       kmp-trigger.sh
 Source25:       %{name}.rpmlintrc
 Source26:       json-to-pci-id-list.py
 Patch0:         objtool-fix.patch
-Patch1:         aarch64-TW-buildfix.patch
 NoSource:       0
 NoSource:       1
 NoSource:       6
@@ -184,11 +183,6 @@ echo "kver = %kver"
 pushd NVIDIA-Linux-*-%{version}*/
 # apply patches here ...
 %patch -P 0 -p0
-%ifarch aarch64
-%if 0%{?suse_version} >= 1600
-%patch -P 1 -p0
-%endif
-%endif
 popd
 #rm -rf NVIDIA-Linux-*-%{version}-*/usr/src/nv/precompiled
 mkdir -p source/%{version}
