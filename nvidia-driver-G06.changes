@@ -1,4 +1,9 @@
 -------------------------------------------------------------------
+Tue Dec 17 22:56:53 UTC 2024 - Stefan Dirsch <sndirsch@suse.com>
+
+- Update to 550.142 (boo#1234675)
+
+-------------------------------------------------------------------
 Fri Dec 13 14:32:44 UTC 2024 - Stefan Dirsch <sndirsch@suse.com>
 
 - fix lsinitrd run on Aeon >= RC2 (boo#1224773c#95)
