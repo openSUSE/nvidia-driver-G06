@@ -170,7 +170,7 @@ dracut_file=/etc/dracut.conf.d/60-nvidia-$flavor.conf
 %endif
 
 # recreate initrd if old modules are still in there (gh issue#25)
-%if 0%{?suse_version} >= 1560
+%if (0%{?sle_version} >= 150600 || 0%{?suse_version} >= 1550)
 eval $(/sbin/pbl --default-settings) || true
 %endif
 if lsinitrd "$initrd" | grep -q nvidia.ko;  then
