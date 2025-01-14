@@ -101,7 +101,7 @@ Summary:        NVIDIA driver for computing with GPGPU
 Group:          System/Libraries
 Requires:       nvidia-common-G06 = %{version}
 Requires:       libOpenCL1
-#Requires(pre):  nvidia-persistenced >= %{version}
+Requires(pre):  nvidia-persistenced >= %{version}
 Conflicts:      nvidia-computeG02
 Conflicts:      nvidia-computeG03
 Conflicts:      nvidia-computeG04
