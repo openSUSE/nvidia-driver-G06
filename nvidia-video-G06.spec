@@ -29,7 +29,7 @@
 %endif
 
 Name:           nvidia-video-G06
-Version:        565.77
+Version:        570.76
 Release:        0
 License:        SUSE-NonFree
 Summary:        NVIDIA graphics driver for GeForce 700 series and newer
@@ -101,7 +101,7 @@ Summary:        NVIDIA driver for computing with GPGPU
 Group:          System/Libraries
 Requires:       nvidia-common-G06 = %{version}
 Requires:       libOpenCL1
-Requires(pre):  nvidia-persistenced >= %{version}
+#Requires(pre):  nvidia-persistenced >= %{version}
 Conflicts:      nvidia-computeG02
 Conflicts:      nvidia-computeG03
 Conflicts:      nvidia-computeG04
@@ -334,7 +334,7 @@ install 32/libvdpau_nvidia.so* %{buildroot}%{_prefix}/lib/vdpau
 ln -s vdpau/libvdpau_nvidia.so.1 %{buildroot}%{_prefix}/lib/libvdpau_nvidia.so
 
 install -d %{buildroot}%{_libdir}/nvidia/wine
-install _nvngx.dll nvngx.dll %{buildroot}%{_libdir}/nvidia/wine
+install _nvngx.dll nvngx.dll nvngx_dlssg.dll %{buildroot}%{_libdir}/nvidia/wine
 %endif
 
 # X.org components
@@ -431,6 +431,9 @@ install -m 0644 -p -D %{SOURCE10} %{buildroot}%{_sysconfdir}/modprobe.d/50-nvidi
 install -m 0644 -p -D %{SOURCE11} %{buildroot}%{_sysconfdir}/dracut.conf.d/60-nvidia.conf
 %endif
 
+mkdir -p %{buildroot}%{_datadir}/nvidia/files.d
+install -m 0644 -p -D sandboxutils-filelist.json %{buildroot}%{_datadir}/nvidia/files.d/
+
 %post -p /bin/bash
 /sbin/ldconfig
 # Bug #345125
@@ -445,11 +448,13 @@ fi
 %systemd_post nvidia-powerd.service
 %systemd_post nvidia-resume.service
 %systemd_post nvidia-suspend.service
+%systemd_post nvidia-suspend-then-hibernate.service
 # the official way above doesn't seem to work ;-(
 /usr/bin/systemctl preset nvidia-hibernate.service
 /usr/bin/systemctl preset nvidia-powerd.service
 /usr/bin/systemctl preset nvidia-resume.service
 /usr/bin/systemctl preset nvidia-suspend.service
+/usr/bin/systemctl preset nvidia-suspend-then-hibernate.service
 exit 0
 
 %preun
@@ -458,6 +463,7 @@ exit 0
 %systemd_preun nvidia-powerd.service
 %systemd_preun nvidia-resume.service
 %systemd_preun nvidia-suspend.service
+%systemd_preun nvidia-suspend-then-hibernate.service
 
 %postun -p /bin/bash
 /sbin/ldconfig
@@ -476,6 +482,7 @@ fi
 %systemd_postun_with_restart nvidia-powerd.service
 %systemd_postun_with_restart nvidia-resume.service
 %systemd_postun_with_restart nvidia-suspend.service
+%systemd_postun_with_restart nvidia-suspend-then-hibernate.service
 exit 0
 
 %post -n nvidia-compute-G06 -p /bin/bash
@@ -582,6 +589,7 @@ fi
 %{_unitdir}/nvidia-powerd.service
 %{_unitdir}/nvidia-resume.service
 %{_unitdir}/nvidia-suspend.service
+%{_unitdir}/nvidia-suspend-then-hibernate.service
 
 %files -n nvidia-compute-G06
 %defattr(-,root,root)
@@ -618,6 +626,8 @@ fi
 %config %{_sysconfdir}/OpenCL/vendors/nvidia.icd
 %dir %{_systemd_util_dir}/system-preset
 %{_systemd_util_dir}/system-preset/70-nvidia-compute-G06.preset
+%dir %{_datadir}/nvidia/files.d/
+%{_datadir}/nvidia/files.d/sandboxutils-filelist.json
 
 %files -n nvidia-common-G06
 %defattr(-,root,root)
