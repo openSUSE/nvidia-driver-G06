@@ -500,7 +500,11 @@ exit 0
 /sbin/pbl --add-option rd.driver.blacklist=nouveau --config
 
 %postun -n nvidia-common-G06
-/sbin/pbl --del-option rd.driver.blacklist=nouveau --config
+if [ "$1" = 0 ] ; then
+  /sbin/pbl --del-option rd.driver.blacklist=nouveau --config
+  # cleanup of bnc# 1000625
+  rm -f /usr/lib/tmpfiles.d/nvidia-logind-acl-trick-G06.conf
+fi
 
 %post   -n nvidia-gl-G06 -p /sbin/ldconfig
 %postun -n nvidia-gl-G06 -p /sbin/ldconfig
