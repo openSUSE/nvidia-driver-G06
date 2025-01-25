@@ -1,4 +1,9 @@
 -------------------------------------------------------------------
+Tue Jan 14 22:21:10 UTC 2025 - Stefan Dirsch <sndirsch@suse.com>
+
+- Update to 550.144.03 (boo#1235871)
+
+-------------------------------------------------------------------
 Sun Dec 29 23:56:00 UTC 2024 - Stefan Dirsch <sndirsch@suse.com>
 
 - Use the correct check for SP6 before using pbl's --default-settings option 
