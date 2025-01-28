@@ -8,14 +8,12 @@ if [ "$1" = 0 ] ; then
   if [ $? -eq 1 ]; then
       for dir in $(find /lib/modules  -mindepth 1 -maxdepth 1 -type d -name "*-${flavor}"); do
           test -d $dir/updates && rm -f $dir/updates/nvidia*.ko
-      done
-      # generate modules.dep, etc. to avoid dracut failures
-      # later (boo#1213765)
-      if [ -d $dir/kernel ]; then
+          # generate modules.dep, etc. to avoid dracut failures
+          # later (boo#1213765)
+          if [ -d $dir/kernel ]; then
               kversion=$(basename $dir)
               depmod $kversion
-      fi
+          fi
+      done
   fi
-  # cleanup of bnc# 1000625
-  rm -f /usr/lib/tmpfiles.d/nvidia-logind-acl-trick-G06.conf
 fi
