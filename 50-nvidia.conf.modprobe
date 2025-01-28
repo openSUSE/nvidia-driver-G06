@@ -27,5 +27,8 @@ options nvidia NVreg_TemporaryFilePath=/var/tmp
 options nvidia NVreg_EnableS0ixPowerManagement=1
 options nvidia NVreg_PreserveVideoMemoryAllocations=1
 
-# Needed for Wayland and a nice Linux console
-options nvidia-drm modeset=1 fbdev=1
+# Nvidia modesetting support. Set to 0 or comment to disable kernel modesetting
+# and framebuffer console support. This must be disabled in case of SLI Mosaic
+# on X.
+
+options nvidia-drm modeset=1
