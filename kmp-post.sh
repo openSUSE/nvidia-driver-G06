@@ -30,7 +30,7 @@ pushd /usr/src/kernel-modules/nvidia-%{-v*}-$flavor
 make -j$(nproc) -f Makefile \
      nv-linux.o \
      SYSSRC=/lib/modules/$kver/source \
-     SYSOUT=/usr/src/$dir/$arch/$flavor CC=gcc || true
+     SYSOUT=/usr/src/$dir/$arch/$flavor CC=gcc || RES=1
 popd
 # remove still existing old kernel modules (boo#1174204)
 rm -f /lib/modules/$kver/updates/nvidia*.ko
