@@ -26,7 +26,7 @@
 
 %define req_random_kernel_sources 0
 
-%if 0%{?suse_version} > 1600
+%if (0%{?suse_version} >= 1600 || 0%{?sle_version} >= 150700)
 %define req_random_kernel_sources 1
 %endif
 
@@ -58,6 +58,7 @@ NoSource:       0
 NoSource:       1
 NoSource:       6
 NoSource:       7
+BuildRequires:  dracut
 BuildRequires:  kernel-source
 BuildRequires:  kernel-syms
 %ifnarch aarch64
@@ -210,7 +211,7 @@ for flavor in %flavors_to_build; do
     cp -r source obj/$flavor
     make %{?jobs:-j%jobs} -C /usr/src/linux-obj/%_target_cpu/$flavor modules M=$PWD/obj/$flavor/%{version} SYSSRC="$src" SYSOUT=/usr/src/linux-obj/%_target_cpu/$flavor
     pushd $PWD/obj/$flavor/%{version}
-    make %{?jobs:-j%jobs} -f Makefile nv-linux.o SYSSRC="$src" SYSOUT=/usr/src/linux-obj/%_target_cpu/$flavor
+    make %{?jobs:-j%jobs} -f Makefile nv-linux.o SYSSRC="$src" SYSOUT=/usr/src/linux-obj/%_target_cpu/$flavor CC=gcc
     popd
 done
 
