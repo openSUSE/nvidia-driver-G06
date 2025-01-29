@@ -1,4 +1,3 @@
-set -x
 %if 0%{?req_random_kernel_sources} == 1
 dir=linux-obj
 %else
