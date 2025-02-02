@@ -207,8 +207,6 @@ Conflicts:      nvidia-glG04
 Conflicts:      nvidia-glG05
 Provides:       nvidia-glG06 = %{version}
 Obsoletes:      nvidia-glG06 < %{version}
-Provides:       suse-prime = 0.8.18 
-Obsoletes:      suse-prime < 0.8.18
 Recommends:     nvidia-gl-G06-32bit = %{version}
 # needed for Optimus systems once NVIDIA's libs get disabled (our default);
 # these packages won't get installed when adding NVIDIA's repository before
