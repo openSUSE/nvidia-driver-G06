@@ -14,10 +14,8 @@ blacklist nouveau
 
 softdep nvidia post: nvidia-uvm
 
-# Enable custom Nvidia device ownership:
+# Custom permissions on device files:
 
-options nvidia NVreg_DeviceFileUID=0
-options nvidia NVreg_DeviceFileGID=33
 options nvidia NVreg_DeviceFileMode=0660
 
 # Enable complete power management. From:

@@ -505,48 +505,6 @@ exit 0
 
 %post -n nvidia-common-G06
 /sbin/pbl --add-option rd.driver.blacklist=nouveau --config
-# groups are now dynamic
-%if 0%{?suse_version} >= 1550
-if [ -f /usr/lib/modprobe.d/50-nvidia.conf ]; then
-%else
-if [ -f /etc/modprobe.d/50-nvidia.conf ]; then
-%endif
-  VIDEOGID=`getent group video | cut -d: -f3`
-%if 0%{?suse_version} >= 1550
-  sed -i "s/33/$VIDEOGID/" /usr/lib/modprobe.d/50-nvidia.conf
-%else
-  sed -i "s/33/$VIDEOGID/" /etc/modprobe.d/50-nvidia.conf
-%endif
-fi
-# This is still needed for proprietary kernel modules; see also
-# https://github.com/openSUSE/nvidia-driver-G06/issues/52
-#
-# Create symlinks for udev so these devices will get user ACLs by logind later (bnc#1000625)
-mkdir -p /run/udev/static_node-tags/uaccess
-mkdir -p /usr/lib/tmpfiles.d
-ln -snf /dev/nvidiactl /run/udev/static_node-tags/uaccess/nvidiactl 
-ln -snf /dev/nvidia-uvm /run/udev/static_node-tags/uaccess/nvidia-uvm
-ln -snf /dev/nvidia-uvm-tools /run/udev/static_node-tags/uaccess/nvidia-uvm-tools
-ln -snf /dev/nvidia-modeset /run/udev/static_node-tags/uaccess/nvidia-modeset
-cat >  /usr/lib/tmpfiles.d/nvidia-logind-acl-trick-G06.conf << EOF
-L /run/udev/static_node-tags/uaccess/nvidiactl - - - - /dev/nvidiactl
-L /run/udev/static_node-tags/uaccess/nvidia-uvm - - - - /dev/nvidia-uvm
-L /run/udev/static_node-tags/uaccess/nvidia-uvm-tools - - - - /dev/nvidia-uvm-tools
-L /run/udev/static_node-tags/uaccess/nvidia-modeset - - - - /dev/nvidia-modeset
-EOF
-devid=-1
-for dev in $(ls -d /sys/bus/pci/devices/*); do 
-  vendorid=$(cat $dev/vendor)
-  if [ "$vendorid" == "0x10de" ]; then 
-    class=$(cat $dev/class)
-    classid=${class%%00}
-    if [ "$classid" == "0x0300" -o "$classid" == "0x0302" ]; then 
-      devid=$((devid+1))
-      ln -snf /dev/nvidia${devid} /run/udev/static_node-tags/uaccess/nvidia${devid}
-      echo "L /run/udev/static_node-tags/uaccess/nvidia${devid} - - - - /dev/nvidia${devid}" >> /usr/lib/tmpfiles.d/nvidia-logind-acl-trick-G06.conf
-    fi
-  fi
-done
 
 %postun -n nvidia-common-G06
 if [ "$1" = 0 ] ; then
