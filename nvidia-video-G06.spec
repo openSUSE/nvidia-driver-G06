@@ -154,26 +154,22 @@ Suggests:       nvidia-open-driver-G06-signed-kmp = %{version}
 %description -n nvidia-common-G06
 Common files for NVIDIA driver installations.
 
-%if (0%{?sle_version} >= 150400 || 0%{?suse_version} >= 1550)
 %package -n cuda-cloud-opengpu
 Summary:        Meta package for CUDA minimal installation in the Cloud
 Group:          System/Utilities
-Requires:       cuda-libraries-devel-12-6
-Requires:       cuda-minimal-build-12-6
+Requires:       cuda-libraries-12-8
 Requires:       nvidia-compute-utils-G06 = %{version}
-Requires:       nvidia-compute-G06 = %{version}
 Requires:       nvidia-open-driver-G06-signed-kmp = %{version}
 %ifnarch aarch64
-Requires:       cuda-demo-suite-12-6
+Requires:       cuda-demo-suite-12-8
 %endif
 
 %description -n cuda-cloud-opengpu
 This is a meta package for doing a CUDA minimal installation in the
-Cloud making use of NVIDIA's openGPU driver. Unfortunately this
-driver currently only supports headless GPUs with Turing and Ampere
-architecture. This meta package requires also packages from NVIDIA's
-CUDA repository. So if you haven't done this yet, this CUDA repository
-needs to be installed first by using the following zypper command:
+Cloud making use of NVIDIA's openGPU driver. This meta package
+requires also packages from NVIDIA's CUDA repository. So if you
+haven't done this yet, this CUDA repository needs to be added
+first by using the following zypper command:
 %ifarch aarch64
   zypper ar https://developer.download.nvidia.com/compute/cuda/repos/sles15/sbsa/ cuda
 %else
@@ -182,7 +178,6 @@ needs to be installed first by using the following zypper command:
  %else
   zypper ar http://developer.download.nvidia.com/compute/cuda/repos/sles15/x86_64/ cuda
  %endif
-%endif
 %endif
 
 %package -n nvidia-gl-G06
@@ -661,10 +656,8 @@ fi
 %{_mandir}/man1/nvidia-cuda-mps-control.1.*
 %{_mandir}/man1/nvidia-smi.1.*
 
-%if (0%{?sle_version} >= 150400 || 0%{?suse_version} >= 1550)
 %files -n cuda-cloud-opengpu
 %defattr(-,root,root)
-%endif
 
 %files -n nvidia-gl-G06
 %defattr(-,root,root)
