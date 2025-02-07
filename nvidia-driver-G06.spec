@@ -86,6 +86,12 @@ ExclusiveArch:  x86_64 aarch64
 %if %{undefined kernel_module_directory}
 %define kernel_module_directory /lib/modules
 %endif
+%if 0%{!?_builddir:1}
+%define _builddir /home/abuild/rpmbuild/BUILD
+%endif
+%if 0%{!?_sourcedir:1}
+%define _sourcedir /home/abuild/rpmbuild/SOURCES
+%endif
 # Tumbleweed uses %triggerin instead of %post script in order to generate
 # and install kernel module
 %if 0%{?suse_version} >= 1550 && 0%{?is_opensuse}
