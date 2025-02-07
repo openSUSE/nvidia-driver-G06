@@ -266,6 +266,7 @@ rm -fr \
     libnvidia-gtk* libnvidia-wayland-client* nvidia-settings* \
     libGLESv1_CM.so.* libGLESv2.so.* libGLdispatch.so.* libOpenGL.so.* libGLX.so.* libGL.so.1* libEGL.so.1* \
     libOpenCL.so.1* \
+    libnvidia-pkcs11.so.%{version} \
     libEGL.so.%{version} \
     nvidia-installer* .manifest make* mk* tls_test* libglvnd_install_checker \
     32/libGLESv1_CM.so.* 32/libGLESv2.so.* 32/libGLdispatch.so.* 32/libOpenGL.so.* 32/libGLX.so.* 32/libGL.so.1* 32/libEGL.so.1* \
@@ -613,7 +614,6 @@ fi
 %{_libdir}/libnvidia-ptxjitcompiler.so.1
 %{_libdir}/libnvidia-ptxjitcompiler.so.%{version}
 %ifarch x86_64
-%{_libdir}/libnvidia-pkcs11.so.%{version}
 %{_libdir}/libnvidia-pkcs11-openssl3.so.%{version}
 %endif
 %dir %{_sysconfdir}/OpenCL
