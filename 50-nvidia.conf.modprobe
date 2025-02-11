@@ -12,7 +12,12 @@ blacklist nouveau
 # included in the initrd, so use this configuration file to specify the
 # dependency.
 
-softdep nvidia post: nvidia-uvm
+# Added also nvidia-drm since on some machines it didn't get loaded
+# automatically, which resulted in Wayland sessions falling back
+# to simpledrm (slow!), external monitors and switcherooctl not
+# working at all.
+
+softdep nvidia post: nvidia-drm nvidia-uvm
 
 # Enable custom Nvidia device ownership:
 
