@@ -732,9 +732,6 @@ fi
 
 %files -n nvidia-video-G06-32bit
 %defattr(-,root,root)
-%{_prefix}/lib/libnvcuvid.so
-%{_prefix}/lib/libnvcuvid.so.1
-%{_prefix}/lib/libnvcuvid.so.%{version}
 %{_prefix}/lib/libnvidia-encode.so
 %{_prefix}/lib/libnvidia-encode.so.1
 %{_prefix}/lib/libnvidia-encode.so.%{version}
@@ -748,6 +745,9 @@ fi
 %{_prefix}/lib/libcuda.so
 %{_prefix}/lib/libcuda.so.1
 %{_prefix}/lib/libcuda.so.%{version}
+%{_prefix}/lib/libnvcuvid.so
+%{_prefix}/lib/libnvcuvid.so.1
+%{_prefix}/lib/libnvcuvid.so.%{version}
 %{_prefix}/lib/libnvidia-ml.so.1
 %{_prefix}/lib/libnvidia-ml.so.%{version}
 %{_prefix}/lib/libnvidia-nvvm.so.4
