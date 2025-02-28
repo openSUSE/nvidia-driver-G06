@@ -29,7 +29,7 @@
 %endif
 
 Name:           nvidia-video-G06
-Version:        570.86.16
+Version:        570.124.04
 Release:        0
 License:        SUSE-NonFree
 Summary:        NVIDIA graphics driver for GeForce 700 series and newer
