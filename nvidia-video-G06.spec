@@ -47,7 +47,6 @@ Source10:       50-nvidia.conf.modprobe
 Source11:       60-nvidia.conf.dracut
 Source12:       70-nvidia-video-G06.preset
 Source13:       70-nvidia-compute-G06.preset
-Source16:       alternate-install-present
 NoSource:       0
 NoSource:       1
 NoSource:       4
@@ -415,7 +414,6 @@ ln -snf ../libnvidia-allocator.so.1 %{buildroot}%{_prefix}/lib/gbm/nvidia-drm_gb
 
 # Common files
 install -p -m 644 -D %{SOURCE9} %{buildroot}%{_udevrulesdir}/60-nvidia.rules
-install -p -m 644 -D %{SOURCE16} %{buildroot}%{_prefix}/lib/nvidia/alternate-install-present
 install -d %{buildroot}%{_firmwaredir}/nvidia/%{version}
 install -m 644 firmware/* %{buildroot}%{_firmwaredir}/nvidia/%{version}/
 
@@ -632,7 +630,6 @@ fi
 %{_firmwaredir}/nvidia/%{version}/gsp_ga10x.bin
 %{_firmwaredir}/nvidia/%{version}/gsp_tu10x.bin
 %dir %{_prefix}/lib/nvidia
-%{_prefix}/lib/nvidia/alternate-install-present
 %{_udevrulesdir}/60-nvidia.rules
 %if 0%{?suse_version} >= 1550
 %dir %{_prefix}/lib/dracut
