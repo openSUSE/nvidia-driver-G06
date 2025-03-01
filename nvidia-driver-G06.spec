@@ -53,6 +53,7 @@ Source18:       kmp-postun.sh
 Source22:       kmp-trigger.sh
 Source25:       %{name}.rpmlintrc
 Source26:       json-to-pci-id-list.py
+Source27:       alternate-install-present
 Patch0:         objtool-fix.patch
 NoSource:       0
 NoSource:       1
@@ -245,4 +246,5 @@ for flavor in %flavors_to_build; do
     fi
 %endif
 done
+install -p -m 644 -D %{SOURCE27} %{buildroot}%{_prefix}/lib/nvidia/alternate-install-present
 %changelog
