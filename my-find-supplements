@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 PCI_ID_FILE=$1
 shift

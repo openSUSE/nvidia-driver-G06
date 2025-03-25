@@ -26,25 +26,25 @@ make -j$(nproc) -C /usr/src/linux-obj/$arch/$flavor \
      M=/usr/src/kernel-modules/nvidia-%{-v*}-$flavor \
      SYSSRC=/lib/modules/$kver/source \
      SYSOUT=/usr/src/linux-obj/$arch/$flavor || RES=1
-pushd /usr/src/kernel-modules/nvidia-%{-v*}-$flavor 
+cd /usr/src/kernel-modules/nvidia-%{-v*}-$flavor
 make -j$(nproc) -f Makefile \
      nv-linux.o \
      SYSSRC=/lib/modules/$kver/source \
      SYSOUT=/usr/src/linux-obj/$arch/$flavor || RES=1
-popd
+cd -
 install -m 755 -d /lib/modules/$kver/updates
 install -m 644 /usr/src/kernel-modules/nvidia-%{-v*}-$flavor/nvidia*.ko \
 	/lib/modules/$kver/updates
 depmod $kver
 
 # cleanup (boo#1200310)
-pushd /usr/src/kernel-modules/nvidia-%{-v*}-$flavor || true
-cp -a Makefile{,.tmp} || true
+cd /usr/src/kernel-modules/nvidia-%{-v*}-$flavor || true
+cp -a Makefile Makefile.tmp || true
 make clean || true
 # NVIDIA's "make clean" not being perfect (boo#1201937)
 rm -f conftest*.c nv_compiler.h
-mv Makefile{.tmp,} || true
-popd || true
+mv Makefile.tmp Makefile || true
+cd - || true
 
 %if 0%{?suse_version} >= 1550
 # Sign modules on secureboot systems
