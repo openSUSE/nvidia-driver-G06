@@ -26,12 +26,12 @@ make -j$(nproc) -C /usr/src/$dir/$arch/$flavor \
      M=/usr/src/kernel-modules/nvidia-%{-v*}-$flavor \
      SYSSRC=/lib/modules/$kver/source \
      SYSOUT=/usr/src/$dir/$arch/$flavor || RES=1
-pushd /usr/src/kernel-modules/nvidia-%{-v*}-$flavor 
+cd /usr/src/kernel-modules/nvidia-%{-v*}-$flavor
 make -j$(nproc) -f Makefile \
      nv-linux.o \
      SYSSRC=/lib/modules/$kver/source \
      SYSOUT=/usr/src/$dir/$arch/$flavor CC=gcc || RES=1
-popd
+cd -
 # remove still existing old kernel modules (boo#1174204)
 rm -f /lib/modules/$kver/updates/nvidia*.ko
 install -m 755 -d /lib/modules/$kver/updates
@@ -55,13 +55,13 @@ fi
 depmod $kver || true
 
 # cleanup (boo#1200310)
-pushd /usr/src/kernel-modules/nvidia-%{-v*}-$flavor || true
-cp -a Makefile{,.tmp} || true
+cd /usr/src/kernel-modules/nvidia-%{-v*}-$flavor || true
+cp -a Makefile Makefile.tmp || true
 make clean CC=gcc || true
 # NVIDIA's "make clean" not being perfect (boo#1201937)
 rm -f conftest*.c nv_compiler.h
-mv Makefile{.tmp,} || true
-popd || true
+mv Makefile.tmp Makefile || true
+cd - || true
 
 # Sign modules on secureboot systems
 if [ -x /usr/bin/mokutil ]; then

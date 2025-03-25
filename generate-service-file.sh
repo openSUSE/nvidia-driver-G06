@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 driver_version=$(grep -i ^version: nvidia-video-G0?.spec |awk '{print $2}')
 
@@ -28,7 +28,7 @@ for arch in x86_64 aarch64; do
   fi
 done
 
-which sha256sum &> /dev/null
+which sha256sum > /dev/null 2>&1
 if [ $? -ne 0 ]; then
   echo "sha256sum not available! Exiting."
   exit 1

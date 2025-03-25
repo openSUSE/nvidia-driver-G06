@@ -349,7 +349,8 @@ install nvidia-powerd %{buildroot}%{_bindir}
 install -m 0644 -D nvidia-dbus.conf %{buildroot}%{_datadir}/dbus-1/system.d/nvidia-dbus.conf
 mkdir -p %{buildroot}%{_systemd_util_dir}/system-preset
 install -p -m 0644 %{SOURCE12} %{SOURCE13} %{buildroot}%{_systemd_util_dir}/system-preset
-mkdir -p %{buildroot}/usr/lib/systemd/{system,system-sleep}
+mkdir -p %{buildroot}/usr/lib/systemd/system \
+         %{buildroot}/usr/lib/systemd/system-sleep
 install -m 755 systemd/nvidia-sleep.sh %{buildroot}%{_bindir}
 install -m 644 systemd/system/*.service %{buildroot}/usr/lib/systemd/system
 install -m 755 systemd/system-sleep/nvidia %{buildroot}/usr/lib/systemd/system-sleep
@@ -360,12 +361,13 @@ sed -i -e 's/ExecStart=/ExecStart=-/g' %{buildroot}/usr/lib/systemd/system/nvidi
 
 # man pages
 install -d %{buildroot}/%{_mandir}/man1
-install -m 644 {nvidia-cuda-mps-control,nvidia-smi}.1.gz \
+install -m 644 nvidia-cuda-mps-control.1.gz nvidia-smi.1.gz \
   %{buildroot}/%{_mandir}/man1
 
 # Application data
 install -d %{buildroot}%{_datadir}/nvidia
-install -m 644 nvidia-application-profiles-%{version}-{rc,key-documentation} \
+install -m 644 nvidia-application-profiles-%{version}-rc \
+               nvidia-application-profiles-%{version}-key-documentation \
   %{buildroot}%{_datadir}/nvidia
 install -m 644 nvoptix.bin %{buildroot}%{_datadir}/nvidia
 
@@ -430,10 +432,10 @@ install -m 0644 -p -D %{SOURCE11} %{buildroot}%{_sysconfdir}/dracut.conf.d/60-nv
 mkdir -p %{buildroot}%{_datadir}/nvidia/files.d
 install -m 0644 -p -D sandboxutils-filelist.json %{buildroot}%{_datadir}/nvidia/files.d/
 
-%post -p /bin/bash
+%post
 /sbin/ldconfig
 # Bug #345125
-if ls var/lib/hardware/ids/* &> /dev/null; then
+if ls var/lib/hardware/ids/* > /dev/null 2<&1; then
   >  var/lib/hardware/hd.ids
   for i in var/lib/hardware/ids/*; do
     cat $i >> var/lib/hardware/hd.ids
@@ -461,10 +463,10 @@ exit 0
 %systemd_preun nvidia-suspend.service
 %systemd_preun nvidia-suspend-then-hibernate.service
 
-%postun -p /bin/bash
+%postun
 /sbin/ldconfig
 if [ "$1" -eq 0 ]; then
-  if ls var/lib/hardware/ids/* &> /dev/null; then
+  if ls var/lib/hardware/ids/* > /dev/null 2>&1; then
     >  var/lib/hardware/hd.ids
     for i in var/lib/hardware/ids/*; do
       cat $i >> var/lib/hardware/hd.ids
@@ -481,7 +483,7 @@ fi
 %systemd_postun_with_restart nvidia-suspend-then-hibernate.service
 exit 0
 
-%post -n nvidia-compute-G06 -p /bin/bash
+%post -n nvidia-compute-G06
 /sbin/ldconfig
 # Preset the service to follow the system's policy
 %systemd_post nvidia-persistenced.service
@@ -489,12 +491,12 @@ exit 0
 /usr/bin/systemctl preset nvidia-persistenced.service || true
 exit 0
 
-%preun -n nvidia-compute-G06 -p /bin/bash
+%preun -n nvidia-compute-G06
 /sbin/ldconfig
 # Stop and disable the service before removal
 %systemd_preun nvidia-persistenced.service
 
-%postun -n nvidia-compute-G06 -p /bin/bash
+%postun -n nvidia-compute-G06
 /sbin/ldconfig
 # Cleanup after uninstallation
 %systemd_postun_with_restart nvidia-persistenced.service
