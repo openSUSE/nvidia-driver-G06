@@ -65,7 +65,6 @@ Conflicts:      x11-video-nvidiaG05
 Provides:       x11-video-nvidiaG06 = %{version}
 Obsoletes:      x11-video-nvidiaG06 < %{version}
 Conflicts:      fglrx_driver
-Recommends:     nvidia-video-G06-32bit = %{version}
 Recommends:     switcheroo-control
 Requires:       libvdpau1
 ExclusiveArch:  %ix86 x86_64 aarch64
@@ -108,7 +107,6 @@ Conflicts:      nvidia-computeG04
 Conflicts:      nvidia-computeG05
 Provides:       nvidia-computeG06 = %{version}
 Obsoletes:      nvidia-computeG06 < %{version}
-Recommends:     nvidia-compute-G06-32bit = %{version}
 
 %description -n nvidia-compute-G06
 NVIDIA driver for computing with GPGPUs using CUDA or OpenCL.
@@ -204,7 +202,6 @@ Conflicts:      nvidia-glG04
 Conflicts:      nvidia-glG05
 Provides:       nvidia-glG06 = %{version}
 Obsoletes:      nvidia-glG06 < %{version}
-Recommends:     nvidia-gl-G06-32bit = %{version}
 # needed for Optimus systems once NVIDIA's libs get disabled (our default);
 # these packages won't get installed when adding NVIDIA's repository before
 # the installation, which e.g. happens on SLED (bsc#1111471)
