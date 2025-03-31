@@ -62,7 +62,8 @@ BuildRequires:  dracut
 BuildRequires:  kernel-source
 BuildRequires:  kernel-syms
 %ifnarch aarch64
-%if !0%{?is_opensuse} 
+# limit build of -azure flavor to SP6
+%if (!0%{?is_opensuse} && (0%{?sle_version} >= 150600 && 0%{?sle_version} < 150700))
 BuildRequires:  kernel-syms-azure
 %endif
 %endif
@@ -136,9 +137,12 @@ exit $RES' %_builddir/nvidia-kmp-template)
 # if drm-kmp-default gets uninstalled
 %(echo "%%{?regenerate_initrd_posttrans}"  >> %_builddir/nvidia-kmp-template)
 %endif
-%define x_flavors kdump um debug xen xenpae
-%if 0%{!?nvbuild:1}
 %define kver %(for dir in /usr/src/linux-obj/*/*/; do make %{?jobs:-j%jobs} -s -C "$dir" kernelversion; break; done |perl -ne '/(\\d+)\\.(\\d+)\\.(\\d+)?/&&printf "%%d%%02d%%03d\\n",$1,$2,$3')
+# limit build of -azure flavor to SP6
+%if (!0%{?is_opensuse} && (0%{?sle_version} >= 150600 && 0%{?sle_version} < 150700))
+%define x_flavors kdump um debug xen xenpae
+%else
+%define x_flavors kdump um debug xen xenpae azure
 %endif
 %kernel_module_package %kmp_template %_builddir/nvidia-kmp-template -p %_sourcedir/preamble -f %_sourcedir/%kmp_filelist -x %x_flavors
 
