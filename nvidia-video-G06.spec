@@ -202,13 +202,6 @@ Conflicts:      nvidia-glG04
 Conflicts:      nvidia-glG05
 Provides:       nvidia-glG06 = %{version}
 Obsoletes:      nvidia-glG06 < %{version}
-# needed for Optimus systems once NVIDIA's libs get disabled (our default);
-# these packages won't get installed when adding NVIDIA's repository before
-# the installation, which e.g. happens on SLED (bsc#1111471)
-Recommends:     Mesa-libGL1
-Recommends:     Mesa-libEGL1
-Recommends:     Mesa-libGLESv1_CM1
-Recommends:     Mesa-libGLESv2-2
 AutoReq: no
 
 %description -n nvidia-gl-G06
