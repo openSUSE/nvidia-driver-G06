@@ -422,6 +422,14 @@ install -m 0644 -p -D %{SOURCE11} %{buildroot}%{_sysconfdir}/dracut.conf.d/60-nv
 mkdir -p %{buildroot}%{_datadir}/nvidia/files.d
 install -m 0644 -p -D sandboxutils-filelist.json %{buildroot}%{_datadir}/nvidia/files.d/
 
+%pre
+# mark to be set to presets (boo#1240991, gh issue#51)
+%systemd_pre nvidia-hibernate.service
+%systemd_pre nvidia-powerd.service
+%systemd_pre nvidia-resume.service
+%systemd_pre nvidia-suspend.service
+%systemd_pre nvidia-suspend-then-hibernate.service
+
 %post
 /sbin/ldconfig
 # Bug #345125
@@ -431,18 +439,12 @@ if ls var/lib/hardware/ids/* > /dev/null 2<&1; then
     cat $i >> var/lib/hardware/hd.ids
   done
 fi
-# Preset the services to follow the system's policy
+# Preset the services if they are freshly installed (boo#1240991, gh issue#51)
 %systemd_post nvidia-hibernate.service
 %systemd_post nvidia-powerd.service
 %systemd_post nvidia-resume.service
 %systemd_post nvidia-suspend.service
 %systemd_post nvidia-suspend-then-hibernate.service
-# the official way above doesn't seem to work ;-(
-/usr/bin/systemctl preset nvidia-hibernate.service
-/usr/bin/systemctl preset nvidia-powerd.service
-/usr/bin/systemctl preset nvidia-resume.service
-/usr/bin/systemctl preset nvidia-suspend.service
-/usr/bin/systemctl preset nvidia-suspend-then-hibernate.service
 exit 0
 
 %preun
@@ -475,10 +477,9 @@ exit 0
 
 %post -n nvidia-compute-G06
 /sbin/ldconfig
-# Preset the service to follow the system's policy
+# Preset the service if it is freshly installed (boo#1240991, gh issue#51)
+# mark to be set to presets is done in %pre of nvidia-persistenced package
 %systemd_post nvidia-persistenced.service
-# the official way above doesn't seem to work ;-(
-/usr/bin/systemctl preset nvidia-persistenced.service || true
 exit 0
 
 %preun -n nvidia-compute-G06
