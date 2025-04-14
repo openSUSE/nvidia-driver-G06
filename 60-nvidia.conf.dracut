@@ -1,1 +1,1 @@
-omit_drivers+=" nvidia nvidia_drm nvidia_modeset nvidia_peermem nvidia_uvm "
+omit_drivers+=" nvidia nvidia_drm nvidia_modeset nvidia_uvm "
