@@ -29,7 +29,7 @@
 %endif
 
 Name:           nvidia-video-G06
-Version:        570.86.16
+Version:        575.51.02
 Release:        0
 License:        SUSE-NonFree
 Summary:        NVIDIA graphics driver for GeForce 700 series and newer
@@ -600,10 +600,12 @@ fi
 %{_libdir}/libnvidia-ml.so.%{version}
 %{_libdir}/libnvidia-nvvm.so.4
 %{_libdir}/libnvidia-nvvm.so.%{version}
+%{_libdir}/libnvidia-nvvm70.so.4
 %{_libdir}/libnvidia-opencl.so.1
 %{_libdir}/libnvidia-opencl.so.%{version}
 %{_libdir}/libnvidia-opticalflow.so.1
 %{_libdir}/libnvidia-opticalflow.so.%{version}
+%{_libdir}/libnvidia-present.so.%{version}
 %{_libdir}/libnvidia-ptxjitcompiler.so.1
 %{_libdir}/libnvidia-ptxjitcompiler.so.%{version}
 %ifarch x86_64
