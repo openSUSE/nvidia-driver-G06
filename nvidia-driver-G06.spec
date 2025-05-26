@@ -26,7 +26,7 @@
 
 %define req_random_kernel_sources 0
 
-%if (0%{?suse_version} >= 1600 || 0%{?sle_version} >= 150700)
+%if 0%{?suse_version} >= 1600
 %define req_random_kernel_sources 1
 %endif
 
@@ -151,11 +151,7 @@ exit $RES' %_builddir/nvidia-kmp-template)
 %kernel_module_package %kmp_template %_builddir/nvidia-kmp-template -p %_sourcedir/preamble -f %_sourcedir/%kmp_filelist -x %x_flavors
 
 # supplements no longer depend on the driver
-%if (0%{?sle_version} >= 150400 || 0%{?suse_version} >= 1550)
 %define pci_id_file %_sourcedir/pci_ids-%version
-%else
-%define pci_id_file %_sourcedir/pci_ids-%version.new
-%endif
 # rpm 4.14.1 changed again (boo#1087460)
 %define __kmp_supplements %_sourcedir/my-find-supplements %pci_id_file
 # rpm 4.9+ using the internal dependency generators
@@ -212,7 +208,6 @@ cd -
 mkdir obj
 
 %build
-echo "*** sle_version: 0%{?sle_version} ***"
 export EXTRA_CFLAGS='-DVERSION=\"%{version}\"'
 # no longer needed and never worked anyway (it was only a stub) [boo#1211892]
 export NV_EXCLUDE_KERNEL_MODULES=nvidia-peermem

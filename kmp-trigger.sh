@@ -46,7 +46,6 @@ rm -f conftest*.c nv_compiler.h
 mv Makefile.tmp Makefile || true
 cd - || true
 
-%if 0%{?suse_version} >= 1550
 # Sign modules on secureboot systems
 if [ -x /usr/bin/mokutil ]; then
   mokutil --sb-state | grep -q "SecureBoot enabled"
@@ -90,7 +89,6 @@ if [ -x /usr/bin/mokutil ]; then
     rm -f $privkey
   fi
 fi
-%endif
 
 # This is still needed for proprietary kernel modules; see also
 # https://github.com/openSUSE/nvidia-driver-G06/issues/52

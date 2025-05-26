@@ -181,12 +181,7 @@ first by using the following zypper command:
 %package -n nvidia-gl-G06
 Summary:        NVIDIA OpenGL libraries for OpenGL acceleration
 Group:          System/Libraries
-%if 0%{?suse_version} >= 1550 || 0%{?sle_version} >= 150500
 Requires:       libnvidia-egl-gbm1 >= %{version_egl_gbm}
-%else
-Provides:       libnvidia-egl-gbm1 = %{version_egl_gbm}
-Obsoletes:      libnvidia-egl-gbm1 <= %{version_egl_gbm}
-%endif
 %if 0%{?suse_version} >= 1550 || 0%{?sle_version} >= 150700
 Requires:       libnvidia-egl-wayland1 >= %{version_egl_wayland}
 Requires:       libnvidia-egl-x111 >= %{version_egl_x11}
@@ -216,12 +211,7 @@ Conflicts:      nvidia-glG04-32bit
 Conflicts:      nvidia-glG05-32bit
 Provides:       nvidia-glG06-32bit = %{version}
 Obsoletes:      nvidia-glG06-32bit < %{version}
-%if 0%{?suse_version} >= 1550 || 0%{?sle_version} >= 150500
 Requires:       libnvidia-egl-gbm1-32bit >= %{version_egl_gbm}
-%else
-Provides:       libnvidia-egl-gbm1-32bit = %{version_egl_gbm}
-Obsoletes:      libnvidia-egl-gbm1-32bit <= %{version_egl_gbm}
-%endif
 %if 0%{?suse_version} >= 1550 || 0%{?sle_version} >= 150700
 Requires:       libnvidia-egl-wayland1-32bit >= %{version_egl_wayland}
 Requires:       libnvidia-egl-x111-32bit >= %{version_egl_x11}
@@ -262,7 +252,6 @@ rm -fr \
     32/libGLESv1_CM.so.* 32/libGLESv2.so.* 32/libGLdispatch.so.* 32/libOpenGL.so.* 32/libGLX.so.* 32/libGL.so.1* 32/libEGL.so.1* \
     32/libOpenCL.so.1*
 
-%if 0%{?suse_version} >= 1550 || 0%{?sle_version} >= 150500
 rm -f \
     libnvidia-egl-gbm.so.* \
     32/libnvidia-egl-gbm.so.* \
@@ -271,7 +260,6 @@ rm -f \
     libnvidia-egl-wayland.so.* libnvidia-egl-xcb.so.* libnvidia-egl-xlib.so.* \
     32/libnvidia-egl-wayland.so.* 32/libnvidia-egl-xcb.so.* 32/libnvidia-egl-xlib.so.* \
     10_nvidia_wayland.json 20_nvidia_xcb.json 20_nvidia_xlib.json
-%endif
 %endif
 
 # Create all the necessary symlinks:
@@ -368,9 +356,6 @@ install -m 644 -D nvidia.icd %{buildroot}%{_sysconfdir}/OpenCL/vendors/nvidia.ic
 # EGL driver config
 mkdir -p %{buildroot}%{_datadir}/egl/egl_external_platform.d
 install -m 644 \
-%if 0%{?sle_version} < 150500
-    15_nvidia_gbm.json \
-%endif
     10_nvidia_wayland.json \
     20_nvidia_xcb.json \
     20_nvidia_xlib.json \
@@ -663,9 +648,6 @@ fi
 %{_datadir}/egl/egl_external_platform.d/10_nvidia_wayland.json
 %{_datadir}/egl/egl_external_platform.d/20_nvidia_xcb.json
 %{_datadir}/egl/egl_external_platform.d/20_nvidia_xlib.json
-%if 0%{?sle_version} < 150500
-%{_datadir}/egl/egl_external_platform.d/15_nvidia_gbm.json
-%endif
 %endif
 %dir %{_libdir}/gbm
 %{_libdir}/gbm/nvidia-drm_gbm.so
@@ -685,9 +667,6 @@ fi
 %{_libdir}/libnvidia-egl-wayland.so.1*
 %{_libdir}/libnvidia-egl-xcb.so.1*
 %{_libdir}/libnvidia-egl-xlib.so.1*
-%if 0%{?sle_version} < 150500
-%{_libdir}/libnvidia-egl-gbm.so.1*
-%endif
 %endif
 %{_libdir}/libnvidia-fbc.so.1
 %{_libdir}/libnvidia-fbc.so.%{version}
@@ -772,9 +751,6 @@ fi
 %{_prefix}/lib/libnvidia-egl-wayland.so.1*
 %{_prefix}/lib/libnvidia-egl-xcb.so.1*
 %{_prefix}/lib/libnvidia-egl-xlib.so.1*
-%if 0%{?sle_version} < 150500
-%{_prefix}/lib/libnvidia-egl-gbm.so.1*
-%endif
 %endif
 %{_prefix}/lib/libnvidia-fbc.so.1
 %{_prefix}/lib/libnvidia-fbc.so.%{version}
