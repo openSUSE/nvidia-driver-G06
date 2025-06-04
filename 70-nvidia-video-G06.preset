@@ -9,3 +9,6 @@ enable nvidia-suspend.service
 # file:///usr/share/doc/packages/nvidia-common-G06/html/dynamicboost.html
 
 enable nvidia-powerd.service
+
+# Enable switcheroo-control
+enable switcheroo-control.service

@@ -449,6 +449,7 @@ fi
 %systemd_post nvidia-resume.service
 %systemd_post nvidia-suspend.service
 %systemd_post nvidia-suspend-then-hibernate.service
+%systemd_post switcheroo-control.service
 exit 0
 
 %preun
@@ -458,6 +459,7 @@ exit 0
 %systemd_preun nvidia-resume.service
 %systemd_preun nvidia-suspend.service
 %systemd_preun nvidia-suspend-then-hibernate.service
+%systemd_preun switcheroo-control.service
 
 %postun
 /sbin/ldconfig
@@ -477,6 +479,7 @@ fi
 %systemd_postun_with_restart nvidia-resume.service
 %systemd_postun_with_restart nvidia-suspend.service
 %systemd_postun_with_restart nvidia-suspend-then-hibernate.service
+%systemd_postun_with_restart switcheroo-control.service
 exit 0
 
 %post -n nvidia-compute-G06
