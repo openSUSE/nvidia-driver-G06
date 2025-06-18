@@ -142,7 +142,7 @@ exit $RES' %_builddir/nvidia-kmp-template)
 %if (!0%{?is_opensuse} && (0%{?sle_version} >= 150600 && 0%{?sle_version} < 150700))
 %define x_flavors kdump um debug xen xenpae
 %else
-%define x_flavors kdump um debug xen xenpae azure
+%define x_flavors kdump um debug xen xenpae azure rt
 %endif
 %kernel_module_package %kmp_template %_builddir/nvidia-kmp-template -p %_sourcedir/preamble -f %_sourcedir/%kmp_filelist -x %x_flavors
 
