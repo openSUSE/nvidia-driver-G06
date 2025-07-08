@@ -37,11 +37,3 @@ options nvidia NVreg_PreserveVideoMemoryAllocations=1
 # on X.
 
 options nvidia-drm modeset=1
-
-# Use this default and let it win against 
-# 'install nvidia-drm /usr/bin/true' rule in 60-nvidia-<flavor>.conf,
-# which comes with nvidia-open-driver-G06-signed-kmp-<flavor>, which avoids
-# this module being loaded without config and GSP firmware files. See also
-# https://bugzilla.suse.com/show_bug.cgi?id=1244414
-
-install nvidia-drm /sbin/modprobe --ignore-install nvidia-drm
