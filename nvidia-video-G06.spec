@@ -143,13 +143,7 @@ Group:          System/Libraries
 Provides:       kernel-firmware-nvidia-gspx-G06 = %{version}
 Obsoletes:      kernel-firmware-nvidia-gspx-G06 < %{version}
 Requires:       nvidia-modprobe >= %{version}
-Requires:       (nvidia-driver-G06-kmp = %{version} or nvidia-open-driver-G06-kmp = %{version} or nvidia-open-driver-G06-signed-kmp = %{version})
-# prefer the opengpu driver; resolver works alphabetically and would suggest
-# proprietary driver instead; use Suggests instead of Recommends since it's
-# common to install with --no-recommends to have a minimal installation for
-# compute nodes ...
 Requires(post): perl-Bootloader
-Suggests:       nvidia-open-driver-G06-signed-kmp = %{version}
 
 %description -n nvidia-common-G06
 Common files for NVIDIA driver installations.
