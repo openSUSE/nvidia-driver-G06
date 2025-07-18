@@ -67,6 +67,10 @@ BuildRequires:  kernel-syms
 BuildRequires:  kernel-syms-azure
 %endif
 %endif
+%if 0%{?is_opensuse} && 0%{?suse_version} >= 1699
+# build KPMs for kernel-longterm in Factory
+BuildRequires:  kernel-syms-longterm
+%endif
 BuildRequires:  %kernel_module_package_buildreqs
 BuildRequires:  module-init-tools
 BuildRequires:  pciutils
