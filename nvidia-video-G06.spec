@@ -143,6 +143,12 @@ Group:          System/Libraries
 Provides:       kernel-firmware-nvidia-gspx-G06 = %{version}
 Obsoletes:      kernel-firmware-nvidia-gspx-G06 < %{version}
 Requires:       nvidia-modprobe >= %{version}
+# prevent update of userspace packages on TW where our meta packages
+# can't require a specific KMP driver version
+%if 0%{?suse_version} > 1600
+Requires:       (nvidia-driver-G06-kmp = %{version} if nvidia-driver-G06-kmp-meta)
+Requires:       (nvidia-open-driver-G06-signed-kmp = %{version} if nvidia-open-driver-G06-signed-kmp-meta)
+%endif
 Requires(post): perl-Bootloader
 
 %description -n nvidia-common-G06
