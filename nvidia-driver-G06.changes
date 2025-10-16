@@ -1,4 +1,15 @@
 -------------------------------------------------------------------
+Sat Oct  4 10:12:36 UTC 2025 - Stefan Dirsch <sndirsch@suse.com>
+
+- specifile:
+  * added definition for %__kernel_supplements, which replaced
+    %__kmp_supplements with latest rpm-config-SUSE to fix again
+    PCI Supplements (boo#1249814)
+  * redefine %__kernel_requires to introduce my-find-requires
+    to  get rid of ksym(...) lines, which is urgently needed on
+    Tumbleweed (boo#1250998)
+
+-------------------------------------------------------------------
 Fri Sep 26 11:34:31 UTC 2025 - Stefan Dirsch <sndirsch@suse.com>
 
 - kmp-post.sh:
