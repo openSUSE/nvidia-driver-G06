@@ -54,6 +54,8 @@ Source18:       kmp-postun.sh
 Source22:       kmp-trigger.sh
 Source25:       %{name}.rpmlintrc
 Source26:       json-to-pci-id-list.py
+Source30:       Check4WrongSupplements.sh
+Source31:       Check4WrongRequires.sh
 Patch0:         objtool-fix.patch
 NoSource:       0
 NoSource:       1
@@ -186,6 +188,26 @@ Group:          System/Kernel
 This package provides the closed-source NVIDIA graphics driver kernel
 module for GeForce 700 series and newer GPUs.
 
+%package -n check
+Summary: Post-build RPM inspection
+Group: System/Tools
+BuildArch: noarch
+Requires: bash
+
+%description -n check
+This subpackage runs post-build verification on generated RPMs.
+
+%files -n check
+%dir /usr/share/doc/packages/check
+/usr/share/doc/packages/check/dummy.txt
+
+%post -n check
+echo "=== Running post-build RPM inspection (check subpackage) ==="
+/bin/bash %{_sourcedir}/Check4WrongSupplements.sh %{_rpmdir}
+%if 0%{?suse_version} > 1600
+/bin/bash %{_sourcedir}/Check4WrongRequires.sh %{_rpmdir}
+%endif
+
 %prep
 echo "kver = %kver"
 %setup -T -c %{name}-%{version}
@@ -248,4 +270,7 @@ for flavor in %flavors_to_build; do
     fi
 %endif
 done
+
+mkdir -p %{buildroot}/usr/share/doc/packages/check
+echo "RPM check package" > %{buildroot}/usr/share/doc/packages/check/dummy.txt
 %changelog

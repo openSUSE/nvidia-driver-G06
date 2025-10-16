@@ -1,4 +1,12 @@
 -------------------------------------------------------------------
+Wed Oct  8 15:03:55 UTC 2025 - Stefan Dirsch <sndirsch@suse.com>
+
+- Check4WrongSupplements.sh/Check4WrongRequires.sh
+  * check for wrong Supplements or Requires (only on TW) in
+    generated KMPs after build by misusing %post of a dummy "check"
+    subpackage
+
+-------------------------------------------------------------------
 Sat Oct  4 10:12:36 UTC 2025 - Stefan Dirsch <sndirsch@suse.com>
 
 - specifile:
