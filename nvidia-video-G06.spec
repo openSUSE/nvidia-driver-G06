@@ -101,7 +101,7 @@ Group:          System/Libraries
 Requires:       nvidia-common-G06 = %{version}
 Requires:       libOpenCL1
 Requires:       libnvidia-gpucomp = %{version}
-Requires(pre):  nvidia-persistenced >= %{version}
+Requires(pre):  nvidia-persistenced = %{version}
 Conflicts:      nvidia-computeG02
 Conflicts:      nvidia-computeG03
 Conflicts:      nvidia-computeG04
@@ -142,7 +142,7 @@ Summary:        Common files for the NVIDIA driver packages
 Group:          System/Libraries
 Provides:       kernel-firmware-nvidia-gspx-G06 = %{version}
 Obsoletes:      kernel-firmware-nvidia-gspx-G06 < %{version}
-Requires:       nvidia-modprobe >= %{version}
+Requires:       nvidia-modprobe = %{version}
 # prevent update of userspace packages on TW where our meta packages
 # can't require a specific KMP driver version
 %if 0%{?suse_version} > 1600
