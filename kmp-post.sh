@@ -129,5 +129,17 @@ else
   true
 fi
 
+# prevent KMP being uninstalled by purge-kernels service (boo#1249559)
+file=/etc/zypp/zypp.conf
+if [ -f $file ]; then
+  grep -q ^multiversion.kernels $file
+  if [ $? -eq 0 ]; then
+    grep ^multiversion.kernels $file | grep -q oldest
+    if [ $? -ne 0 ]; then
+      sed -i '/^multiversion.kernels/s/$/,oldest/' $file
+    fi
+  fi
+fi
+
 #needed to move this to specfile after running weak-modules2 (boo#1145316)
 #exit $RES
