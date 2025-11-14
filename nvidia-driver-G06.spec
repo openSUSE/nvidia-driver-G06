@@ -30,21 +30,30 @@
 %define req_random_kernel_sources 1
 %endif
 
+%define version_aarch64 580.95.05
+%define version_x86_64  580.105.08
+
 Name:           nvidia-driver-G06
-Version:        580.95.05
+%ifarch aarch64
+Version:        %{version_aarch64}
+%else
+Version:        %{version_x86_64}
+%endif
 Release:        0
 License:        SUSE-NonFree
 Summary:        NVIDIA graphics driver kernel module for GeForce 700 series and newer
 URL:            https://www.nvidia.com/object/unix.html
 Group:          System/Kernel
-Source0:        http://download.nvidia.com/XFree86/Linux-x86_64/%{version}/NVIDIA-Linux-x86_64-%{version}.run
-Source1:        http://download.nvidia.com/XFree86/Linux-aarch64/%{version}/NVIDIA-Linux-aarch64-%{version}.run
+Source0:        http://download.nvidia.com/XFree86/Linux-x86_64/%{version_x86_64}/NVIDIA-Linux-x86_64-%{version_x86_64}.run
+Source1:        http://download.nvidia.com/XFree86/Linux-aarch64/%{version_aarch64}/NVIDIA-Linux-aarch64-%{version_aarch64}.run
+Source2:        pci_ids-%{version_aarch64}
 Source3:        preamble
-Source4:        pci_ids-%{version}
-Source5:        pci_ids-%{version}.new
+Source4:        pci_ids-%{version_x86_64}
+Source5:        pci_ids-%{version_x86_64}.new
 Source6:        generate-service-file.sh
 Source7:        README
 Source8:        kmp-filelist
+Source9:        pci_ids-%{version_aarch64}.new
 Source10:       kmp-post.sh
 Source11:       my-find-requires
 Source12:       my-find-supplements
@@ -158,7 +167,7 @@ exit $RES' %_builddir/nvidia-kmp-template)
 # supplements no longer depend on the driver
 %define pci_id_file %_sourcedir/pci_ids-%version
 # things changed again for Tumbleweed (boo#1249814)
-%define __kernel_supplements %{_sourcedir}/my-find-supplements %{_sourcedir}/pci_ids-%{version} %name
+%define __kernel_supplements %{_sourcedir}/my-find-supplements %{_sourcedir}/pci_ids-%version %name
 # rpm 4.14.1 changed again (boo#1087460)
 %define __kmp_supplements %_sourcedir/my-find-supplements %pci_id_file
 # rpm 4.9+ using the internal dependency generators

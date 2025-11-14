@@ -1,6 +1,6 @@
 #!/bin/sh
 
-driver_version=$(grep -i ^version: nvidia-video-G0?.spec |awk '{print $2}')
+driver_version=$(grep -i "^%define version_x86_64" nvidia-video-G0?.spec |awk '{print $3}')
 
 for arch in x86_64 aarch64; do
   file=NVIDIA-Linux-${arch}-${driver_version}.run
