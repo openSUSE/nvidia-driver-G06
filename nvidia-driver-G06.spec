@@ -30,8 +30,8 @@
 %define req_random_kernel_sources 1
 %endif
 
-%define version_aarch64 580.95.05
-%define version_x86_64  580.105.08
+%define version_aarch64 580.119.02
+%define version_x86_64  580.119.02
 
 Name:           nvidia-driver-G06
 %ifarch aarch64
