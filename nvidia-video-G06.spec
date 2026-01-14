@@ -28,8 +28,8 @@
 %define _firmwaredir /lib/firmware
 %endif
 
-%define version_aarch64 580.119.02
-%define version_x86_64  580.119.02
+%define version_aarch64 580.126.09
+%define version_x86_64  580.126.09
 
 Name:           nvidia-video-G06
 %ifarch aarch64
@@ -117,6 +117,8 @@ Conflicts:      nvidia-computeG04
 Conflicts:      nvidia-computeG05
 Provides:       nvidia-computeG06 = %{version}
 Obsoletes:      nvidia-computeG06 < %{version}
+Provides:       libnvidia-ml = %{version}
+Obsoletes:      libnvidia-ml < %{version}
 
 %description -n nvidia-compute-G06
 NVIDIA driver for computing with GPGPUs using CUDA or OpenCL.
