@@ -26,12 +26,12 @@
 
 %define req_random_kernel_sources 0
 
-%if 0%{?suse_version} >= 1600
+%if 0%{?suse_version} >= 1610
 %define req_random_kernel_sources 1
 %endif
 
-%define version_aarch64 580.126.09
-%define version_x86_64  580.126.09
+%define version_aarch64 580.126.18
+%define version_x86_64  580.126.18
 
 Name:           nvidia-driver-G06
 %ifarch aarch64
@@ -73,12 +73,6 @@ NoSource:       7
 BuildRequires:  dracut
 BuildRequires:  kernel-source
 BuildRequires:  kernel-syms
-%ifnarch aarch64
-# limit build of -azure flavor to SP6
-%if (!0%{?is_opensuse} && (0%{?sle_version} >= 150600 && 0%{?sle_version} < 150700))
-BuildRequires:  kernel-syms-azure
-%endif
-%endif
 %if 0%{?is_opensuse} && 0%{?suse_version} >= 1699
 # build KPMs for kernel-longterm in Factory
 %ifnarch aarch64
@@ -156,12 +150,7 @@ exit $RES' %_builddir/nvidia-kmp-template)
 %(echo "%%{?regenerate_initrd_posttrans}"  >> %_builddir/nvidia-kmp-template)
 %endif
 %define kver %(for dir in /usr/src/linux-obj/*/*/; do make %{?jobs:-j%jobs} -s -C "$dir" kernelversion; break; done |perl -ne '/(\\d+)\\.(\\d+)\\.(\\d+)?/&&printf "%%d%%02d%%03d\\n",$1,$2,$3')
-# limit build of -azure flavor to SP6
-%if (!0%{?is_opensuse} && (0%{?sle_version} >= 150600 && 0%{?sle_version} < 150700))
-%define x_flavors kdump um debug xen xenpae
-%else
 %define x_flavors kdump um debug xen xenpae azure rt
-%endif
 %kernel_module_package %kmp_template %_builddir/nvidia-kmp-template -p %_sourcedir/preamble -f %_sourcedir/%kmp_filelist -x %x_flavors
 
 # supplements no longer depend on the driver
@@ -213,7 +202,7 @@ This subpackage runs post-build verification on generated RPMs.
 %post -n check
 echo "=== Running post-build RPM inspection (check subpackage) ==="
 /bin/bash %{_sourcedir}/Check4WrongSupplements.sh %{_rpmdir}
-%if 0%{?suse_version} > 1600
+%if 0%{?suse_version} >= 1699
 /bin/bash %{_sourcedir}/Check4WrongRequires.sh %{_rpmdir}
 %endif
 
@@ -273,10 +262,8 @@ for flavor in %flavors_to_build; do
     cp -r source/%{version}/* %{buildroot}/usr/src/kernel-modules/nvidia-%{version}-${flavor}
 %if 0%{?req_random_kernel_sources} == 1
     # save kernel version for later
-    if [ "$flavor" != "azure" ]; then
-      kver_build=$(make -j$(nproc) -sC /usr/src/linux-obj/%_target_cpu/$flavor kernelrelease)
-      echo $kver_build > %{buildroot}/usr/src/kernel-modules/nvidia-%{version}-${flavor}/kernel_version
-    fi
+    kver_build=$(make -j$(nproc) -sC /usr/src/linux-obj/%_target_cpu/$flavor kernelrelease)
+    echo $kver_build > %{buildroot}/usr/src/kernel-modules/nvidia-%{version}-${flavor}/kernel_version
 %endif
 done
 

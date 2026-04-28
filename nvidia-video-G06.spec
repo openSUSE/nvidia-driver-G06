@@ -28,8 +28,8 @@
 %define _firmwaredir /lib/firmware
 %endif
 
-%define version_aarch64 580.126.09
-%define version_x86_64  580.126.09
+%define version_aarch64 580.126.18
+%define version_x86_64  580.126.18
 
 Name:           nvidia-video-G06
 %ifarch aarch64
@@ -111,6 +111,7 @@ Requires:       nvidia-common-G06 = %{version}
 Requires:       libOpenCL1
 Requires:       libnvidia-gpucomp = %{version}
 Requires(pre):  nvidia-persistenced = %{version}
+Requires:       nvidia-persistenced-%{version}
 Conflicts:      nvidia-computeG02
 Conflicts:      nvidia-computeG03
 Conflicts:      nvidia-computeG04
@@ -156,7 +157,7 @@ Obsoletes:      kernel-firmware-nvidia-gspx-G06 < %{version}
 Requires:       nvidia-modprobe = %{version}
 # prevent update of userspace packages on TW where our meta packages
 # can't require a specific KMP driver version
-%if 0%{?suse_version} > 1600
+%if 0%{?suse_version} >= 1699
 Requires:       (nvidia-driver-G06-kmp = %{version} if nvidia-driver-G06-kmp-meta)
 Requires:       (nvidia-open-driver-G06-signed-kmp = %{version} if nvidia-open-driver-G06-signed-kmp-meta)
 %endif
