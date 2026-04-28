@@ -28,19 +28,28 @@
 %define _firmwaredir /lib/firmware
 %endif
 
+%define version_aarch64 580.126.18
+%define version_x86_64  580.126.18
+
 Name:           nvidia-video-G06
-Version:        580.76.05
+%ifarch aarch64
+Version:        %{version_aarch64}
+%else
+Version:        %{version_x86_64}
+%endif
 Release:        0
 License:        SUSE-NonFree
 Summary:        NVIDIA graphics driver for GeForce 700 series and newer
 URL:            https://www.nvidia.com/object/unix.html
 Group:          System/Libraries
-Source0:        http://download.nvidia.com/XFree86/Linux-x86_64/%{version}/NVIDIA-Linux-x86_64-%{version}.run
-Source1:        http://download.nvidia.com/XFree86/Linux-aarch64/%{version}/NVIDIA-Linux-aarch64-%{version}.run
-Source2:        pci_ids-%{version}.new
+Source0:        http://download.nvidia.com/XFree86/Linux-x86_64/%{version_x86_64}/NVIDIA-Linux-x86_64-%{version_x86_64}.run
+Source1:        http://download.nvidia.com/XFree86/Linux-aarch64/%{version_aarch64}/NVIDIA-Linux-aarch64-%{version_aarch64}.run
+Source2:        pci_ids-%{version_x86_64}.new
+Source3:        pci_ids-%{version_aarch64}
 Source4:        generate-service-file.sh
 Source5:        README
-Source7:        pci_ids-%{version}
+Source6:        pci_ids-%{version_aarch64}.new
+Source7:        pci_ids-%{version_x86_64}
 Source8:        nvidia-driver-G06.rpmlintrc
 Source9:        60-nvidia.rules
 Source10:       50-nvidia.conf.modprobe
@@ -101,13 +110,16 @@ Group:          System/Libraries
 Requires:       nvidia-common-G06 = %{version}
 Requires:       libOpenCL1
 Requires:       libnvidia-gpucomp = %{version}
-Requires(pre):  nvidia-persistenced >= %{version}
+Requires(pre):  nvidia-persistenced = %{version}
+Requires:       nvidia-persistenced-%{version}
 Conflicts:      nvidia-computeG02
 Conflicts:      nvidia-computeG03
 Conflicts:      nvidia-computeG04
 Conflicts:      nvidia-computeG05
 Provides:       nvidia-computeG06 = %{version}
 Obsoletes:      nvidia-computeG06 < %{version}
+Provides:       libnvidia-ml = %{version}
+Obsoletes:      libnvidia-ml < %{version}
 
 %description -n nvidia-compute-G06
 NVIDIA driver for computing with GPGPUs using CUDA or OpenCL.
@@ -142,7 +154,13 @@ Summary:        Common files for the NVIDIA driver packages
 Group:          System/Libraries
 Provides:       kernel-firmware-nvidia-gspx-G06 = %{version}
 Obsoletes:      kernel-firmware-nvidia-gspx-G06 < %{version}
-Requires:       nvidia-modprobe >= %{version}
+Requires:       nvidia-modprobe = %{version}
+# prevent update of userspace packages on TW where our meta packages
+# can't require a specific KMP driver version
+%if 0%{?suse_version} >= 1699
+Requires:       (nvidia-driver-G06-kmp = %{version} if nvidia-driver-G06-kmp-meta)
+Requires:       (nvidia-open-driver-G06-signed-kmp = %{version} if nvidia-open-driver-G06-signed-kmp-meta)
+%endif
 Requires(post): perl-Bootloader
 
 %description -n nvidia-common-G06

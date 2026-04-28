@@ -1,0 +1,4 @@
+#!/bin/sh
+
+# no ksym(..) lines, in particular not on Tumbleweed
+/usr/lib/rpm/find-requires.ksyms "$@" | grep -v '^ksym('

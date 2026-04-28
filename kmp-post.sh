@@ -1,7 +1,7 @@
 %if 0%{?req_random_kernel_sources} == 1
 dir=linux-obj
 %else
-dir=linux-%{2}*-obj
+dir=linux-%{2}-obj
 %endif
 %ifarch %ix86
 arch=i386
@@ -40,15 +40,13 @@ install -m 644 /usr/src/kernel-modules/nvidia-%{-v*}-$flavor/nvidia*.ko \
 
 %if 0%{?req_random_kernel_sources} == 1
 # move kernel modules where they belong and can be found by weak-modules2 script
-if [ "$flavor" != "azure" ]; then
-  kver_build=$(cat /usr/src/kernel-modules/nvidia-%{-v*}-$flavor/kernel_version)
-  if [ "$kver" != "$kver_build" ]; then
-    mkdir -p %{kernel_module_directory}/$kver_build/updates
-    mv %{kernel_module_directory}/$kver/updates/nvidia*.ko \
-       %{kernel_module_directory}/$kver_build/updates
-    # create weak-updates symlinks (and initrd)
-    /usr/lib/module-init-tools/weak-modules2 --add-kernel $kver
-  fi
+kver_build=$(cat /usr/src/kernel-modules/nvidia-%{-v*}-$flavor/kernel_version)
+if [ "$kver" != "$kver_build" ]; then
+  mkdir -p %{kernel_module_directory}/$kver_build/updates
+  mv %{kernel_module_directory}/$kver/updates/nvidia*.ko \
+     %{kernel_module_directory}/$kver_build/updates
+  # create weak-updates symlinks (and initrd)
+  /usr/lib/module-init-tools/weak-modules2 --add-kernel $kver
 fi
 %endif
 
@@ -99,15 +97,9 @@ if [ -x /usr/bin/mokutil ]; then
 
     # Sign the Nvidia modules (weak-updates appears to be broken)
 %if 0%{?req_random_kernel_sources} == 1
-    if [ "$flavor" != "azure" ]; then
-      for i in /lib/modules/$kver_build/updates/nvidia*.ko; do
-        /lib/modules/$kver/build/scripts/sign-file sha256 $privkey $pubkey $i
-      done
-    else
-      for i in /lib/modules/$kver/updates/nvidia*.ko; do
-        /lib/modules/$kver/build/scripts/sign-file sha256 $privkey $pubkey $i
-      done
-    fi
+    for i in /lib/modules/$kver_build/updates/nvidia*.ko; do
+      /lib/modules/$kver/build/scripts/sign-file sha256 $privkey $pubkey $i
+    done
 %else
     for i in /lib/modules/$kver/updates/nvidia*.ko; do
       /lib/modules/$kver/build/scripts/sign-file sha256 $privkey $pubkey $i
@@ -127,6 +119,18 @@ if lsinitrd "$initrd" 2> /dev/null | grep -l -E  "/nvidia.*\.ko"; then
   touch /run/regenerate-initrd/all
 else 
   true
+fi
+
+# prevent KMP being uninstalled by purge-kernels service (boo#1249559)
+file=/etc/zypp/zypp.conf
+if [ -f $file ]; then
+  grep -q ^multiversion.kernels $file
+  if [ $? -eq 0 ]; then
+    grep ^multiversion.kernels $file | grep -q oldest
+    if [ $? -ne 0 ]; then
+      sed -i '/^multiversion.kernels/s/$/,oldest/' $file
+    fi
+  fi
 fi
 
 #needed to move this to specfile after running weak-modules2 (boo#1145316)

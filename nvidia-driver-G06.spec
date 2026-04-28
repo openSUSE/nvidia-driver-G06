@@ -26,26 +26,36 @@
 
 %define req_random_kernel_sources 0
 
-%if 0%{?suse_version} >= 1600
+%if 0%{?suse_version} >= 1610
 %define req_random_kernel_sources 1
 %endif
 
+%define version_aarch64 580.126.18
+%define version_x86_64  580.126.18
+
 Name:           nvidia-driver-G06
-Version:        580.76.05
+%ifarch aarch64
+Version:        %{version_aarch64}
+%else
+Version:        %{version_x86_64}
+%endif
 Release:        0
 License:        SUSE-NonFree
 Summary:        NVIDIA graphics driver kernel module for GeForce 700 series and newer
 URL:            https://www.nvidia.com/object/unix.html
 Group:          System/Kernel
-Source0:        http://download.nvidia.com/XFree86/Linux-x86_64/%{version}/NVIDIA-Linux-x86_64-%{version}.run
-Source1:        http://download.nvidia.com/XFree86/Linux-aarch64/%{version}/NVIDIA-Linux-aarch64-%{version}.run
+Source0:        http://download.nvidia.com/XFree86/Linux-x86_64/%{version_x86_64}/NVIDIA-Linux-x86_64-%{version_x86_64}.run
+Source1:        http://download.nvidia.com/XFree86/Linux-aarch64/%{version_aarch64}/NVIDIA-Linux-aarch64-%{version_aarch64}.run
+Source2:        pci_ids-%{version_aarch64}
 Source3:        preamble
-Source4:        pci_ids-%{version}
-Source5:        pci_ids-%{version}.new
+Source4:        pci_ids-%{version_x86_64}
+Source5:        pci_ids-%{version_x86_64}.new
 Source6:        generate-service-file.sh
 Source7:        README
 Source8:        kmp-filelist
+Source9:        pci_ids-%{version_aarch64}.new
 Source10:       kmp-post.sh
+Source11:       my-find-requires
 Source12:       my-find-supplements
 Source13:       kmp-preun.sh
 Source15:       kmp-pre.sh
@@ -53,6 +63,8 @@ Source18:       kmp-postun.sh
 Source22:       kmp-trigger.sh
 Source25:       %{name}.rpmlintrc
 Source26:       json-to-pci-id-list.py
+Source30:       Check4WrongSupplements.sh
+Source31:       Check4WrongRequires.sh
 Patch0:         objtool-fix.patch
 NoSource:       0
 NoSource:       1
@@ -61,12 +73,6 @@ NoSource:       7
 BuildRequires:  dracut
 BuildRequires:  kernel-source
 BuildRequires:  kernel-syms
-%ifnarch aarch64
-# limit build of -azure flavor to SP6
-%if (!0%{?is_opensuse} && (0%{?sle_version} >= 150600 && 0%{?sle_version} < 150700))
-BuildRequires:  kernel-syms-azure
-%endif
-%endif
 %if 0%{?is_opensuse} && 0%{?suse_version} >= 1699
 # build KPMs for kernel-longterm in Factory
 %ifnarch aarch64
@@ -144,16 +150,13 @@ exit $RES' %_builddir/nvidia-kmp-template)
 %(echo "%%{?regenerate_initrd_posttrans}"  >> %_builddir/nvidia-kmp-template)
 %endif
 %define kver %(for dir in /usr/src/linux-obj/*/*/; do make %{?jobs:-j%jobs} -s -C "$dir" kernelversion; break; done |perl -ne '/(\\d+)\\.(\\d+)\\.(\\d+)?/&&printf "%%d%%02d%%03d\\n",$1,$2,$3')
-# limit build of -azure flavor to SP6
-%if (!0%{?is_opensuse} && (0%{?sle_version} >= 150600 && 0%{?sle_version} < 150700))
-%define x_flavors kdump um debug xen xenpae
-%else
 %define x_flavors kdump um debug xen xenpae azure rt
-%endif
 %kernel_module_package %kmp_template %_builddir/nvidia-kmp-template -p %_sourcedir/preamble -f %_sourcedir/%kmp_filelist -x %x_flavors
 
 # supplements no longer depend on the driver
 %define pci_id_file %_sourcedir/pci_ids-%version
+# things changed again for Tumbleweed (boo#1249814)
+%define __kernel_supplements %{_sourcedir}/my-find-supplements %{_sourcedir}/pci_ids-%version %name
 # rpm 4.14.1 changed again (boo#1087460)
 %define __kmp_supplements %_sourcedir/my-find-supplements %pci_id_file
 # rpm 4.9+ using the internal dependency generators
@@ -167,6 +170,8 @@ exit $RES' %_builddir/nvidia-kmp-template)
 
 # get rid of ksyms on Leap 15.1/15.2; for weird reasons they are not generated on TW
 %define __kmp_requires %{nil}
+# for latest rpm-config-SUSE we need more (boo#1250998)
+%define __kernel_requires %_sourcedir/my-find-requires %name
 
 %description
 This package provides the closed-source NVIDIA graphics driver kernel
@@ -180,6 +185,26 @@ Group:          System/Kernel
 %description KMP
 This package provides the closed-source NVIDIA graphics driver kernel
 module for GeForce 700 series and newer GPUs.
+
+%package -n check
+Summary: Post-build RPM inspection
+Group: System/Tools
+BuildArch: noarch
+Requires: bash
+
+%description -n check
+This subpackage runs post-build verification on generated RPMs.
+
+%files -n check
+%dir /usr/share/doc/packages/check
+/usr/share/doc/packages/check/dummy.txt
+
+%post -n check
+echo "=== Running post-build RPM inspection (check subpackage) ==="
+/bin/bash %{_sourcedir}/Check4WrongSupplements.sh %{_rpmdir}
+%if 0%{?suse_version} >= 1699
+/bin/bash %{_sourcedir}/Check4WrongRequires.sh %{_rpmdir}
+%endif
 
 %prep
 echo "kver = %kver"
@@ -237,10 +262,11 @@ for flavor in %flavors_to_build; do
     cp -r source/%{version}/* %{buildroot}/usr/src/kernel-modules/nvidia-%{version}-${flavor}
 %if 0%{?req_random_kernel_sources} == 1
     # save kernel version for later
-    if [ "$flavor" != "azure" ]; then
-      kver_build=$(make -j$(nproc) -sC /usr/src/linux-obj/%_target_cpu/$flavor kernelrelease)
-      echo $kver_build > %{buildroot}/usr/src/kernel-modules/nvidia-%{version}-${flavor}/kernel_version
-    fi
+    kver_build=$(make -j$(nproc) -sC /usr/src/linux-obj/%_target_cpu/$flavor kernelrelease)
+    echo $kver_build > %{buildroot}/usr/src/kernel-modules/nvidia-%{version}-${flavor}/kernel_version
 %endif
 done
+
+mkdir -p %{buildroot}/usr/share/doc/packages/check
+echo "RPM check package" > %{buildroot}/usr/share/doc/packages/check/dummy.txt
 %changelog

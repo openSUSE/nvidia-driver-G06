@@ -1,7 +1,271 @@
 -------------------------------------------------------------------
-Mon 28 Oct 15:08:04 CET 2024 - Simone Caronni <scaronni@nvidia.com>
+Thu Mar  5 14:50:37 UTC 2026 - Stefan Dirsch <sndirsch@suse.com>
 
-- Update to 565.57.01
+- get rid of -azure flavor build on SP6
+
+-------------------------------------------------------------------
+Thu Mar  5 13:25:47 UTC 2026 - Stefan Dirsch <sndirsch@suse.com>
+
+- kmp-post.sh: fixed sle16/sle16.1 build
+
+-------------------------------------------------------------------
+Thu Mar  5 10:52:02 UTC 2026 - Stefan Dirsch <sndirsch@suse.com>
+
+- adjusted logic for %suse_version bump with SLE16.1 Beta2 (jsc#PED-15826)
+
+-------------------------------------------------------------------
+Thu Feb 12 23:24:38 UTC 2026 - Stefan Dirsch <sndirsch@suse.com>
+
+- update to version 580.126.18 (boo#1258154)
+
+-------------------------------------------------------------------
+Tue Jan 27 10:46:27 UTC 2026 - Stefan Dirsch <sndirsch@suse.com>
+
+- let nvidia-compute-G06 require the virtual provide
+  'nvidia-persistenced-%{version}' now provided by this package
+  since a simple Requires to the exact %version of
+  nvidia-persistenced package is being ignored by 'zypper dup' :-(
+
+-------------------------------------------------------------------
+Sat Jan  3 15:04:56 UTC 2026 - Stefan Dirsch <sndirsch@suse.com>
+
+- update to version 580.126.09 (boo#1255858)
+  * Fixed a bug that prevented certain display modes that require
+    YUV 4:2:0 subsampling from working.
+  * Improved compatibility with recent Linux kernels.
+
+-------------------------------------------------------------------
+Tue Dec 23 11:21:24 UTC 2025 - Stefan Dirsch <sndirsch@suse.com>
+
+- nvidia-compute-G06: Provides/Obsoletes libnvidia-ml (boo#1255477)
+
+-------------------------------------------------------------------
+Thu Dec 11 10:55:18 UTC 2025 - Stefan Dirsch <sndirsch@suse.com>
+
+- update to version 580.119.02 (boo#1254801)
+
+-------------------------------------------------------------------
+Tue Nov  4 17:08:24 UTC 2025 - Stefan Dirsch <sndirsch@suse.com>
+
+- 580.105.08 of aarch64 not yet available; back to 580.95.05
+- adjusted generate-service-file.sh
+
+-------------------------------------------------------------------
+Sat Nov  1 17:26:12 UTC 2025 - Stefan Dirsch <sndirsch@suse.com>
+
+- update to version 580.105.08 (boo#1252978)
+
+-------------------------------------------------------------------
+Mon Oct 20 12:22:24 UTC 2025 - Stefan Dirsch <sndirsch@suse.com>
+
+- make use of %pci_id_file in __kernel_supplements macro
+
+-------------------------------------------------------------------
+Tue Oct 14 13:10:58 UTC 2025 - Stefan Dirsch <sndirsch@suse.com>
+
+- let nvidia-compute-G06 require nvidia-persistenced = %{version}
+  instead of >= %{version} before
+- let nvidia-common-G06 requires nvdidia-modprobe = %{version}
+  instead of >= %{version} before
+
+-------------------------------------------------------------------
+Wed Oct  8 15:07:06 UTC 2025 - Stefan Dirsch <sndirsch@suse.com>
+
+- Check4WrongSupplements.sh/Check4WrongRequires.sh
+  * check for wrong Supplements or Requires (only on TW) in
+    generated KMPs after build by misusing %post of a dummy "check"
+    subpackage
+
+-------------------------------------------------------------------
+Fri Sep 26 11:36:50 UTC 2025 - Stefan Dirsch <sndirsch@suse.com>
+
+- kmp-post.sh:
+  * prevent KMP being uninstalled by purge-kernels service by
+    adding GA kernel ("oldest") to multiversion.kernels line
+    in /etc/zypp/zypp.conf (boo#1249559)
+
+-------------------------------------------------------------------
+Thu Sep 25 22:22:17 UTC 2025 - Stefan Dirsch <sndirsch@suse.com>
+
+- update to version 580.95.05 (boo#1250536)
+
+-------------------------------------------------------------------
+Sun Sep  7 04:16:16 UTC 2025 - Stefan Dirsch <sndirsch@suse.com>
+
+- update to version 580.82.07 (boo#1249235)
+
+-------------------------------------------------------------------
+Wed Aug 13 09:01:28 UTC 2025 - Stefan Dirsch <sndirsch@suse.com>
+
+- disable -longterm KMP flavor on aarch64, since
+  kernel-longterm-devel is currently unresolvable
+
+-------------------------------------------------------------------
+Tue Aug 12 14:45:15 UTC 2025 - Stefan Dirsch <sndirsch@suse.com>
+
+- update to version 580.76.05 (boo#1247907)
+- added libnvidia-gpucomp/libnvidia-gpucomp-32bit packages for
+  libnvidia-gpucomp.so*
+- let nvidia-compute-G06(-32bit) require  libnvidia-gpucomp(-32bit)
+- added libnvidia-nvvm70.so.* to nvidia-compute-G06
+- added libnvidia-present.so.580.76.05 to nvidia-gl-G06
+- moved libnvidia-sandboxutils.so.* to nvidia-compute-G06
+- now requires egl-x11 >= 1.0.3 and egl-wayland >= 1.1.20
+
+-------------------------------------------------------------------
+Fri Jul 11 09:36:28 UTC 2025 - Stefan Dirsch <sndirsch@suse.com>
+
+- update to version 570.172.08 (boo#1246327)
+- add pci_ids-supported for new blogpost
+
+-------------------------------------------------------------------
+Thu Jul 10 09:01:13 UTC 2025 - Stefan Dirsch <sndirsch@suse.com>
+
+- nvidia-common-G06: no longer require/suggest any driver (neither
+  proprietary nor open driver), since it will end up in chosing
+  proprietary driver when installing with --no-recommends (due to
+  the alphabetic order and suggests being ignored also when using
+  --norecommends); instead hardware Supplements (PCI IDs) need to
+  be used, which is possible by adding meta packages with these
+  Supplements to the NVIDIA driver repository, which then require
+  the correct driver with the appropriate version (bsc#1244042)
+
+-------------------------------------------------------------------
+Tue Jun 17 18:39:36 UTC 2025 - Stefan Dirsch <sndirsch@suse.com>
+
+- disabled unsupported -rt flavor
+
+-------------------------------------------------------------------
+Sun Jun 15 09:31:02 UTC 2025 - Stefan Dirsch <sndirsch@suse.com>
+
+- update to version 570.169 (boo#1244614)
+  * Fixed a bug that could cause a kernel use-after-free on 
+    pre-Turing GPUs.
+- supersedes kernel-6.15.patch
+- package updates
+  * 1283c18 50-nvidia.conf.modprobe: add default install rule for 
+    nvidia-drm module
+  * e31ac6b cleanup of %suse_version/%sle_version macro usage
+
+-------------------------------------------------------------------
+Mon May 19 18:59:00 UTC 2025 - Stefan Dirsch <sndirsch@suse.com>
+
+- update non-CUDA variant to 570.153.02 (boo#1243192)
+
+-------------------------------------------------------------------
+Sat Mar 15 01:30:50 UTC 2025 - Stefan Dirsch <sndirsch@suse.com>
+
+- update to 570.133.07 (boo#1239653)
+  * Fixed a bug that could cause console restoration to fail with
+    soft lockups on some UEFI systems.
+  * Fixed a bug causing clocking issues in games with DLSS frame
+    generation.
+  * Fixed a bug that could prevent RTX 50 series GPUs from
+    enabling HDR on certain HDMI displays, resulting in washed
+    out HDR content.
+
+-------------------------------------------------------------------
+Tue Feb 25 22:18:04 UTC 2025 - Stefan Dirsch <sndirsch@suse.com>
+
+- update to 570.124.04 (boo#1237585) 
+
+- moved 32bit libnvcuvid from nvidia-video-G06-32bit to nvidia-compute-G06-32bit
+  * This is to avoid dependancies to almost the whole desktop when
+    just installing minimalistic nvidia-compute-G06 pkg. (gh#88)
+
+-------------------------------------------------------------------
+Tue Feb 25 00:42:14 UTC 2025 - Stefan Dirsch <sndirsch@suse.com>
+
+- update to 570.124.02
+
+- nvidia-gl-G06: Revert providing/obsoleting suse-prime (#80)
+  * Early feedback shows that still users rely on suse-prime or on other tools
+    like supergfxctl, which conflict with suse-prime and therefore conflict now
+    with nvidia-gl-G06, which makes it impossible to update driver to 570 without
+    uninstalling the package conflicting with suse-prime.
+    Nevertheless we won't install suse-prime by default let alone enable and
+    confiugre it by default in %post.
+
+- nvidia-common-G06: Use Suggests instead of Recommends for prefering open driver
+  * That's because it's common to install with --no-recommends to have a minimal
+    installation for compute nodes (idea by github user 'gmbr3', PR#81).
+
+- reworked cuda-cloud-opengpu meta package
+
+- get rid of libnvidia-pkcs11.so, which still required openssl-1_1
+  * We removed openssl-1_1 from Tumbleweed. There is also
+    libnvidia-pkcs11-openssl3.so available.
+
+- fixed build for TW by defining %_builddir and %_sourcedir if needed
+  * Looks like a regression of RPM update to version 4.20. Related
+    bugreport: https://bugzilla.suse.com/show_bug.cgi?id=1236746
+
+- modprobe.d snippet: softdep (post) load also nvidia-drm (gh issue#86)
+  * Added also nvidia-drm since on some machines it didn't get loaded
+    automatically, which resulted in Wayland sessions falling back
+    to simpledrm (slow!), external monitors and switcherooctl not
+    working at all.
+
+-------------------------------------------------------------------
+Mon Feb 24 09:11:32 UTC 2025 - Stefan Dirsch <sndirsch@suse.com>
+
+- explicitly enable KMP for kernel-longterm: this will be needed
+  for the transition period, until all KMPs are enabled   
+
+-------------------------------------------------------------------
+Fri Feb  7 14:31:15 UTC 2025 - Stefan Dirsch <sndirsch@suse.com>
+
+- fixed build against openSUSE:Factory by defining %_builddir
+  (boo#1236746) and %_sourcedir if needed
+
+-------------------------------------------------------------------
+Thu Jan 30 15:41:52 UTC 2025 - Stefan Dirsch <sndirsch@suse.com>
+
+- update to 570.86.16
+  * radical changes; see https://github.com/openSUSE/nvidia-driver-G06
+
+-------------------------------------------------------------------
+Tue Jan 14 22:21:39 UTC 2025 - Stefan Dirsch <sndirsch@suse.com>
+
+- Update to 550.144.03 (boo#1235871)
+
+-------------------------------------------------------------------
+Sun Dec 29 23:56:13 UTC 2024 - Stefan Dirsch <sndirsch@suse.com>
+
+- Use the correct check for SP6 before using pbl's --default-settings option 
+
+-------------------------------------------------------------------
+Tue Dec 17 22:58:13 UTC 2024 - Stefan Dirsch <sndirsch@suse.com>
+
+- Update to 550.142 (boo#1234675)
+
+-------------------------------------------------------------------
+Fri Dec 13 14:34:51 UTC 2024 - Stefan Dirsch <sndirsch@suse.com>
+
+- fix lsinitrd run on Aeon >= RC2 (boo#1224773c#95)
+
+-------------------------------------------------------------------
+Tue Dec  3 20:57:38 UTC 2024 - Stefan Dirsch <sndirsch@suse.com>
+
+- Ignore powerd binary exiting if hardware is not present (bsc#1234062) 
+
+-------------------------------------------------------------------
+Sat Nov 23 05:55:08 UTC 2024 - Stefan Dirsch <sndirsch@suse.com>
+
+- Update to 550.135 (boo#1233673) 
+
+-------------------------------------------------------------------
+Wed Oct 23 03:53:33 UTC 2024 - Stefan Dirsch <sndirsch@suse.com>
+
+- Update to 550.127.05 (boo#1232057)
+  * Fixed a bug which could cause applications using GBM to crash
+    when running with nvidia-drm.modeset=0.
+
+-------------------------------------------------------------------
+Tue Oct  8 14:48:09 UTC 2024 - Stefan Dirsch <sndirsch@suse.com>
+
+-  kmp-post.sh/kmp-trigger.sh:
+  * recreate initrd if old modules are still in there (gh issue#25)
 
 -------------------------------------------------------------------
 Thu Sep 19 12:31:01 UTC 2024 - Stefan Dirsch <sndirsch@suse.com>
