@@ -28,8 +28,8 @@
 %define _firmwaredir /lib/firmware
 %endif
 
-%define version_aarch64 580.126.18
-%define version_x86_64  580.126.18
+%define version_aarch64 580.142
+%define version_x86_64  580.142
 
 Name:           nvidia-video-G06
 %ifarch aarch64
@@ -109,7 +109,8 @@ Summary:        NVIDIA driver for computing with GPGPU
 Group:          System/Libraries
 Requires:       nvidia-common-G06 = %{version}
 Requires:       libOpenCL1
-Requires:       libnvidia-gpucomp = %{version}
+Requires:       libnvidia-gpucomp-G06 = %{version}
+Requires:       libnvidia-gpucomp-G06-%{version}
 Requires(pre):  nvidia-persistenced = %{version}
 Requires:       nvidia-persistenced-%{version}
 Conflicts:      nvidia-computeG02
@@ -129,7 +130,8 @@ Summary:        32bit NVIDIA driver for computing with GPGPU
 Group:          System/Libraries
 Requires:       nvidia-compute-G06 = %{version}
 Requires:       libOpenCL1-32bit
-Requires:       libnvidia-gpucomp-32bit = %{version}
+Requires:       libnvidia-gpucomp-G06-32bit = %{version}
+Requires:       libnvidia-gpucomp-G06-32bit-%{version}
 Conflicts:      nvidia-computeG04-32bit
 Conflicts:      nvidia-computeG05-32bit
 Provides:       nvidia-computeG06-32bit = %{version}
@@ -155,6 +157,7 @@ Group:          System/Libraries
 Provides:       kernel-firmware-nvidia-gspx-G06 = %{version}
 Obsoletes:      kernel-firmware-nvidia-gspx-G06 < %{version}
 Requires:       nvidia-modprobe = %{version}
+Requires:       nvidia-modprobe-%{version}
 # prevent update of userspace packages on TW where our meta packages
 # can't require a specific KMP driver version
 %if 0%{?suse_version} >= 1699
@@ -176,19 +179,25 @@ Requires:       nvidia-open-driver-G06-signed-kmp = %{version}
 Requires:       cuda-demo-suite-12-9
 %endif
 
-%package -n libnvidia-gpucomp
+%package -n libnvidia-gpucomp-G06
 Summary:        NVIDIA library for shader compilation (nvgpucomp)
 Group:          System/Libraries
+Provides:       libnvidia-gpucomp-G06-%{version}
+Provides:       libnvidia-gpucomp = %{version}
+Obsoletes:      libnvidia-gpucomp <= %{version}
 
-%description -n libnvidia-gpucomp
+%description -n libnvidia-gpucomp-G06
 This package contains the private libnvidia-gpucomp runtime library which is
 used by other driver components.
 
-%package -n libnvidia-gpucomp-32bit
+%package -n libnvidia-gpucomp-G06-32bit
 Summary:        NVIDIA library for shader compilation (nvgpucomp)
 Group:          System/Libraries
+Provides:       libnvidia-gpucomp-G06-32bit-%{version}
+Provides:       libnvidia-gpucomp-32bit = %{version}
+Obsoletes:      libnvidia-gpucomp-32bit <= %{version}
 
-%description -n libnvidia-gpucomp-32bit
+%description -n libnvidia-gpucomp-G06-32bit
 This package contains the private 32 bit libnvidia-gpucomp runtime library which
 is used by other driver components.
 
@@ -221,7 +230,8 @@ Obsoletes:      libnvidia-egl-wayland1 <= %{version_egl_wayland}
 Provides:       libnvidia-egl-x111 = %{version_egl_x11}
 Obsoletes:      libnvidia-egl-x111 <= %{version_egl_x11}
 %endif
-Requires:       libnvidia-gpucomp = %{version}
+Requires:       libnvidia-gpucomp-G06 = %{version}
+Requires:       libnvidia-gpucomp-G06-%{version}
 Conflicts:      nvidia-glG03
 Conflicts:      nvidia-glG04
 Conflicts:      nvidia-glG05
@@ -237,7 +247,8 @@ acceleration under the closed-source NVIDIA drivers.
 Summary:        32bit NVIDIA OpenGL libraries for OpenGL acceleration
 Group:          System/Libraries
 Requires:       nvidia-gl-G06 = %{version}
-Requires:       libnvidia-gpucomp-32bit = %{version}
+Requires:       libnvidia-gpucomp-G06-32bit = %{version}
+Requires:       libnvidia-gpucomp-G06-32bit-%{version}
 Conflicts:      nvidia-glG04-32bit
 Conflicts:      nvidia-glG05-32bit
 Provides:       nvidia-glG06-32bit = %{version}
@@ -732,7 +743,7 @@ fi
 %{_libdir}/nvidia/wine/*.dll
 %endif
 
-%files -n libnvidia-gpucomp
+%files -n libnvidia-gpucomp-G06
 %{_libdir}/libnvidia-gpucomp.so.%{version}
 
 %ifarch x86_64
@@ -794,7 +805,7 @@ fi
 %{_prefix}/lib/libnvidia-glvkspirv.so.%{version}
 %{_prefix}/lib/libnvidia-tls.so.%{version}
 
-%files -n libnvidia-gpucomp-32bit
+%files -n libnvidia-gpucomp-G06-32bit
 %{_prefix}/lib/libnvidia-gpucomp.so.%{version}
 
 %endif

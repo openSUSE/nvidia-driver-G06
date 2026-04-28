@@ -1,5 +1,50 @@
 -------------------------------------------------------------------
+Thu Apr 23 19:32:15 UTC 2026 - Stefan Dirsch <sndirsch@suse.com>
 
+- disable-objtool-override.patch
+  * get rid of confusing objtool warnings (boo#1212841)
+     --> from https://github.com/joanbm/nvidia-470xx-linux-mainline
+
+-------------------------------------------------------------------
+Fri Apr 17 10:47:59 UTC 2026 - Stefan Dirsch <sndirsch@suse.com>
+
+- let libnvidia-gpucomp-G06/libnvidia-gpucomp-G06-32bit provide
+  libnvidia-gpucomp/libnvidia-gpucomp-32bit = %version instead of
+  <= %version, which just looks wrong to me
+
+-------------------------------------------------------------------
+Wed Apr  8 21:04:39 UTC 2026 - Stefan Dirsch <sndirsch@suse.com>
+
+- libnvidia-gpucomp-G06/libnvidia-gpucomp-G06-32bit: trying to
+  improve Provides/Obsoletes for libnvidia-gpucomp/
+  libnvidia-gpucomp-32bit (boo#1261390)
+
+-------------------------------------------------------------------
+Wed Apr  8 14:45:27 UTC 2026 - Stefan Dirsch <sndirsch@suse.com>
+
+- rename libnvidia-gpucomp to libnvidia-gpucomp-G06 in order to
+  prevent zypper from mistakenly updating it to G07
+  libnvidia-gpucomp package; adjust Requires and add
+  Provides/Obsoletes accordingly (boo#1261390)
+
+-------------------------------------------------------------------
+Mon Apr  6 08:33:37 UTC 2026 - Stefan Dirsch <sndirsch@suse.com>
+
+- added Requires/Provides for libnvidia-gpucomp-%{version}/
+  libnvidia-gpucomp-32bit-%{version} (boo#1261390)
+- added Requires to nvidia-modprobe-%{version}, which also needs
+  changes for G06 nvidia-modprobe package
+
+-------------------------------------------------------------------
+Thu Mar 12 13:19:24 UTC 2026 - Stefan Dirsch <sndirsch@suse.com>
+
+- update to version 580.142 (boo#1259560)
+  * Fixed a bug that caused adaptive sync displays to go blank when
+    connected with an active USB-C-to-HDMI adapter.
+  * Fixed a bug that could cause Vulkan swapchains to stop
+    presenting new frames on X11.
+
+-------------------------------------------------------------------
 Thu Mar  5 14:50:05 UTC 2026 - Stefan Dirsch <sndirsch@suse.com>
 
 - get rid of -azure flavor build on SP6

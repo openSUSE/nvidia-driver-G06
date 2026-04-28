@@ -30,8 +30,8 @@
 %define req_random_kernel_sources 1
 %endif
 
-%define version_aarch64 580.126.18
-%define version_x86_64  580.126.18
+%define version_aarch64 580.142
+%define version_x86_64  580.142
 
 Name:           nvidia-driver-G06
 %ifarch aarch64
@@ -66,6 +66,7 @@ Source26:       json-to-pci-id-list.py
 Source30:       Check4WrongSupplements.sh
 Source31:       Check4WrongRequires.sh
 Patch0:         objtool-fix.patch
+Patch1:         disable-objtool-override.patch
 NoSource:       0
 NoSource:       1
 NoSource:       6
@@ -218,6 +219,7 @@ echo "kver = %kver"
 cd NVIDIA-Linux-*-%{version}*/
 # apply patches here ...
 %patch -P 0 -p0
+%patch -P 1 -p0
 cd -
 #rm -rf NVIDIA-Linux-*-%{version}-*/usr/src/nv/precompiled
 mkdir -p source/%{version}
